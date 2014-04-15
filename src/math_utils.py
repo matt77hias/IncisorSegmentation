@@ -45,6 +45,14 @@ def normalize_vector(v):
        return v
     return v/norm
     
+def centre_onOrigin(v):
+    '''
+    Centres the given vector on the origin.
+    @param v:           the vector to centre on the origin.
+    @return The centres vector.
+    '''
+    return (v - np.mean(v))
+    
 def align_with(x1, x2):
     '''
     Aligns x1 with x2

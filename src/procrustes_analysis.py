@@ -34,6 +34,7 @@ def PA(X):
     MN = mu.normalize_vector(MN)
     
     #Iterative approach
+    it = 1
     while (not is_converged(M, MN)):
         M = MN
         for i in range(X.shape[0]):
@@ -41,7 +42,9 @@ def PA(X):
         MN = Y.mean(axis=0)
         MN = mu.align_with(MN, X0)
         MN = mu.normalize_vector(MN)
-    
+        it += 1
+        
+    print("PA number of iterations: " + str(it))
     return MN
     
 def is_converged(M, MN):
@@ -55,5 +58,5 @@ def translate(X):
     @return The translated training samples with their centre of gravity at the origin.
     '''
     for i in range(X.shape[0]):
-        X[i,:] -= np.mean(X[i,:])
+        X[i,:] = mu.centre_onOrigin(X[i,:])
     return X
