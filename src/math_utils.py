@@ -59,7 +59,7 @@ def normalize_vector(v):
         return v
     return v/norm
     
-def centre_onOrigin(v):
+def center_onOrigin(v):
     '''
     Centers the given vector on the origin.
     @pre    The coordinates are stored as successive xi, yi, xj, yj, ...

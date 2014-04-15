@@ -71,5 +71,5 @@ def translate(X):
     '''
     XT = np.zeros(X.shape)
     for i in range(X.shape[0]):
-        XT[i,:] = mu.centre_onOrigin(X[i,:])
+        XT[i,:] = mu.center_onOrigin(X[i,:])
     return XT

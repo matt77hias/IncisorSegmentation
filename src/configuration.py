@@ -6,24 +6,31 @@ used and accessed in the other .py files
 @author     Matthias Moulin & Milan Samyn
 @version    1.0
 '''
+import os;
 
-dir_radiographs = "../data/Radiographs"
-dir_mirrored = "../data/Landmarks/mirrored"
-dir_original = "../data/Landmarks/original"
+dir_radiographs = "data/Radiographs"
+dir_mirrored = "data/Landmarks/mirrored"
+dir_original = "data/Landmarks/original"
 
 nb_trainingSamples = 14     #from 1 to 14
 nb_teeth = 8                #from 1 to 8
 nb_landmarks = 40           #from 1 to 40 (points representing an example)
 nb_dim = nb_landmarks*2
 
+def get_dir_prefix():
+    if (os.environ.get("USERNAME") == "Milan"):
+        return "../"
+    else:
+        return "CV/"
+
 def get_dir_radiographs():
-    return dir_radiographs
+    return get_dir_prefix() + dir_radiographs
     
 def get_dir_mirrored_landmarks():
-    return dir_mirrored
+    return get_dir_prefix() + dir_mirrored
 
 def get_dir_original_landmarks():
-    return dir_original
+    return get_dir_prefix() + dir_original
     
 def get_nb_trainingSamples():
     return nb_trainingSamples
