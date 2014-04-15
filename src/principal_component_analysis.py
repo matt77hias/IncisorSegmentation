@@ -54,7 +54,7 @@ def pca(X, nb_components=0):
     S = (np.dot(X, X.T) / float(n))
     eigenvalues, eigenvectors = np.linalg.eig(S)
     
-    #And about the negative eigenvalues, it is just a matter of eigh.
+    #And about the negative eigenvalues, it is just a matter of eig(h).
     #As eigenvalues shows the variance in a direction, we care about absolute
     #value but if we change a sign, we also have to change the "direcction" (eigenvector).
     #You can make this multiplying negative eigenvalues and their corresponding eigenvectors with -1.0
