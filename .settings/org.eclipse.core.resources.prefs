@@ -1,3 +1,6 @@
 eclipse.preferences.version=1
 encoding//src/configuration.py=utf-8
+encoding//src/math_utils.py=utf-8
+encoding//src/principal_component_analysis.py=utf-8
+encoding//src/procrustes_analysis.py=utf-8
 encoding//src/vis1.py=utf-8

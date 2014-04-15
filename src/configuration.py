@@ -11,9 +11,9 @@ dir_radiographs = "../data/Radiographs"
 dir_mirrored = "../data/Landmarks/mirrored"
 dir_original = "../data/Landmarks/original"
 
-nb_trainingSamples = 14     #from 1 to 40
+nb_trainingSamples = 14     #from 1 to 14
 nb_teeth = 8                #from 1 to 8
-nb_landmarks = 40
+nb_landmarks = 40           #from 1 to 40 (points representing an example)
 nb_dim = nb_landmarks*2
 
 def get_dir_radiographs():

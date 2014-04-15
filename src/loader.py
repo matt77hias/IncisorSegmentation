@@ -5,7 +5,6 @@ Loader for training samples
 '''
 
 import numpy as np
-
 import configuration as c
 
 def create_full_X(nr_tooth=1):

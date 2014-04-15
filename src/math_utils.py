@@ -56,15 +56,15 @@ def normalize_vector(v):
     '''
     norm=np.linalg.norm(v)
     if norm==0: 
-       return v
+        return v
     return v/norm
     
 def centre_onOrigin(v):
     '''
-    Centres the given vector on the origin.
+    Centers the given vector on the origin.
     @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
-    @param v:           the vector to centre on the origin.
-    @return The centres vector.
+    @param v:           the vector to center on the origin.
+    @return The centered vector.
     '''
     xCoords, yCoords = extract_coordinates(v)
     n = v.shape[0] / 2
@@ -78,7 +78,7 @@ def centre_onOrigin(v):
 def align_with(x1, x2):
     '''
     Aligns x1 with x2
-    @pre    x1 and x2 are centred on the origin
+    @pre    x1 and x2 are centered on the origin
     @pre    The landmark coordinates are stored as successive xi, yi, xj, yj, ...
     @param x1           the vector to align
     @param x2           the vector to align with
@@ -92,7 +92,7 @@ def align_params(x1, x2):
     Returns the transformation parameters (s, theta) used for scaling
     x1 with s and rotating x1 with theta in order to align the transformed
     x1 with x2. This method tries to minimize |s.R(theta).x1-x2|.
-    @pre    x1 and x2 are centred on the origin
+    @pre    x1 and x2 are centered on the origin
     @pre    The landmark coordinates are stored as successive xi, yi, xj, yj, ...
     @param x1           the vector to align
     @param x2           the vector to align with
@@ -102,7 +102,7 @@ def align_params(x1, x2):
     a = np.dot(x1, x2) / n
     b = 0
     for i in range(x1.shape[0] / 2):
-        # landmark coordinates stored as successive xi, yi, xj, yj
+        #landmark coordinates stored as successive xi, yi, xj, yj
         b += x1[(2*i)]*x2[(2*i+1)] - x1[(2*i+1)]*x2[(2*i)]
     b /= n
     
@@ -113,7 +113,7 @@ def align_params(x1, x2):
 def align(v, s=1, theta=0):
     '''
     Aligns x1 with scaling parameter s and rotation parameter theta.
-    @pre    v is centred on the origin
+    @pre    v is centered on the origin
     @pre    The landmark coordinates are stored as successive xi, yi, xj, yj, ...
     @param v:           the vector to align
     @param s:           the scaling parameter
@@ -124,7 +124,7 @@ def align(v, s=1, theta=0):
     ss = s*math.sin(theta)
     r = np.zeros(v.shape)
     for i in range(v.shape[0] / 2):
-        # landmark coordinates stored as successive xi, yi, xj, yj
+        #landmark coordinates stored as successive xi, yi, xj, yj
         x = v[(2*i)]
         y = v[(2*i+1)]
         r[(2*i)] = sc*x-ss*y

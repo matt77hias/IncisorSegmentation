@@ -9,7 +9,6 @@ with the given data (landmarks).
 import cv2
 import numpy as np
 import pylab
-
 import math_utils as mu
 import loader as l
 import configuration as c

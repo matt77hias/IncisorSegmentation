@@ -63,7 +63,7 @@ def pca_percentage(X, percentage=0.98):
             the proportion 'percentage' of the variance exibited in the training set
             and return the average sample 
     '''
-    [n,d] = X.shape
+    #n = X.shape[0]
     if (percentage <= 0) or (percentage>1):
         percentage = 0.98
         
@@ -92,7 +92,7 @@ def pca_raw(X):
                              shape = (nb samples, nb dimensions of each sample)
     @return ALL the eigenvalues and eigenvectors of the covariance matrix and return the average sample 
     '''
-    [n,d] = X.shape
+    n = X.shape[0]
     
     #Turn a set of possibly correlated variables into a smaller set of uncorrelated variables.
     #The idea is, that a high-dimensional dataset is often described by correlated variables and
@@ -114,7 +114,7 @@ def pca_raw(X):
     eigenvalues[s] = eigenvalues[s] * -1.0
     eigenvectors[:,s] = eigenvectors[:,s] * -1.0
 
-    #ALLL the eigenvalues and eigenvectors of the covariance matrix
+    #All the eigenvalues and eigenvectors of the covariance matrix
     indexes = np.argsort(eigenvalues)[::-1]
     eigenvalues = eigenvalues[indexes]
     eigenvectors = eigenvectors[:,indexes]

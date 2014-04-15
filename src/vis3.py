@@ -7,7 +7,6 @@ of the Principal Component Analysis
 
 import numpy as np
 import pylab
-
 import math
 import math_utils as mu
 import loader as l

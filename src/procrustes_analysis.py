@@ -34,7 +34,7 @@ def PA(X):
     #Re-estimate the mean from aligned shapes
     MN = Y0.mean(axis=0)
     #Apply constraints on scale and orientation to the current estimate
-    #of the mean by aliging it with X0 and scaling so that |M|=1
+    #of the mean by aligning it with X0 and scaling so that |M|=1
     MN = mu.align_with(MN, X0)
     MN = mu.normalize_vector(MN)
     
@@ -64,10 +64,10 @@ def is_converged(M, MN):
 
 def translate(X):
     '''
-    Translates the given training samples so that their centre of gravity is at the origin.
+    Translates the given training samples so that their center of gravity is at the origin.
     This translation is done for each training sample.
     @param  X:        the training samples
-    @return The translated training samples with their centre of gravity at the origin.
+    @return The translated training samples with their center of gravity at the origin.
     '''
     XT = np.zeros(X.shape)
     for i in range(X.shape[0]):

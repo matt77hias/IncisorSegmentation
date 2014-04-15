@@ -7,7 +7,6 @@ of the Procrustes Analysis
 
 import numpy as np
 import pylab
-
 import math_utils as mu
 import loader as l
 import procrustes_analysis as pa
