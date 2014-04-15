@@ -7,9 +7,9 @@ used and accessed in the other .py files
 @version    1.0
 '''
 
-dir_radiographs = "CV/data/Radiographs"
-dir_mirrored = "CV/data/Landmarks/mirrored"
-dir_original = "CV/data/Landmarks/original"
+dir_radiographs = "../data/Radiographs"
+dir_mirrored = "../data/Landmarks/mirrored"
+dir_original = "../data/Landmarks/original"
 
 nb_trainingSamples = 14     #from 1 to 40
 nb_teeth = 8                #from 1 to 8
