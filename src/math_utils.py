@@ -33,6 +33,20 @@ def extract_coordinates(v):
         xCoords[i] = v[(2*i)]  
         yCoords[i] = v[(2*i+1)]
     return xCoords, yCoords
+    
+def zip_coordinates(xCoords, yCoords):
+    '''
+    Zips the given x and y coordinates.
+    @param xCoords:     the x coordinates
+    @param yCoords:     the y coordinates
+    @return The zipped vector.
+    '''
+    n = xCoords.shape[0]
+    v = np.zeros(2 * n)
+    for i in range(n):
+        v[(2*i)] = xCoords[i]  
+        v[(2*i+1)] = yCoords[i]
+    return v
 
 def normalize_vector(v):
     '''
@@ -48,10 +62,18 @@ def normalize_vector(v):
 def centre_onOrigin(v):
     '''
     Centres the given vector on the origin.
+    @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
     @param v:           the vector to centre on the origin.
     @return The centres vector.
     '''
-    return (v - np.mean(v))
+    xCoords, yCoords = extract_coordinates(v)
+    n = v.shape[0] / 2
+    xm = sum(xCoords) / n
+    ym = sum(yCoords) / n
+    for i in range(n):
+        xCoords[i] -= xm
+        yCoords[i] -= ym
+    return zip_coordinates(xCoords, yCoords)
     
 def align_with(x1, x2):
     '''

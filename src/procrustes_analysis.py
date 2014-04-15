@@ -15,17 +15,16 @@ convergence_threshold = 0.01
 
 def PA(X):
     #Translation
-    translate(X)
+    XT = translate(X)
     #Initial estimate of mean shape, rescale
-    M = mu.normalize_vector(X[0,:])
-    X0 = M
+    X0 = M = mu.normalize_vector(XT[0,:])
     
     #Align all the shapes with the current estimate of the mean shape
-    Y = np.zeros(X.shape)
+    Y = np.zeros(XT.shape)
     Y[0,:] = M
-    for i in range(1, X.shape[0]):
-        Y[i,:] = mu.align_with(X[i,:], X0)
-    
+    for i in range(1, XT.shape[0]):
+        Y[i,:] = mu.align_with(XT[i,:], X0)
+          
     #Re-estimate the mean from aligned shapes
     MN = Y.mean(axis=0)
     #Apply constraints on scale and orientation to the current estimate
@@ -37,8 +36,8 @@ def PA(X):
     it = 1
     while (not is_converged(M, MN)):
         M = MN
-        for i in range(X.shape[0]):
-            Y[i,:] = mu.align_with(X[i,:], M)
+        for i in range(XT.shape[0]):
+            Y[i,:] = mu.align_with(XT[i,:], M)
         MN = Y.mean(axis=0)
         MN = mu.align_with(MN, X0)
         MN = mu.normalize_vector(MN)
@@ -57,6 +56,7 @@ def translate(X):
     @param  X:     the training samples
     @return The translated training samples with their centre of gravity at the origin.
     '''
+    XT = np.zeros(X.shape)
     for i in range(X.shape[0]):
-        X[i,:] = mu.centre_onOrigin(X[i,:])
-    return X
+        XT[i,:] = mu.centre_onOrigin(X[i,:])
+    return XT

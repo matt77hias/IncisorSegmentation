@@ -46,7 +46,7 @@ def plot_all(M, X, closed_curve=False):
     pylab.plot(xCoords, yCoords, '-+r')
     for i in range(X.shape[0]):
         xCs, yCs = mu.extract_coordinates(mu.align_with(mu.centre_onOrigin(X[i,:]), M))
-        pylab.plot(xCs, yCs, '*b')
+        pylab.plot(xCs, yCs, '*g')
     
     pylab.gca().invert_yaxis()
     pylab.axis('equal')
@@ -55,4 +55,4 @@ def plot_all(M, X, closed_curve=False):
 if __name__ == '__main__':
     X = l.create_full_X()
     #plot_mean(pa.PA(X), closed_curve=True)
-    #plot_all(pa.PA(X), X, closed_curve=True)
+    plot_all(pa.PA(X), X, closed_curve=True)
