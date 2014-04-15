@@ -11,7 +11,7 @@ import numpy as np
 
 import math_utils as mu
 
-convergence_threshold = 0.01
+convergence_threshold = 0.00001
 
 def PA(X):
     '''
