@@ -44,7 +44,7 @@ def PA(X):
         it += 1
         
     print("PA number of iterations: " + str(it))
-    return MN
+    return MN, Y
     
 def is_converged(M, MN):
     return ((M - MN) < (convergence_threshold * np.ones(M.shape))).all()

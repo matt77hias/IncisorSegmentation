@@ -1,6 +1,6 @@
 '''
 Contains some visualization functions for displaying the results
-of the Procrustes analysis
+of the Procrustes Analysis
 @author     Matthias Moulin & Milan Samyn
 @version    1.0
 '''
@@ -14,9 +14,9 @@ import procrustes_analysis as pa
             
 def plot_mean(M, closed_curve=False):
     '''
-    Plots the landmarks corresponding to the given training sample.
-    @param X:                   the training samples
-    @param nr_trainingSample:   the training sample to select
+    Plots the landmarks corresponding to the mean shape
+    in the model coordinate frame.
+    @param M:                   the mean shape in the model coordinate frame
     @param closed_curve:        has the curve to be closed
     '''
     xCoords, yCoords = mu.extract_coordinates(M)
@@ -32,9 +32,11 @@ def plot_mean(M, closed_curve=False):
     
 def plot_all(M, X, closed_curve=False):
     '''
-    Plots the landmarks corresponding to the given training sample.
-    @param X:                   the training samples
-    @param nr_trainingSample:   the training sample to select
+    Plots the landmarks corresponding to the mean shape
+    together with all the training samples in the model
+    coordinate frame
+    @param M:                   the mean shape in the model coordinate frame
+    @param X:                   the training samples in the model coordinate frame
     @param closed_curve:        has the curve to be closed
     '''
     xCoords, yCoords = mu.extract_coordinates(M)
@@ -45,7 +47,7 @@ def plot_all(M, X, closed_curve=False):
     # x coordinates , y coordinates
     pylab.plot(xCoords, yCoords, '-+r')
     for i in range(X.shape[0]):
-        xCs, yCs = mu.extract_coordinates(mu.align_with(mu.centre_onOrigin(X[i,:]), M))
+        xCs, yCs = mu.extract_coordinates(Y[i,:])
         pylab.plot(xCs, yCs, '*g')
     
     pylab.gca().invert_yaxis()
@@ -53,6 +55,7 @@ def plot_all(M, X, closed_curve=False):
     pylab.show()
     
 if __name__ == '__main__':
-    X = l.create_full_X()
-    #plot_mean(pa.PA(X), closed_curve=True)
-    plot_all(pa.PA(X), X, closed_curve=True)
+    X = l.create_full_X(nr_tooth=1)
+    M, Y = pa.PA(X)
+    #plot_mean(M, closed_curve=True)
+    plot_all(M, Y, closed_curve=True)
