@@ -20,13 +20,14 @@ def plot_landmarks(X, nr_trainingSample=1, closed_curve=False):
     in the image coordinate frame.
     @param X:                   the training samples
     @param nr_trainingSample:   the training sample to select
-    @param closed_curve:        has the curve to be closed
+    @param closed_curve:        must the curve be closed
     '''
     xCoords, yCoords = mu.extract_coordinates(X[(nr_trainingSample-1),:])
     if (closed_curve):
         xCoords = mu.make_circular(xCoords)
         yCoords = mu.make_circular(yCoords)
     
+    pylab.figure(1)
     # x coordinates , y coordinates
     pylab.plot(xCoords, yCoords, '-+r')
     pylab.gca().invert_yaxis()

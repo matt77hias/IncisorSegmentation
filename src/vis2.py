@@ -17,13 +17,14 @@ def plot_mean(M, closed_curve=False):
     Plots the landmarks corresponding to the mean shape
     in the model coordinate frame.
     @param M:                   the mean shape in the model coordinate frame
-    @param closed_curve:        has the curve to be closed
+    @param closed_curve:        must the curve be closed
     '''
     xCoords, yCoords = mu.extract_coordinates(M)
     if (closed_curve):
         xCoords = mu.make_circular(xCoords)
         yCoords = mu.make_circular(yCoords)
     
+    pylab.figure(2)
     # x coordinates , y coordinates
     pylab.plot(xCoords, yCoords, '-+r')
     pylab.gca().invert_yaxis()
@@ -37,13 +38,14 @@ def plot_all(M, X, closed_curve=False):
     coordinate frame
     @param M:                   the mean shape in the model coordinate frame
     @param X:                   the training samples in the model coordinate frame
-    @param closed_curve:        has the curve to be closed
+    @param closed_curve:        must the curve be closed
     '''
     xCoords, yCoords = mu.extract_coordinates(M)
     if (closed_curve):
         xCoords = mu.make_circular(xCoords)
         yCoords = mu.make_circular(yCoords)
     
+    pylab.figure(2)
     # x coordinates , y coordinates
     pylab.plot(xCoords, yCoords, '-+r')
     for i in range(X.shape[0]):
