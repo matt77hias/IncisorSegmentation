@@ -26,13 +26,13 @@ def PA(X):
     X0 = M = mu.normalize_vector(XT[0,:])
     
     #Align all the shapes with the current estimate of the mean shape
-    Y = np.zeros(XT.shape)
-    Y[0,:] = M
+    Y0 = np.zeros(XT.shape)
+    Y0[0,:] = M
     for i in range(1, XT.shape[0]):
-        Y[i,:] = mu.align_with(XT[i,:], X0)
+        Y0[i,:] = mu.align_with(XT[i,:], X0)
           
     #Re-estimate the mean from aligned shapes
-    MN = Y.mean(axis=0)
+    MN = Y0.mean(axis=0)
     #Apply constraints on scale and orientation to the current estimate
     #of the mean by aliging it with X0 and scaling so that |M|=1
     MN = mu.align_with(MN, X0)
@@ -40,6 +40,7 @@ def PA(X):
     
     #Iterative approach
     it = 1
+    Y = np.zeros(XT.shape)
     while (not is_converged(M, MN)):
         M = MN
         for i in range(XT.shape[0]):
@@ -50,7 +51,7 @@ def PA(X):
         it += 1
         
     print("PA number of iterations: " + str(it))
-    return MN, Y
+    return MN, Y0
     
 def is_converged(M, MN):
     '''
