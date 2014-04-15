@@ -84,10 +84,10 @@ def align_with(x1, x2):
     @param x2           the vector to align with
     @return The aligned vector for x1
     '''
-    s, theta = align_with_params(x1, x2)
-    return align(x2, s, theta) 
+    s, theta = align_params(x1, x2)
+    return align(x1, s, theta) 
     
-def align_with_params(x1, x2):
+def align_params(x1, x2):
     '''
     Returns the transformation parameters (s, theta) used for scaling
     x1 with s and rotating x1 with theta in order to align the transformed
