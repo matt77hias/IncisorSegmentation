@@ -18,7 +18,7 @@ nb_landmarks = 40           #from 1 to 40 (points representing an example)
 nb_dim = nb_landmarks*2
 
 def get_dir_prefix():
-    if (os.environ.get("USERNAME") == "Milan"):
+    if (os.environ.get("USERNAME") == "Milan Samyn"):
         return "../"
     else:
         return "CV/"
