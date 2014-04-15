@@ -7,16 +7,15 @@ of the position, orientation and scale of that object.
 @author     Matthias Moulin & Milan Samyn
 @version    1.0
 '''
-import pylab
 import numpy as np
 
 import math_utils as mu
-import loader as l
-import configuration as c
+
+convergence_threshold = 0.01
 
 def PA(X):
     #Translation
-    PA_translate(X)
+    translate(X)
     #Initial estimate of mean shape, rescale
     M = mu.normalize_vector(X[0,:])
     X0 = M
@@ -46,9 +45,9 @@ def PA(X):
     return MN
     
 def is_converged(M, MN):
-    return ((M - MN) < (0.01 * np.ones(M.shape))).all()
+    return ((M - MN) < (convergence_threshold * np.ones(M.shape))).all()
 
-def PA_translate(X):
+def translate(X):
     '''
     Translates the given training samples so that their centre of gravity is at the origin.
     This translation is done for each training sample.
@@ -58,21 +57,3 @@ def PA_translate(X):
     for i in range(X.shape[0]):
         X[i,:] -= np.mean(X[i,:])
     return X
-
-#TEMP                  
-def plot(M):
-    xCoords = np.zeros(M.shape)
-    yCoords = np.zeros(M.shape)
-    for i in range(M.shape[0] / 2):
-        xCoords[i] = M[(2*i)]  
-        yCoords[i] = M[(2*i+1)]
-    # x coordinates , y coordinates
-    pylab.plot(xCoords, yCoords, '-r')
-    pylab.gca().invert_yaxis()
-    pylab.axis('equal')
-    pylab.show()
-    
-if __name__ == '__main__':
-    X = l.create_full_X()
-    plot(PA(X))
-    

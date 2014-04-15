@@ -8,6 +8,32 @@ Some mathematical utilities
 import math
 import numpy as np
 
+def make_circular(v):
+    '''
+    Makes the given vector circular by appending the first entry.
+    @param v:           the vector to make circular.
+    @return The circular vector.
+    '''
+    w = np.zeros((v.shape[0]+1))
+    w[:-1] = v
+    w[-1] = v[0]
+    return w
+    
+def extract_coordinates(v):
+    '''
+    Extracts the x and y coordinates from the given vector.
+    @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
+    @param v:            the vector to extract the coordinates from.
+    @return The x and y coordinates extracted from the given vector.
+    '''
+    n = v.shape[0] / 2
+    xCoords = np.zeros(n)
+    yCoords = np.zeros(n)
+    for i in range(n):
+        xCoords[i] = v[(2*i)]  
+        yCoords[i] = v[(2*i+1)]
+    return xCoords, yCoords
+
 def normalize_vector(v):
     '''
     Normalize the given vector.
