@@ -16,7 +16,7 @@ import principal_component_analysis as pca
 def plot_vary_mode_param(M, W, C, e, closed_curve=False):
     '''
     Plots the effects of varying one mode parameter / shape parameter
-    in -3 s.d. / -2 s.d. / -1 s.d. / M /+1 s.d. / +2 s.d. / +3 s.d.
+    in -3 s.d. / -2 s.d. / -1 s.d. / M / +1 s.d. / +2 s.d. / +3 s.d.
     in the model coordinate frame
     @param M:                   the mean shape in the model coordinate frame
     @param W:                   the eigenvectors in the model coordinate frame

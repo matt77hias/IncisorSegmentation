@@ -25,7 +25,7 @@ def crop(image, width=1500, height=1500, top_offset=0):
 
 if __name__ == '__main__':
     
-    image_path = config.get_dir_prefix() + "data/Radiographs/07.tif"
+    image_path = config.get_fname_radiograph(7)
     image = cv2.imread(image_path)
     cropped_image = crop(image, width=1000, height=1100, top_offset=400)
     cv2.imshow("Cropped Image", cropped_image)

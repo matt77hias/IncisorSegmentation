@@ -41,11 +41,7 @@ def display_landmarks(X, nr_trainingSample=1, color=np.array([0, 0, 255])):
     @param nr_trainingSample:   the training sample to select
     @param color:               the color used for displaying
     '''
-    s = "/"
-    if (nr_trainingSample < 10):
-        s = "/0"
-    fname = c.get_dir_radiographs() + s + str(nr_trainingSample) + '.tif'
-    img = cv2.imread(fname)
+    img = cv2.imread(c.get_fname_radiograph(nr_trainingSample))
     
     xCoords, yCoords = mu.extract_coordinates(X[(nr_trainingSample-1),:])
     for i in range(c.get_nb_landmarks()):
