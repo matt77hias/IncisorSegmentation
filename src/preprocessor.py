@@ -142,8 +142,7 @@ def stretch_contrast(image, a=0, b=255):
             pixel_color = (image[i,j] - c) * factor + a
             if pixel_color > 255: pixel_color = 255
             if pixel_color < 0: pixel_color = 0
-            image[i,j] = pixel_color
-            
+            image[i,j] = pixel_color        
     return image
 
 def get_values_from_histogram(image, low_percentile=0.05, high_percentile=0.95, plot=True):
@@ -188,11 +187,9 @@ def get_values_from_histogram(image, low_percentile=0.05, high_percentile=0.95, 
     
     pixels = 0
     for i in range(hist.shape[0]):
-        pixels = pixels + hist[i,0]
-        if (pixels >= lp_pixels and c == -1):
-            c = i
-        if (pixels >= up_pixels and d == -1):
-            d = i
+        pixels += hist[i,0]
+        if (pixels >= lp_pixels and c == -1): c = i
+        if (pixels >= up_pixels and d == -1): d = i
     return (c, d)
 
 if __name__ == '__main__':
