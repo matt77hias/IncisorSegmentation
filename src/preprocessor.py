@@ -131,7 +131,8 @@ def stretch_contrast(image, a=0, b=255):
     @param b:                   the maximum pixel value
     Source: http://homepages.inf.ed.ac.uk/rbf/HIPR2/stretch.htm
     '''
-    c, d = getValuesFromHistogram(image)
+    #lowest and highest pixel values currently present in the image
+    (c, d) = get_values_from_histogram(image)
 
     factor = ((b - a) / (d - c))
 
@@ -145,22 +146,45 @@ def stretch_contrast(image, a=0, b=255):
             
     return image
 
-def getValuesFromHistogram(image):
+def get_values_from_histogram(image, low_percentile=0.05, high_percentile=0.95, plot=True):
     '''
-    TODO
+    Returns the lowest and highest percentile values corresponding to
+    the given lower and high percentiles present in the image.
+    @param image:               the image
+    @param low_percentile:      the low percentile
+    @param high_percentile:     the high percentile
+    @param plot:                does the histogram need to be plotted
+    @return the lowest and highest pixel values currently present in the image
     Source: http://homepages.inf.ed.ac.uk/rbf/HIPR2/histgram.htm
     '''
     c = -1
     d = -1
     
-    total_pixels = image.shape[0] * image.shape[1]
-    lp_pixels = total_pixels * 0.05 #5% (5th percentile) of the pixels in the histogram will have values lower than c
-    up_pixels = total_pixels * 0.95 #95% (95th percentile) of the pixels in the histogram will have values lower than d
-
-    hist = cv2.calcHist([image], [0], None, [256], [0, 256])
+    #The simplest sort of normalization scans the image to find the lowest and
+    #highest pixel values currently present in the image. Call these c and d.
     
-    pyplot.hist(image.ravel(),256,[0,256])
-    pyplot.show()
+    #The problem with this is that a single outlying pixel with either a very high
+    #or very low value can severely affect the value of c or d and this could lead
+    #to very unrepresentative scaling. 
+    
+    #Therefore a more robust approach is to first take a histogram of the image, and
+    #then select c and d at, say, the 5th and 95th percentile in the histogram (that
+    #is, 5% of the pixel in the histogram will have values lower than c, and 5% of
+    #the pixels will have values higher than d).This prevents outliers affecting the
+    #scaling so much.
+    
+    total_pixels = image.shape[0] * image.shape[1]
+    #low_percentile% of the pixels in the histogram will have values lower than c
+    lp_pixels = total_pixels * low_percentile
+    #high_percentile% of the pixels in the histogram will have values lower than d
+    up_pixels = total_pixels * high_percentile
+
+    hist = cv2.calcHist(images=[image], channels=[0], mask=None, histSize=[256], ranges=[0, 256])
+    
+    if plot:
+        pyplot.figure(4)
+        pyplot.hist(image.ravel(),256,[0,256])
+        pyplot.show()
     
     pixels = 0
     for i in range(hist.shape[0]):
@@ -169,7 +193,7 @@ def getValuesFromHistogram(image):
             c = i
         if (pixels >= up_pixels and d == -1):
             d = i
-    return c, d
+    return (c, d)
 
 if __name__ == '__main__':
     (ymin, ymax, xmin, xmax) = learn_offsets_safe()
