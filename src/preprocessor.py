@@ -136,7 +136,7 @@ def stretch_contrast(image, a=0, b=255):
 
     factor = ((b - a) / (d - c))
 
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    #image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     for i in range(image.shape[0]):
         for j in range(image.shape[1]):
             pixel_color = (image[i,j] - c) * factor + a
@@ -200,19 +200,30 @@ if __name__ == '__main__':
     cv2.imshow("Cropped Image", cropped_image)
     cv2.waitKey(0)
     
-    image = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY);
-    resulting_image = cv2.equalizeHist(image);
-    cv2.imshow("Image", resulting_image)
+    grey = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
+    cv2.imshow("Grey Scale Image", cropped_image)
     cv2.waitKey(0)
     
-    resulting_image = cv2.fastNlMeansDenoising(resulting_image)
-    cv2.imshow("Image Denoised", resulting_image)
+    cv2.imshow("Grey Scale Denoised Image", cropped_image)
+    grey_denoised = cv2.fastNlMeansDenoising(grey)
+    
+    
+    #Histogram equalization
+    resulting_image = cv2.equalizeHist(grey)
+    cv2.imshow("HE", resulting_image)
+    cv2.waitKey(0)
+
+    #Histogram equalization after denoising
+    resulting_image = cv2.equalizeHist(grey_denoised)
+    cv2.imshow("HED", resulting_image)
     cv2.waitKey(0)
     
-    resulting_image = stretch_contrast(cropped_image)
-    cv2.imshow("Stretched Contrast Image", resulting_image)
+    #Contrast stretching
+    resulting_image = stretch_contrast(grey)
+    cv2.imshow("SC", resulting_image)
     cv2.waitKey(0)
     
-    resulting_image = cv2.fastNlMeansDenoising(resulting_image)
-    cv2.imshow("Stretched Contrast Image Denoised", resulting_image)
+    #Contrast stretching after denoising
+    resulting_image = stretch_contrast(grey_denoised)
+    cv2.imshow("SCD", resulting_image)
     cv2.waitKey(0)
