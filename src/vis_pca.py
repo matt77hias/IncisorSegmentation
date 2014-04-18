@@ -6,12 +6,13 @@ of the Principal Component Analysis
 '''
 
 import numpy as np
-import pylab
 import math
 import math_utils as mu
 import loader as l
 import procrustes_analysis as pa
 import principal_component_analysis as pca
+
+from matplotlib import pyplot
 
 def plot_vary_mode_param(M, W, C, e, closed_curve=False):
     '''
@@ -28,7 +29,7 @@ def plot_vary_mode_param(M, W, C, e, closed_curve=False):
     '''
     se = math.sqrt(e)
     
-    pylab.figure(3)
+    pyplot.figure(3)
     
     j = 1
     for i in range(-3, 4):
@@ -38,13 +39,13 @@ def plot_vary_mode_param(M, W, C, e, closed_curve=False):
             xCoords = mu.make_circular(xCoords)
             yCoords = mu.make_circular(yCoords)
         # x coordinates , y coordinates
-        pylab.subplot(1, 7, j)
-        pylab.plot(xCoords, yCoords, '-+r')     
-        pylab.gca().invert_yaxis()
-        pylab.axis('equal')
+        pyplot.subplot(1, 7, j)
+        pyplot.plot(xCoords, yCoords, '-+r')     
+        pyplot.gca().invert_yaxis()
+        pyplot.axis('equal')
         j += 1
 
-    pylab.show()
+    pyplot.show()
 
 if __name__ == '__main__':
     X = l.create_full_X(nr_tooth=1)

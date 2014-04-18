@@ -5,11 +5,11 @@ of the Procrustes Analysis
 @version    1.0
 '''
 
-import numpy as np
-import pylab
 import math_utils as mu
 import loader as l
 import procrustes_analysis as pa
+
+from matplotlib import pyplot
             
 def plot_mean(M, closed_curve=False):
     '''
@@ -23,12 +23,12 @@ def plot_mean(M, closed_curve=False):
         xCoords = mu.make_circular(xCoords)
         yCoords = mu.make_circular(yCoords)
     
-    pylab.figure(2)
+    pyplot.figure(2)
     # x coordinates , y coordinates
-    pylab.plot(xCoords, yCoords, '-+r')
-    pylab.gca().invert_yaxis()
-    pylab.axis('equal')
-    pylab.show()
+    pyplot.plot(xCoords, yCoords, '-+r')
+    pyplot.gca().invert_yaxis()
+    pyplot.axis('equal')
+    pyplot.show()
     
 def plot_all(M, X, closed_curve=False):
     '''
@@ -44,16 +44,16 @@ def plot_all(M, X, closed_curve=False):
         xCoords = mu.make_circular(xCoords)
         yCoords = mu.make_circular(yCoords)
     
-    pylab.figure(2)
+    pyplot.figure(2)
     # x coordinates , y coordinates
-    pylab.plot(xCoords, yCoords, '-+r')
+    pyplot.plot(xCoords, yCoords, '-+r')
     for i in range(X.shape[0]):
         xCs, yCs = mu.extract_coordinates(Y[i,:])
-        pylab.plot(xCs, yCs, '*g')
+        pyplot.plot(xCs, yCs, '*g')
     
-    pylab.gca().invert_yaxis()
-    pylab.axis('equal')
-    pylab.show()
+    pyplot.gca().invert_yaxis()
+    pyplot.axis('equal')
+    pyplot.show()
     
 if __name__ == '__main__':
     X = l.create_full_X(nr_tooth=1)

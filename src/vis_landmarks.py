@@ -8,10 +8,11 @@ with the given data (landmarks).
 
 import cv2
 import numpy as np
-import pylab
 import math_utils as mu
 import loader as l
 import configuration as c
+
+from matplotlib import pyplot
                   
 def plot_landmarks(X, nr_trainingSample=1, closed_curve=False):
     '''
@@ -26,12 +27,12 @@ def plot_landmarks(X, nr_trainingSample=1, closed_curve=False):
         xCoords = mu.make_circular(xCoords)
         yCoords = mu.make_circular(yCoords)
     
-    pylab.figure(1)
+    pyplot.figure(1)
     # x coordinates , y coordinates
-    pylab.plot(xCoords, yCoords, '-+r')
-    pylab.gca().invert_yaxis()
-    pylab.axis('equal')
-    pylab.show()
+    pyplot.plot(xCoords, yCoords, '-+r')
+    pyplot.gca().invert_yaxis()
+    pyplot.axis('equal')
+    pyplot.show()
     
 def display_landmarks(X, nr_trainingSample=1, color=np.array([0, 0, 255])):
     '''
