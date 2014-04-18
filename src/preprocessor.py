@@ -44,7 +44,7 @@ def crop_by_offsets_and_size(image, top_offset, height, left_offset, width):
 
 def crop_by_size(image, height, width):
     '''
-    Crops a given image to a image with a smaller width and height.
+    Crops a given image
     @param image:                the image to be cropped
     @param width:                the crop-to-width
     @param height:               the crop-to-height
@@ -56,10 +56,28 @@ def crop_by_size(image, height, width):
     return crop_by_offsets_and_size(top, height, left, width)
     
 def crop_by_diagonal(image, ymin, ymax, xmin, xmax):
+    '''
+    Crops a given image
+    @param image:                the image to be cropped
+    @param ymin:                 the minimal y coordinate
+    @param ymax:                 the maximal y coordinate
+    @param xmin:                 the minimal x coordinate
+    @param xmax:                 the maximal x coordinate
+    @param height:               the crop-to-height
+    @return the cropped image
+    '''
     [curr_height, curr_width] = image.shape[:2]
     return crop_by_offsets_and_size(image, ymin, (ymax-ymin+1), xmin, (xmax-xmin+1))
     
 def learn_offsets():
+    '''
+    Learns the minimal y coordinate, maximal y coordinate, 
+    minimal x coordinate and maximal x coordinate for the
+    training samples.
+    @return the learned minimal y coordinate, learned maximal y coordinate, 
+            learned minimal x coordinate and learned maximal x coordinate for the
+            training samples.
+    '''
     xmin = ymin = float("inf")
     xmax = ymax = 0
     for j in config.get_teeth_range(): #TODO
@@ -82,6 +100,14 @@ left_saftey_offset = 20
 right_safety_offset = 20  
       
 def learn_offsets_safe():
+    '''
+    Learns the minimal y coordinate, maximal y coordinate, 
+    minimal x coordinate and maximal x coordinate for the
+    training samples but add some safety margins.
+    @return the learned minimal y coordinate, learned maximal y coordinate, 
+            learned minimal x coordinate and learned maximal x coordinate for the
+            training samples with added safety margins.
+    '''
     (ymin, ymax, xmin, xmax) = learn_offsets()
     return ((ymin-top_safety_offset), (ymax+bottem_safety_offset), (xmin-left_saftey_offset), (xmax+right_safety_offset))
 
