@@ -1,0 +1,11 @@
+Global arithmetic operators
+
+By simply multiplying every pixel value with a given number you can gain contrast enhancement.
+
+Contrast stretching
+
+You can redefine the range of pixel intensities by stretching selected regions or compressing a certain band to a lower scale.
+
+Histogram equalization
+
+Automatically define a monotonically increasing discrete transfer function using the histogram data for a better use of the whole range of intensity values.
