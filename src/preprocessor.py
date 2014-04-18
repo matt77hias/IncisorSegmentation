@@ -156,8 +156,7 @@ def get_values_from_histogram(image, low_percentile=0.05, high_percentile=0.95, 
     @return the lowest and highest pixel values currently present in the image
     Source: http://homepages.inf.ed.ac.uk/rbf/HIPR2/histgram.htm
     '''
-    c = -1
-    d = -1
+    c = d = -1
     
     #The simplest sort of normalization scans the image to find the lowest and
     #highest pixel values currently present in the image. Call these c and d.
@@ -206,6 +205,14 @@ if __name__ == '__main__':
     cv2.imshow("Image", resulting_image)
     cv2.waitKey(0)
     
+    resulting_image = cv2.fastNlMeansDenoising(resulting_image)
+    cv2.imshow("Image Denoised", resulting_image)
+    cv2.waitKey(0)
+    
     resulting_image = stretch_contrast(cropped_image)
     cv2.imshow("Stretched Contrast Image", resulting_image)
+    cv2.waitKey(0)
+    
+    resulting_image = cv2.fastNlMeansDenoising(resulting_image)
+    cv2.imshow("Stretched Contrast Image Denoised", resulting_image)
     cv2.waitKey(0)
