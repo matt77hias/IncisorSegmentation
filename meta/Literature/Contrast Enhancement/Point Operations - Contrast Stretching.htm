@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!-- saved from url=(0051)http://homepages.inf.ed.ac.uk/rbf/HIPR2/stretch.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Point Operations - Contrast Stretching</title>
+</head>
+<body bgcolor="#ffffff">
+<img src="./Point Operations - Contrast Stretching_files/logo.gif" alt="" align="right"><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/hipr_top.htm"><img alt="home" src="./Point Operations - Contrast Stretching_files/home.gif"></a>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/adpthrsh.htm"><img alt="left" src="./Point Operations - Contrast Stretching_files/left.gif"></a>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/histeq.htm"><img alt="right" src="./Point Operations - Contrast Stretching_files/right.gif"></a>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/pntops.htm"><img alt="up" src="./Point Operations - Contrast Stretching_files/up.gif"></a>
+<br clear="right"><br><center><img alt="---" src="./Point Operations - Contrast Stretching_files/line2.gif" width="75%" height="4"></center><br>
+<a name="1"><img alt="" src="./Point Operations - Contrast Stretching_files/mote.gif"></a>
+<h1>Contrast Stretching</h1>
+
+<p>
+
+
+	</p><center>
+	<img alt="" align="middle" src="./Point Operations - Contrast Stretching_files/strtchb.gif"><p> 
+	<strong>Common Names:</strong> Contrast stretching, Normalization
+	</p></center>
+
+<p>
+</p><h2>Brief Description</h2>
+
+<p>Contrast stretching (often called normalization) is a simple image
+enhancement technique that attempts to improve the contrast in an
+image by `stretching' the range of intensity values it contains to
+span a desired range of values, <em>e.g.</em> the the full range of
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/value.htm">pixel values</a> that the image type concerned allows. It
+differs from the more sophisticated <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/histeq.htm">histogram
+equalization</a> in that it can only apply a <em>linear</em> scaling function
+to the image pixel values. As a result the `enhancement' is less
+harsh. (Most implementations accept a <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/gryimage.htm">graylevel image</a>
+as input and produce another graylevel image as output.)
+
+</p><p><a name="how"><img alt="" src="./Point Operations - Contrast Stretching_files/mote.gif"></a></p><h2>How It Works</h2>
+
+<p>Before the stretching can be performed it is necessary to specify the
+upper and lower pixel value limits over which the image is to be
+normalized. Often these limits will just be the minimum and maximum
+pixel values that the image type concerned allows. For example for 8-bit
+graylevel images the lower and upper limits might be 0 and 255. Call
+the lower and the upper limits <em>a</em> and <em>b</em> respectively.
+
+</p><p>The simplest sort of normalization then scans the image to find the
+lowest and highest pixel values currently present in the image. Call
+these <em>c</em> and <em>d</em>. Then each pixel <em>P</em> is scaled using the
+following function:
+
+</p><p></p><blockquote>
+<img alt="Eqn:eqnstr1" src="./Point Operations - Contrast Stretching_files/eqnstr1.gif" align="bottom">
+</blockquote>
+
+<p>Values below 0 are set to 0 and values about 255 are set to 255.
+
+</p><p>The problem with this is that a single outlying pixel with either a
+very high or very low value can severely affect the value of <em>c</em> or
+<em>d</em> and this could lead to very unrepresentative scaling. Therefore
+a more robust approach is to first take a <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/histgram.htm">histogram</a> of
+the image, and then select <em>c</em> and <em>d</em> at, say, the 5th and 95th
+percentile in the histogram (that is, 5% of the pixel in the histogram
+will have values lower than <em>c</em>, and 5% of the pixels will have
+values higher than <em>d</em>). This prevents outliers affecting the
+scaling so much.
+
+</p><p>Another common technique for dealing with outliers is to use the
+intensity histogram to find the most popular intensity level in an
+image (<em>i.e.</em> the histogram peak) and then define a <em>cutoff fraction</em>
+which is the minimum fraction of this peak magnitude below which data
+will be ignored. The intensity histogram is then scanned upward from 0 until
+the first intensity value with contents above the cutoff fraction.
+This defines <em>c</em>. Similarly, the intensity histogram is then scanned
+downward from 255 until the first intensity value with contents above
+the cutoff fraction. This defines <em>d</em>.
+
+</p><p>
+
+
+
+
+
+Some implementations also work with <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/colimage.htm">color images</a>. In this
+case all the channels will be stretched using the same offset and
+scaling in order to preserve the correct color ratios.
+
+</p><p><a name="guidelines"><img alt="" src="./Point Operations - Contrast Stretching_files/mote.gif"></a></p><h2>Guidelines for Use</h2>
+
+<p>Normalization is commonly used to improve the contrast in an image
+without distorting relative graylevel intensities too significantly.
+
+</p><p>We begin by considering an image 
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/wom1.gif"><img alt="wom1" src="./Point Operations - Contrast Stretching_files/wom1.GIF"></a></blockquote>
+<p> which can easily be
+enhanced by the most simple of contrast stretching implementations
+because the <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/histgram.htm">intensity histogram</a> forms a tight, narrow
+cluster between the graylevel intensity values of 79 - 136, as shown
+in 
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/wom1hst1.gif"><img alt="wom1hst1" src="./Point Operations - Contrast Stretching_files/wom1hst1.GIF"></a></blockquote>
+<p> After contrast stretching, using a simple
+linear interpolation between <em>c = 79</em> and <em>d = 136</em>, we obtain
+
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/wom1str1.gif"><img alt="wom1str1" src="./Point Operations - Contrast Stretching_files/wom1str1.GIF"></a></blockquote>
+<p> Compare the histogram of the original image with
+that of the contrast-stretched version 
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/wom1hst2.gif"><img alt="wom1hst2" src="./Point Operations - Contrast Stretching_files/wom1hst2.GIF"></a></blockquote>
+<p>
+
+</p><p>While this result is a significant improvement over the original, the
+enhanced image itself still appears somewhat flat.
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/histeq.htm">Histogram equalizing</a> the image increases contrast
+dramatically, but yields an artificial-looking result
+
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/wom1heq1.gif"><img alt="wom1heq1" src="./Point Operations - Contrast Stretching_files/wom1heq1.GIF"></a></blockquote>
+<p> In this case, we can achieve better
+results by contrast stretching the image over a more narrow range of
+graylevel values from the original image. For example, by setting the
+cutoff fraction parameter to 0.03, we obtain the contrast-stretched
+image 
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/wom1str2.gif"><img alt="wom1str2" src="./Point Operations - Contrast Stretching_files/wom1str2.GIF"></a></blockquote>
+<p> and its corresponding histogram
+
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/wom1hst3.gif"><img alt="wom1hst3" src="./Point Operations - Contrast Stretching_files/wom1hst3.GIF"></a></blockquote>
+<p> Note that this operation has effectively
+spread out the information contained in the original histogram peak
+(thus improving contrast in the interesting face regions) by pushing
+those intensity levels to the left of the peak down the histogram
+<em>x</em>-axis towards 0. Setting the cutoff fraction to a higher value,
+<em>e.g.</em> 0.125, yields the contrast stretched image
+
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/wom1str3.gif"><img alt="wom1str3" src="./Point Operations - Contrast Stretching_files/wom1str3.GIF"></a></blockquote>
+<p> As shown in the histogram
+
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/wom1hst4.gif"><img alt="wom1hst4" src="./Point Operations - Contrast Stretching_files/wom1hst4.GIF"></a></blockquote>
+<p> most of the information to the left of
+the peak in the original image is mapped to 0 so that the peak can
+spread out even further and begin pushing values to its right up to
+255.
+
+</p><p>As an example of an image which is more difficult to enhance, consider
+
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/moo2.gif"><img alt="moo2" src="./Point Operations - Contrast Stretching_files/moo2.GIF"></a></blockquote>
+<p> which shows a low contrast image of a lunar surface.
+
+</p><p>The image 
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/moo2hst2.gif"><img alt="moo2hst2" src="./Point Operations - Contrast Stretching_files/moo2hst2.GIF"></a></blockquote>
+<p> shows the intensity histogram of this
+image. Note that only part of the <em>y</em>-axis has been shown for
+clarity. The minimum and maximum values in this 8-bit image are 0 and
+255 respectively, and so straightforward normalization to the range
+0&nbsp;-&nbsp;255 produces absolutely no effect. However, we <em>can</em> enhance the
+picture by ignoring all pixel values outside the 1% and 99%
+percentiles, and only applying contrast stretching to those pixels in
+between. The outliers are simply forced to either 0 or 255 depending
+upon which side of the range they lie on.
+
+</p><p>
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/moo2str1.gif"><img alt="moo2str1" src="./Point Operations - Contrast Stretching_files/moo2str1.GIF"></a></blockquote>
+<p> shows the result of this enhancement. Notice that
+the contrast has been significantly improved. Compare this with the
+corresponding enhancement achieved using <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/histeq.htm">histogram
+equalization</a>.
+
+</p><p>Normalization can also be used when converting from one <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/value.htm">image type</a> to
+another, for instance from floating point pixel values to 8-bit
+integer pixel values. As an example the pixel values in the floating
+point image might run from 0 to 5000. Normalizing this range to 0-255
+allows easy conversion to 8-bit integers. Obviously some information
+might be lost in the compression process, but the relative intensities
+of the pixels will be preserved.
+
+</p><p>
+    </p><h2>Interactive Experimentation</h2>
+
+<p>    You can interactively experiment with this operator by clicking
+    <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/contrastdemo.htm">here</a>.
+
+</p><p>
+</p><h2>Exercises</h2>
+
+<p></p><ol>
+<li> Derive the scaling formula given above from the parameters
+<em>a</em>, <em>b</em>, <em>c</em> and <em>d</em>.
+
+<p></p></li><li> Suppose you had to normalize an 8-bit image to one in which the
+pixel values were stored as 4-bit integers. What would be a suitable
+destination range (<em>i.e.</em> the values of <em>a</em> and <em>b</em>)?
+
+<p></p></li><li> Contrast-stretch the image 
+<blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/sap1.gif"><img alt="sap1" src="./Point Operations - Contrast Stretching_files/sap1.GIF"></a></blockquote>
+<p> (You must begin by
+selecting suitable values for <em>c</em> and <em>d</em>.) Next, edge-detect
+(<em>i.e.</em> using the <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/sobel.htm">Sobel</a>, <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/roberts.htm">Roberts Cross</a> or
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/canny.htm">Canny</a> edge detector) both the original and the contrast
+stretched version. Does contrast stretching increase the number of edges
+which can be detected?
+
+</p><p></p></li><li> Imagine you have an image taken in low light levels and which, as
+a result, has low contrast. What are the advantages of using contrast
+stretching to improve the contrast, rather than simply
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/pixmult.htm">scaling</a> the image by a factor of, say, three?
+
+<p></p></li></ol>
+
+<p>
+</p><h2>References</h2>
+
+<p><strong>E. Davies</strong> <em>Machine Vision: Theory, Algorithms and
+Practicalities</em>, Academic Press, 1990, pp 26&nbsp;-&nbsp;27, 79&nbsp;-&nbsp;99.
+
+</p><p><strong>A. Jain</strong> <em>Fundamentals of Digital Image Processing</em>,
+Prentice-Hall, 1989, Chap.&nbsp;7, p&nbsp;235.
+
+</p><p><strong>D. Vernon</strong> <em>Machine Vision</em>, Prentice-Hall, 1991, p&nbsp;45.
+
+</p><p></p><h2>Local Information</h2>
+
+<p>Specific information about this operator may be found
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/local/stretch.txt">here.</a>
+
+</p><p>More general advice about the local HIPR installation is available in the
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/local.htm"><em>Local Information</em></a> introductory section.
+
+</p><p>
+
+</p><p></p><center><img alt="---" src="./Point Operations - Contrast Stretching_files/line2.gif" width="75%" height="4"></center><br>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/hipr_top.htm"><img alt="home" src="./Point Operations - Contrast Stretching_files/home.gif"></a>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/adpthrsh.htm"><img alt="left" src="./Point Operations - Contrast Stretching_files/left.gif"></a>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/histeq.htm"><img alt="right" src="./Point Operations - Contrast Stretching_files/right.gif"></a>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/pntops.htm"><img alt="up" src="./Point Operations - Contrast Stretching_files/up.gif"></a><br><br>
+<p>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/copyrght.htm">©2003 R.&nbsp;Fisher, S.&nbsp;Perkins, 
+A.&nbsp;Walker and E.&nbsp;Wolfart.</a><br>
+</p><p><a href="http://validator.w3.org/">
+         <img border="0" src="./Point Operations - Contrast Stretching_files/vh40.gif" alt="Valid HTML 4.0!" height="31" width="88"></a>
+
+</p></body></html>

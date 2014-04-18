@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!-- saved from url=(0111)http://www.walrusvision.com/GenericWeb/faces/resources/pages/helper.html?height=16709&cacheb=0.7437491004820913 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"></head><body onload="parentIframeResize()"> 
+    <script> 
+      // Tell the parent iframe what height the iframe needs to be
+      function parentIframeResize()
+      {
+         var height = getParam('height');
+         // This works as our parent's parent is on our domain..
+         parent.parent.resizeIframe(height);
+      }
+
+      // Helper function, parse param from request string
+      function getParam( name )
+      {
+        name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+        var regexS = "[\\?&]"+name+"=([^&#]*)";
+        var regex = new RegExp( regexS );
+        var results = regex.exec( window.location.href );
+        if( results == null )
+          return "";
+        else
+          return results[1];
+      }
+    </script> 
+   
+
+</body></html>

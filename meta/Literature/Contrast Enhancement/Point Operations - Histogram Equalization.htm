@@ -1,0 +1,362 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!-- saved from url=(0050)http://homepages.inf.ed.ac.uk/rbf/HIPR2/histeq.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Point Operations - Histogram Equalization</title>
+</head>
+<body bgcolor="#ffffff">
+<img src="./Point Operations - Histogram Equalization_files/logo.gif" alt="" align="right"><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/hipr_top.htm"><img alt="home" src="./Point Operations - Histogram Equalization_files/home.gif"></a>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/stretch.htm"><img alt="left" src="./Point Operations - Histogram Equalization_files/left.gif"></a>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/pixlog.htm"><img alt="right" src="./Point Operations - Histogram Equalization_files/right.gif"></a>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/pntops.htm"><img alt="up" src="./Point Operations - Histogram Equalization_files/up.gif"></a>
+<br clear="right"><br><center><img alt="---" src="./Point Operations - Histogram Equalization_files/line2.gif" width="75%" height="4"></center><br>
+<a name="1"><img alt="" src="./Point Operations - Histogram Equalization_files/mote.gif"></a>
+<h1>Histogram Equalization</h1>
+
+<p>
+
+
+	</p><center>
+	<img alt="" align="middle" src="./Point Operations - Histogram Equalization_files/histeqb.gif"><p> 
+	<strong>Common Names:</strong> Histogram Modeling, Histogram Equalization
+	</p></center>
+
+<p>
+
+</p><h2>Brief Description</h2>
+
+<p><a name="2"><img alt="" src="./Point Operations - Histogram Equalization_files/mote.gif"></a>Histogram modeling techniques (<em>e.g.</em> histogram equalization) provide a
+sophisticated method for modifying the dynamic range and contrast of
+an image by altering that image such that its <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/histgram.htm">intensity
+histogram</a> has a desired shape. Unlike <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/stretch.htm">contrast
+stretching</a>, histogram modeling operators may employ <em>non-linear</em>
+and <em>non-monotonic</em> transfer functions to map between <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/value.htm">pixel
+intensity values</a> in the input and output images.  Histogram
+equalization employs a monotonic, non-linear mapping which re-assigns
+the intensity values of pixels in the input image such that the output
+image contains a uniform distribution of intensities (<em>i.e.</em> a flat
+histogram). This technique is used in image comparison processes
+(because it is effective in detail enhancement) and in the correction
+of non-linear effects introduced by, say, a digitizer or display
+system.
+
+</p><p><a name="how"><img alt="" src="./Point Operations - Histogram Equalization_files/mote.gif"></a></p><h2>How It Works</h2>
+
+<p>Histogram modeling is usually introduced using continuous, rather
+than discrete, process functions. Therefore, we suppose that the
+images of interest contain continuous intensity levels (in the
+interval [0,1]) and that the transformation function <em>f</em>
+which maps an input image <img alt="Eqn:eqnheq2" src="./Point Operations - Histogram Equalization_files/eqnheq2.gif" align="middle"> onto an output image
+<img alt="Eqn:eqnheq3" src="./Point Operations - Histogram Equalization_files/eqnheq3.gif" align="middle"> is continuous within this interval.  Further,
+it will be assumed that the transfer law (which may also be written in
+terms of intensity density levels, <em>e.g.</em> <img alt="Eqn:eqnheq4" src="./Point Operations - Histogram Equalization_files/eqnheq4.gif" align="middle">)
+is single-valued and monotonically increasing (as is the case in
+histogram equalization) so that it is possible to define the inverse
+law <img alt="Eqn:eqnheq5" src="./Point Operations - Histogram Equalization_files/eqnheq5.gif" align="middle">. An example of such a transfer
+function is illustrated in Figure 1.
+
+</p><p>
+<br>
+</p><blockquote>
+<center><img alt="" src="./Point Operations - Histogram Equalization_files/heqtrans.gif"></center><br><br>
+<strong>Figure 1</strong> A histogram transformation function.
+</blockquote>
+<br>
+
+<p>All pixels in the input image with densities in the region
+<img alt="Eqn:eqnheq6" src="./Point Operations - Histogram Equalization_files/eqnheq6.gif" align="middle"> to <img alt="Eqn:eqnheq7" src="./Point Operations - Histogram Equalization_files/eqnheq7.gif" align="middle"> will have their pixel
+values re-assigned such that they assume an output pixel density value
+in the range from <img alt="Eqn:eqnheq8" src="./Point Operations - Histogram Equalization_files/eqnheq8.gif" align="middle"> to <img alt="Eqn:eqnheq9" src="./Point Operations - Histogram Equalization_files/eqnheq9.gif" align="middle">. The
+surface areas <img alt="Eqn:eqnheq10" src="./Point Operations - Histogram Equalization_files/eqnheq10.gif" align="middle"> and
+<img alt="Eqn:eqnheq11" src="./Point Operations - Histogram Equalization_files/eqnheq11.gif" align="middle"> will therefore be equal, yielding:
+
+</p><p></p><blockquote>
+<img alt="Eqn:eqnheq12" src="./Point Operations - Histogram Equalization_files/eqnheq12.gif" align="bottom">
+</blockquote>
+
+<p>where <img alt="Eqn:eqnheq12a" src="./Point Operations - Histogram Equalization_files/eqnheq12a.gif" align="middle">.
+
+</p><p>This result can be written in the language of probability theory if
+the histogram <em>h</em> is regarded as a continuous
+probability density function <em>p</em> describing the
+distribution of the (assumed random) intensity levels:
+
+</p><p></p><blockquote>
+<img alt="Eqn:eqnheq15" src="./Point Operations - Histogram Equalization_files/eqnheq15.gif" align="bottom">
+</blockquote>
+
+<p>In the case of histogram equalization, the output probability
+densities should all be an equal fraction of the maximum number of
+intensity levels in the input image <img alt="Eqn:eqnheq16" src="./Point Operations - Histogram Equalization_files/eqnheq16.gif" align="middle"> (where the
+minimum level considered is 0). The <a name="3"><img alt="" src="./Point Operations - Histogram Equalization_files/mote.gif"></a>transfer function (or point
+operator) necessary to achieve this result is simply:
+
+</p><p></p><blockquote>
+<img alt="Eqn:eqnheq17" src="./Point Operations - Histogram Equalization_files/eqnheq17.gif" align="bottom">
+</blockquote>
+
+<p>Therefore,
+
+</p><p></p><blockquote>
+<img alt="Eqn:eqnheq18" src="./Point Operations - Histogram Equalization_files/eqnheq18.gif" align="bottom">
+</blockquote>
+
+<p>where <img alt="Eqn:eqnheq19" src="./Point Operations - Histogram Equalization_files/eqnheq19.gif" align="middle"> is simply the cumulative probability
+distribution (<em>i.e.</em> cumulative histogram) of the original image.
+<em>Thus, an image which is transformed using its cumulative histogram
+yields an output histogram which is flat!</em>
+
+</p><p>A digital implementation of histogram equalization is usually
+performed by defining a transfer function of the form:
+
+</p><p></p><blockquote>
+<img alt="Eqn:eqnheq20" src="./Point Operations - Histogram Equalization_files/eqnheq20.gif" align="bottom">
+</blockquote>
+
+<p>where <em>N</em> is the number of image pixels and
+<img alt="Eqn:eqnheq22" src="./Point Operations - Histogram Equalization_files/eqnheq22.gif" align="middle"> is the number of pixels at intensity level k or
+less.
+
+</p><p>In the digital implementation, the output image will not necessarily
+be fully equalized and there may be `holes' in the histogram (<em>i.e.</em>
+unused intensity levels).  These effects are likely to decrease as the
+number of pixels and intensity quantization levels in the input image
+are increased.
+
+</p><p><a name="guidelines"><img alt="" src="./Point Operations - Histogram Equalization_files/mote.gif"></a></p><h2>Guidelines for Use</h2>
+
+<p>To illustrate the utility of histogram equalization, consider
+
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/moo2.gif"><img alt="moo2" src="./Point Operations - Histogram Equalization_files/moo2.GIF"></a></blockquote>
+<p> which shows an <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/gryimage.htm">8-bit grayscale image</a> of the surface of
+the moon. The histogram 
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/moo2hst2.gif"><img alt="moo2hst2" src="./Point Operations - Histogram Equalization_files/moo2hst2.GIF"></a></blockquote>
+<p> confirms what we can see
+by visual inspection: this image has poor dynamic range. (Note that we
+can view this histogram as a description of pixel probability
+densities by simply scaling the vertical axis by the total number of
+image pixels and normalizing the horizontal axis using the number of
+intensity density levels (<em>i.e.</em> 256). However, the shape of the
+distribution will be the same in either case.)
+
+</p><p>In order to improve the contrast of this image, without affecting the
+structure (<em>i.e.</em> geometry) of the information contained therein, we can
+apply the histogram equalization operator. The resulting image is
+
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/moo2heq1.gif"><img alt="moo2heq1" src="./Point Operations - Histogram Equalization_files/moo2heq1.GIF"></a></blockquote>
+<p> and its histogram is shown
+
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/moo2hst1.gif"><img alt="moo2hst1" src="./Point Operations - Histogram Equalization_files/moo2hst1.GIF"></a></blockquote>
+<p>  Note that the histogram is not flat (as in
+the examples from the continuous case) but that the dynamic range and
+contrast have been enhanced. Note also that when equalizing images
+with narrow histograms and relatively few gray levels, increasing the
+dynamic range has the adverse effect of increasing visual grainyness.
+Compare this result with that produced by the linear
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/stretch.htm">contrast stretching</a> operator 
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/moo2str1.gif"><img alt="moo2str1" src="./Point Operations - Histogram Equalization_files/moo2str1.GIF"></a></blockquote>
+<p>
+
+</p><p>In order to further explore the transformation defined by the
+histogram equalization operator, consider the image of the Scott
+Monument in Edinburgh, Scotland 
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/bld1.gif"><img alt="bld1" src="./Point Operations - Histogram Equalization_files/bld1.GIF"></a></blockquote>
+<p> Although the contrast
+on the building is acceptable, the sky region is represented almost
+entirely by light pixels. This causes most histogram pixels
+
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/bld1hst1.gif"><img alt="bld1hst1" src="./Point Operations - Histogram Equalization_files/bld1hst1.GIF"></a></blockquote>
+<p> to be pushed into a narrow peak in the upper
+graylevel region. The histogram equalization operator defines a
+mapping based on the cumulative histogram 
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/bld1cuh1.gif"><img alt="bld1cuh1" src="./Point Operations - Histogram Equalization_files/bld1cuh1.GIF"></a></blockquote>
+<p> which
+results in the image 
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/bld1heq1.gif"><img alt="bld1heq1" src="./Point Operations - Histogram Equalization_files/bld1heq1.GIF"></a></blockquote>
+<p> While histogram equalization
+has enhanced the contrast of the sky regions in the image, the picture
+now looks artificial because there is very little variety in the middle
+graylevel range.
+This occurs because the transfer
+function is based on the shallow slope of the cumulative histogram in
+the middle graylevel regions (<em>i.e.</em> intensity density levels 100&nbsp;-&nbsp;230)
+and causes many pixels from this region in the original image to be
+mapped to similar graylevels in the output image.
+
+</p><p>We can improve on this if we define a mapping based on a sub-section
+of the image which contains a better distribution of intensity
+densities from the low and middle range graylevels. If we crop the
+image so as to isolate a region which contains more building than sky
+
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/bld1crp1.gif"><img alt="bld1crp1" src="./Point Operations - Histogram Equalization_files/bld1crp1.GIF"></a></blockquote>
+<p> we can then define a histogram equalization
+mapping for the whole image based on the cumulative histogram
+
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/bld1cuh2.gif"><img alt="bld1cuh2" src="./Point Operations - Histogram Equalization_files/bld1cuh2.GIF"></a></blockquote>
+<p> of this smaller region. Since the cropped
+image contains a more even distribution of dark and light pixels, the
+slope of the transfer function is steeper and smoother, and the
+contrast of the resulting image 
+</p><blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/bld1heq2.gif"><img alt="bld1heq2" src="./Point Operations - Histogram Equalization_files/bld1heq2.GIF"></a></blockquote>
+<p> is more natural.
+This idea of defining mappings based upon particular sub-sections of
+the image is taken up by another class of operators which perform
+<em>Local Enhancements</em> as discussed below.
+
+</p><p></p><h2>Common Variants</h2>
+
+<p><a name="4"><img alt="" src="./Point Operations - Histogram Equalization_files/mote.gif"></a><em>Histogram Specification</em>
+
+</p><p>Histogram equalization is limited in that it is capable of producing
+only one result: an image with a uniform intensity distribution.
+Sometimes it is desirable to be able to control the shape of the
+output histogram in order to highlight certain intensity levels in an
+image. This can be accomplished by the histogram specialization
+operator which maps a given intensity distribution
+<img alt="Eqn:eqnheq23" src="./Point Operations - Histogram Equalization_files/eqnheq23.gif" align="middle"> into a desired distribution
+<img alt="Eqn:eqnheq24" src="./Point Operations - Histogram Equalization_files/eqnheq24.gif" align="middle"> using a histogram equalized image
+<img alt="Eqn:eqnheq25" src="./Point Operations - Histogram Equalization_files/eqnheq25.gif" align="middle"> as an intermediate stage.
+
+</p><p>The first step in histogram specialization, is to specify the desired
+output density function and write a transformation
+<em>g(c)</em>.  If <img alt="Eqn:eqnheq27" src="./Point Operations - Histogram Equalization_files/eqnheq27.gif" align="middle"> is single-valued
+(which is true when there are no unfilled levels in the specified
+histogram or errors in the process of rounding off
+<img alt="Eqn:eqnheq28" src="./Point Operations - Histogram Equalization_files/eqnheq28.gif" align="middle"> to the nearest intensity level), then <img alt="Eqn:eqnheq29" src="./Point Operations - Histogram Equalization_files/eqnheq29.gif" align="middle"> defines a mapping from the equalized levels of the
+original image, <img alt="Eqn:eqnheq30" src="./Point Operations - Histogram Equalization_files/eqnheq30.gif" align="middle">. It is possible to
+combine these two transformations such that the image need not be
+histogram equalized explicitly:
+
+</p><p></p><blockquote>
+<img alt="Eqn:eqnheq31" src="./Point Operations - Histogram Equalization_files/eqnheq31.gif" align="bottom">
+</blockquote>
+
+<p><a name="5"><img alt="" src="./Point Operations - Histogram Equalization_files/mote.gif"></a><em>Local Enhancements</em>
+
+</p><p>The histogram processing methods discussed above are global in the
+sense that they apply a transformation function whose form is based
+on the intensity level distribution of an entire image. Although this
+method can enhance the overall contrast and dynamic range of an image
+(thereby making certain details more visible), there are cases in
+which enhancement of details over small areas (<em>i.e.</em> areas whose total
+pixel contribution to the total number of image pixels has a
+negligible influence on the global transform) is desired. The solution
+in these cases is to derive a transformation based upon the intensity
+distribution in the local neighborhood of every pixel in the image.
+
+</p><p>The histogram processes described above can be adapted for local
+enhancement. The procedure involves defining a neighborhood around
+each pixel and, using the histogram characteristics of this
+neighborhood, to derive a transfer function which maps that pixel into
+an output intensity level. This is performed for each pixel in the
+image. (Since moving across rows or down columns only adds one new
+pixel to the local histogram, updating the histogram from the previous
+calculation with new data introduced at each motion is possible.)
+Local enhancement may also define transforms based on pixel attributes
+other than histogram, <em>e.g.</em> intensity mean (to control variance) and
+variance (to control contrast) are common.
+
+</p><p>
+    </p><h2>Interactive Experimentation</h2>
+
+<p>    You can interactively experiment with this operator by clicking
+    <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/histeqdemo.htm">here</a>.
+
+</p><p>
+</p><h2>Exercises</h2>
+
+<p></p><ol>
+<li> Suppose that you have a 128×128 square pixel image with
+an 8 <a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/gryimage.htm">gray level</a> intensity range, within which the lighter intensity
+levels predominate as shown in the table below. <strong>A)</strong> Sketch the
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/histgram.htm">histogram</a> (number of pixels vs gray level) to describe this
+distribution. <strong>B)</strong> How many pixels/gray levels would there be in an
+equalized version of this histogram? <strong>C)</strong> Apply the discrete
+transformation described above and plot the new (equalized) histogram.
+(How well does the histogram approximate a uniform distribution of
+intensity values?)
+
+<p></p><pre> -------------------------------
+| Gray Level | Number of Pixels |
+|------------+------------------|
+| 0          | 34               |
+|------------+------------------|
+| 1          | 50               |
+|------------+------------------|
+| 2          | 500              |
+|------------+------------------|
+| 3          | 1500             |
+|------------+------------------|
+| 4          | 2700             |
+|------------+------------------|
+| 5          | 4500             |
+|------------+------------------|
+| 6          | 4000             |
+|------------+------------------|
+| 7          | 3100             |
+ -------------------------------</pre>
+
+<p></p></li><li> Suppose you have equalized an image once. Show that a second
+pass of histogram equalization will produce exactly the same result
+as the first.
+
+<p></p></li><li> Interpreting images derived by means of a non-monotonic or
+non-continuous mapping can be difficult. Describe the effects of the
+following transfer functions:
+
+<p>(a) <em>f</em> has a horizontal plateau,
+
+</p><p>(b) <em>f</em> contains a vertical jump,
+
+</p><p>(c) <em>f</em> has a negative slope.
+
+</p><p>(Hint: it can be useful to sketch the curve, as in Figure 1, and then
+map a few points from histogram A to histogram B.)
+
+</p><p></p></li><li> Apply local histogram equalization to the image
+
+<blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/bld1.gif"><img alt="bld1" src="./Point Operations - Histogram Equalization_files/bld1.GIF"></a></blockquote>
+<p> Compare this result with those derived by means of the
+global transfer function shown in the above examples.
+
+</p><p></p></li><li> Apply global and local histogram equalization to the montage
+image 
+<blockquote><a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/images/soi1.gif"><img alt="soi1" src="./Point Operations - Histogram Equalization_files/soi1.GIF"></a></blockquote>
+<p> Compare your results.
+
+</p><p></p></li></ol>
+
+<p></p><h2>References</h2>
+
+<p><strong>R. Boyle and R. Thomas</strong> <em>Computer Vision: A First Course</em>,
+Blackwell Scientific Publications, 1988, pp 35&nbsp;-&nbsp;41.
+
+</p><p><strong>R. Gonzalez and R. Woods</strong> <em>Digital Image Processing</em>, Addison-Wesley Publishing Company, 1992, Chap.&nbsp;4.
+
+</p><p><strong>A. Jain</strong> <em>Fundamentals of Digital Image Processing</em>,
+Prentice-Hall, 1986, pp 241 - 243.
+
+</p><p><strong>A. Marion</strong> <em>An Introduction to Image Processing</em>, Chapman
+and Hall, 1991, Chap.&nbsp;6.
+
+</p><p></p><h2>Local Information</h2>
+
+<p>Specific information about this operator may be found
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/local/histeq.txt">here.</a>
+
+</p><p>More general advice about the local HIPR installation is available in the
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/local.htm"><em>Local Information</em></a> introductory section.
+
+</p><p>
+
+</p><p></p><center><img alt="---" src="./Point Operations - Histogram Equalization_files/line2.gif" width="75%" height="4"></center><br>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/hipr_top.htm"><img alt="home" src="./Point Operations - Histogram Equalization_files/home.gif"></a>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/stretch.htm"><img alt="left" src="./Point Operations - Histogram Equalization_files/left.gif"></a>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/pixlog.htm"><img alt="right" src="./Point Operations - Histogram Equalization_files/right.gif"></a>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/pntops.htm"><img alt="up" src="./Point Operations - Histogram Equalization_files/up.gif"></a><br><br>
+<p>
+<a href="http://homepages.inf.ed.ac.uk/rbf/HIPR2/copyrght.htm">©2003 R.&nbsp;Fisher, S.&nbsp;Perkins, 
+A.&nbsp;Walker and E.&nbsp;Wolfart.</a><br>
+</p><p><a href="http://validator.w3.org/">
+         <img border="0" src="./Point Operations - Histogram Equalization_files/vh40.gif" alt="Valid HTML 4.0!" height="31" width="88"></a>
+
+</p></body></html>

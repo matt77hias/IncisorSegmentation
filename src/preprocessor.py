@@ -120,12 +120,17 @@ def reduce_noise():
 
 #stretching contrast
 
-def stretch_contrast(image):
+def stretch_contrast(image, a=0, b=255):
     '''
+    Stretches the contrast of the given image.
+    Contrast stretching (often called normalization) is a simple image enhancement technique
+    that attempts to improve the contrast in an image by `stretching' the range of intensity
+    values it contains to span a desired range of values.
+    @param image:               the image for which the contrast has to be stretched
+    @param a:                   the minimum pixel value
+    @param b:                   the maximum pixel value
     Source: http://homepages.inf.ed.ac.uk/rbf/HIPR2/stretch.htm
     '''
-    a = 0 #lower limit
-    b = 255 #upper limit
     c, d = getValuesFromHistogram(image)
 
     factor = ((b - a) / (d - c))
@@ -133,10 +138,10 @@ def stretch_contrast(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     for i in range(image.shape[0]):
         for j in range(image.shape[1]):
-            pixel_color = (image[i][j] - c) * factor + a
+            pixel_color = (image[i,j] - c) * factor + a
             if pixel_color > 255: pixel_color = 255
             if pixel_color < 0: pixel_color = 0
-            image[i][j] = pixel_color
+            image[i,j] = pixel_color
             
     return image
 
@@ -149,8 +154,8 @@ def getValuesFromHistogram(image):
     d = -1
     
     total_pixels = image.shape[0] * image.shape[1]
-    lp_pixels = total_pixels * 5 / 100 #5% (5th percentile) of the pixels in the histogram will have values lower than c
-    up_pixels = total_pixels * 95 / 100 #95% (95th percentile) of the pixels in the histogram will have values lower than d
+    lp_pixels = total_pixels * 0.05 #5% (5th percentile) of the pixels in the histogram will have values lower than c
+    up_pixels = total_pixels * 0.95 #95% (95th percentile) of the pixels in the histogram will have values lower than d
 
     hist = cv2.calcHist([image], [0], None, [256], [0, 256])
     
@@ -159,7 +164,7 @@ def getValuesFromHistogram(image):
     
     pixels = 0
     for i in range(hist.shape[0]):
-        pixels = pixels + hist[i][0]
+        pixels = pixels + hist[i,0]
         if (pixels >= lp_pixels and c == -1):
             c = i
         if (pixels >= up_pixels and d == -1):
@@ -173,6 +178,11 @@ if __name__ == '__main__':
     image = cv2.imread(image_path)
     cropped_image = crop_by_diagonal(image, ymin, ymax, xmin, xmax)
     cv2.imshow("Cropped Image", cropped_image)
+    cv2.waitKey(0)
+    
+    image = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY);
+    resulting_image = cv2.equalizeHist(image);
+    cv2.imshow("Image", resulting_image)
     cv2.waitKey(0)
     
     resulting_image = stretch_contrast(cropped_image)
