@@ -12,6 +12,12 @@ dir_radiographs = "data/Radiographs"
 dir_mirrored = "data/Landmarks/mirrored"
 dir_original = "data/Landmarks/original"
 
+#Own visualizations
+dir_vis_landmarks = "data/Visualizations/Landmarks"
+dir_vis_pa = "data/Visualizations/PA"
+dir_vis_pca = "data/Visualizations/PCA"
+dir_vis_pre = "data/Visualizations/Preproccess"
+
 nb_trainingSamples = 14     #from 1 to 14
 nb_teeth = 8                #from 1 to 8
 nb_landmarks = 40           #from 1 to 40 (points representing an example)
@@ -33,6 +39,18 @@ def get_dir_mirrored_landmarks():
 
 def get_dir_original_landmarks():
     return get_dir_prefix() + dir_original
+    
+def get_dir_vis_landmarks():
+    return get_dir_prefix() + dir_vis_landmarks
+    
+def get_dir_vis_pa():
+    return get_dir_prefix() + dir_vis_pa
+    
+def get_dir_vis_pca():
+    return get_dir_prefix() + dir_vis_pca 
+
+def get_dir_vis_pre():
+    return get_dir_prefix() + dir_vis_pre    
 
 #File names
   
@@ -62,6 +80,47 @@ def get_fname_original_landmark(nr_trainingSample, nr_tooth):
     fname = (get_dir_original_landmarks() + "/landmarks" + str(nr_trainingSample) + '-' + str(nr_tooth) + '.txt')
     
     if (not is_valid_trainingSample(nr_trainingSample) or not is_valid_tooth(nr_tooth)):
+        raise InvalidFileName(fname)
+    
+    return fname
+    
+def get_fname_vis_landmark(nr_trainingSample, nr_tooth):
+    fname = (get_dir_vis_landmarks() + "/landmarks" + str(nr_trainingSample) + '-' + str(nr_tooth) + '.png')
+    
+    if (not is_valid_trainingSample(nr_trainingSample) or not is_valid_tooth(nr_tooth)):
+        raise InvalidFileName(fname)
+    
+    return fname
+    
+def get_fname_vis_pa(nr_tooth, samples_included=False):
+    if samples_included:
+        fname = (get_dir_vis_pa() + "/mean" + str(nr_tooth) + '-s.png')
+    else:
+        fname = (get_dir_vis_pa() + "/mean" + str(nr_tooth) + '.png')
+    
+    if (not is_valid_tooth(nr_tooth)):
+        raise InvalidFileName(fname)
+    
+    return fname
+    
+def get_fname_vis_pca(nr_tooth, nr_eig):
+    fname = (get_dir_vis_pca() + "/eig" + str(nr_tooth) + '-' + str(nr_eig) + '.png')
+    
+    if (not is_valid_tooth(nr_tooth)):
+        raise InvalidFileName(fname)
+    
+    return fname
+    
+def get_fname_vis_pre(nr_trainingSample, method=''):
+    if (not is_valid_trainingSample(nr_trainingSample)):
+        raise InvalidFileName
+    
+    s = '/' + method
+    if (nr_trainingSample < 10):
+        s = '/' + method + '0'
+    fname = (get_dir_vis_pre() + s + str(nr_trainingSample) + '.png')
+    
+    if (not is_valid_trainingSample(nr_trainingSample)):
         raise InvalidFileName(fname)
     
     return fname

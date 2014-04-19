@@ -7,6 +7,17 @@ Loader for training samples
 import numpy as np
 import configuration as c
 
+def create_full_XS():
+    '''
+    Creates an array that contains all the training samples
+    corresponding to all the teeth.
+    @return np.array, shape=(nb of teeth, nb of training samples, nb of dimensions)
+    '''
+    XS = np.zeros(np.array([c.get_nb_teeth(), c.get_nb_trainingSamples(), c.get_nb_dim()]))
+    for j in range(c.get_nb_teeth()):
+        XS[j,:,:] = create_full_X(nr_tooth=(j+1))
+    return XS
+
 def create_full_X(nr_tooth=1):
     '''
     Creates an array that contains all the training samples
