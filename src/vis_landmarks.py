@@ -93,6 +93,6 @@ def display_landmarks(X, nr_trainingSample=1, color=np.array([0, 0, 255])):
       
 if __name__ == '__main__':
     X = l.create_full_X(nr_tooth=1)
-    display_landmarks(X, nr_trainingSample=1)
-    
-    store_plotted_landmarks(closed_curve=True)
+    #display_landmarks(X, nr_trainingSample=1)
+    plot_landmarks(X, nr_trainingSample=1)
+    #store_plotted_landmarks(closed_curve=True)
