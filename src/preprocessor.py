@@ -168,9 +168,9 @@ def get_values_from_histogram(image, low_percentile=0.05, high_percentile=0.95):
     #scaling so much.
     
     total_pixels = image.shape[0] * image.shape[1]
-    #low_percentile% of the pixels in the histogram will have values lower than c
+    #low_percentile = % of the pixels in the histogram will have values lower than c
     lp_pixels = total_pixels * low_percentile
-    #high_percentile% of the pixels in the histogram will have values lower than d
+    #high_percentile = % of the pixels in the histogram will have values lower than d
     up_pixels = total_pixels * high_percentile
 
     #hist = cv2.calcHist(images=[image], channels=[0], mask=None, histSize=[256], ranges=[0, 256])
