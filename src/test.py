@@ -43,4 +43,3 @@ if __name__ == "__main__":
     #draw_landmarks(c.get_fname_radiograph(1))
     draw_landmarks(c.get_fname_vis_pre(1, 'SCD'))
     print(landmarks)
-    
