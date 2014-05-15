@@ -13,9 +13,18 @@ def create_full_XS():
     corresponding to all the teeth.
     @return np.array, shape=(nb of teeth, nb of training samples, nb of dimensions)
     '''
-    XS = np.zeros(np.array([c.get_nb_teeth(), c.get_nb_trainingSamples(), c.get_nb_dim()]))
+    return create_partial_XS(c.get_trainingSamples_range())
+    
+def create_partial_XS(trainingSamples):
+    '''
+    Creates an array that contains all the training samples
+    corresponding to the given training samples and corresponding to all the teeth.
+    @param trainingSamples:      the training samples
+    @return np.array, shape=(nb of teeth, nb of training samples, nb of dimensions)
+    '''
+    XS = np.zeros(np.array([c.get_nb_teeth(), len(trainingSamples), c.get_nb_dim()]))
     for j in range(c.get_nb_teeth()):
-        XS[j,:,:] = create_full_X(nr_tooth=(j+1))
+        XS[j,:,:] = create_partial_X(trainingSamples, nr_tooth=(j+1))
     return XS
 
 def create_full_X(nr_tooth=1):

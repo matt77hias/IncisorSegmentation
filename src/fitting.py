@@ -10,9 +10,7 @@ import principal_component_analysis as pca
 def evaluate(W, SY, mu):
     C = pca.project(W, SY, mu)
     Reconstruction = pca.reconstruct(W, C, mu)
-    return np.linalg.norm(SY - Reconstruction)
-        
-        
+    return np.linalg.norm(SY - Reconstruction) 
         
 if __name__ == "__main__":
     M, Y = pa.PA(l.create_full_X(nr_tooth=1))
