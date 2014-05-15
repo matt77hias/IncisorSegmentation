@@ -219,10 +219,10 @@ def preproccess():
     XS = l.create_full_XS()
     (ymin, ymax, xmin, xmax) = learn_offsets_safe(XS)
     print("Preproccess learned offsets:")
-    print(" * ymin: " + str(ymin))
-    print(" * ymax: " + str(ymax))
-    print(" * xmin: " + str(xmin))
-    print(" * xmax: " + str(xmax)) 
+    print(" * ymin: " + str(ymin)) #ymin: 497.0
+    print(" * ymax: " + str(ymax)) #ymax: 1362.0
+    print(" * xmin: " + str(xmin)) #xmin: 1234.0
+    print(" * xmax: " + str(xmax)) #xmax: 1773.0
     
     for i in c.get_trainingSamples_range():
         #read -> crop -> convert to grey scale
@@ -235,4 +235,3 @@ def preproccess():
 
 if __name__ == '__main__':
     preproccess()
-    

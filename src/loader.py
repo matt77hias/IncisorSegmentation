@@ -45,8 +45,10 @@ def create_partial_X(trainingSamples, nr_tooth=1):
     @return np.array, shape=(nb of training samples, nb of dimensions)
     '''
     X = np.zeros((len(trainingSamples), c.get_nb_dim()))
+    index = 0
     for i in trainingSamples:
         fname = c.get_fname_original_landmark(i, nr_tooth)
         print("loaded: " + fname)
-        X[(i-1),:] = np.fromfile(fname, dtype=float, count=-1, sep=' ')
+        X[index,:] = np.fromfile(fname, dtype=float, count=-1, sep=' ')
+        index += 1
     return X

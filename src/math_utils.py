@@ -59,6 +59,28 @@ def normalize_vector(v):
         return v
     return v/norm
     
+def center_on(v, t):
+    '''
+    Centers the given vector v on the center of gravity of the given vector t.
+    @pre    v is centered on the origin
+    @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
+    @param v:           the vector to center.
+    @param t:           the vector to center on.
+    @return The centered vector.
+    '''
+    txs, tys = extract_coordinates(t)
+    tn = t.shape[0] / 2
+    txm = sum(txs) / tn
+    tym = sum(tys) / tn
+    
+    r = np.zeros(v.shape)
+    vn = v.shape[0] / 2
+    for i in range(vn):
+        r[(2*i)] = v[(2*i)] + txm
+        r[(2*i+1)] = v[(2*i+1)] + tym
+    return r
+    
+    
 def center_onOrigin(v):
     '''
     Centers the given vector on the origin.
