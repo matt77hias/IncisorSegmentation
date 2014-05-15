@@ -19,7 +19,7 @@ if __name__ == "__main__":
     E, W, MU = pca.pca_percentage(Y)
     
     #SX = click.draw_landmarks(c.get_fname_vis_pre(1, 'SCD'))
-    nr_tooth = 1
+    nr_tooth = 2
     nr_trainingSample = 1
     fname = c.get_fname_fitting_manual_landmark(nr_trainingSample, nr_tooth)
     SX = np.fromfile(fname, dtype=float, count=-1, sep=" ")   

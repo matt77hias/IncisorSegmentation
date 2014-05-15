@@ -44,7 +44,7 @@ def draw_landmarks(fname):
 
 if __name__ == "__main__":
     #draw_landmarks(c.get_fname_radiograph(1))
-    nr_tooth = 1
+    nr_tooth = 2
     nr_trainingSample = 1
     selected = draw_landmarks(c.get_fname_vis_pre(nr_trainingSample, 'SCD'))    
     fname = c.get_fname_fitting_manual_landmark(nr_trainingSample, nr_tooth)   
