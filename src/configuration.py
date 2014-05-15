@@ -11,6 +11,7 @@ import os;
 dir_radiographs = "data/Radiographs"
 dir_mirrored = "data/Landmarks/mirrored"
 dir_original = "data/Landmarks/original"
+dir_fitting_manual = "data/Fitting/Manual"
 
 #Own visualizations
 dir_vis_landmarks = "data/Visualizations/Landmarks"
@@ -39,6 +40,9 @@ def get_dir_mirrored_landmarks():
 
 def get_dir_original_landmarks():
     return get_dir_prefix() + dir_original
+    
+def get_dir_fitting_manual():
+    return get_dir_prefix() + dir_fitting_manual
     
 def get_dir_vis_landmarks():
     return get_dir_prefix() + dir_vis_landmarks
@@ -78,6 +82,14 @@ def get_fname_mirrored_landmark(nr_trainingSample, nr_tooth):
     
 def get_fname_original_landmark(nr_trainingSample, nr_tooth):
     fname = (get_dir_original_landmarks() + "/landmarks" + str(nr_trainingSample) + '-' + str(nr_tooth) + '.txt')
+    
+    if (not is_valid_trainingSample(nr_trainingSample) or not is_valid_tooth(nr_tooth)):
+        raise InvalidFileName(fname)
+    
+    return fname
+    
+def get_fname_fitting_manual_landmark(nr_trainingSample, nr_tooth):
+    fname = (get_dir_fitting_manual() + "/landmarks" + str(nr_trainingSample) + '-' + str(nr_tooth) + '.txt')
     
     if (not is_valid_trainingSample(nr_trainingSample) or not is_valid_tooth(nr_tooth)):
         raise InvalidFileName(fname)

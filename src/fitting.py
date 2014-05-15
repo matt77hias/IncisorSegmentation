@@ -1,4 +1,3 @@
-
 import click
 import configuration as c
 import loader as l
