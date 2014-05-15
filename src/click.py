@@ -23,10 +23,10 @@ def draw_landmark(event, x, y, flags, param):
             cv2.line(img, (x,y), (xp,yp), (0,0,255))
 
 def init_params(fname):
-     global img, count, landmarks
-     count = 0
-     landmarks = np.zeros((c.get_nb_dim()))
-     img = cv2.imread(fname)
+    global img, count, landmarks
+    count = 0
+    landmarks = np.zeros((c.get_nb_dim()))
+    img = cv2.imread(fname)
                        
 def draw_landmarks(fname):
     init_params(fname)
@@ -44,5 +44,9 @@ def draw_landmarks(fname):
 
 if __name__ == "__main__":
     #draw_landmarks(c.get_fname_radiograph(1))
-    selected = draw_landmarks(c.get_fname_vis_pre(1, 'SCD'))
-    print(landmarks)
+    nr_tooth = 1
+    nr_trainingSample = 1
+    selected = draw_landmarks(c.get_fname_vis_pre(nr_trainingSample, 'SCD'))    
+    fname = c.get_fname_fitting_manual_landmark(nr_trainingSample, nr_tooth)   
+    selected.tofile(fname, sep=" ", format="%s")
+    
