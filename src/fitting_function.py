@@ -2,10 +2,8 @@ import cv2
 import numpy as np
 import scipy as sp
 import configuration as c
-import loader as l
 import math
 import math_utils as mu
-import procrustes_analysis as pa
 
 def create_fitting_functions(GS):          
     fs = [[get_fitting_function(tooth, landmark, GS) for landmark in range(c.get_nb_landmarks())] for tooth in range(c.get_nb_teeth())]        
@@ -109,23 +107,3 @@ def create_Gi(img, k, x, y, nx, ny, sx=1, sy=1):
         Gi[index] = img[ky,kx,0]
         index += 1
     return mu.normalize_vector(Gi)
-    
-def preprocess(trainingSamples):
-    offsetY = 497.0
-    offsetX = 1234.0
-    XS = l.create_partial_XS(trainingSamples)
-    YS = np.zeros((c.get_nb_teeth(), len(trainingSamples), c.get_nb_dim()))
-    MS = np.zeros((c.get_nb_teeth(), c.get_nb_dim()))
-    for j in range(c.get_nb_teeth()):
-        M, Y = pa.PA(l.create_full_X(nr_tooth=1))
-        MS[j,:] = M
-        YS[j,:] = Y
-    
-    GS = create_partial_GS(trainingSamples, XS, MS, offsetX=offsetX, offsetY=offsetY, k=5, method='SCD')
-    fs = create_fitting_functions(GS)
-    return XS, YS, MS, fs
-    
-
-if __name__ == "__main__":
-    preprocess(c.get_trainingSamples_range())
-    #E, W, MU = pca.pca_percentage(Y)
