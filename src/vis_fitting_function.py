@@ -1,3 +1,9 @@
+'''
+Contains some visualization functions for displaying the results
+of the fitting functions (for each tooth, for each landmark) 
+@author     Matthias Moulin & Milan Samyn
+@version    1.0
+'''
 
 import numpy as np
 import cv2
