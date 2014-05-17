@@ -17,7 +17,6 @@ offsetX = 1234.0
 k = 5
 method='SCD'
 
-
 def preprocess(trainingSamples):
     global XS, MS, EWS, fs
     XS = l.create_partial_XS(trainingSamples)

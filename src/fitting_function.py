@@ -16,78 +16,77 @@ def get_fitting_function(nr_tooth, nr_landmark, GS):
     
     G -= G.mean(axis=0)[None, :]
     C = (np.dot(G, G.T) / float(G.shape[0]))
-    #Cholesky decomposition uses half of the operations as LU
-    #and is numerically more stable.
-    #L = np.linalg.cholesky(C).T
+    g_mu = G.mean(axis=0) 
     
     def fitting_function(g):
-        x = g - G.mean(axis=0) 
-        #z = np.linalg.solve(L, x)
-        #Mahalanobis Distance 
-        #MD = z.T*z
-        #return math.sqrt(MD)
+        x = g - g_mu
         return sp.spatial.distance.mahalanobis(x.T, np.linalg.inv(C), x)
     
     return fitting_function  
     
 def create_partial_GS(trainingSamples, XS, MS, offsetX=0, offsetY=0, k=5, method=''):
-    gradients = create_gradient_images(trainingSamples, method)
+    gradients = create_gradients(trainingSamples, method)
     GS = np.zeros((c.get_nb_teeth(), len(trainingSamples), c.get_nb_landmarks(), 2*k+1))
     for j in range(c.get_nb_teeth()):
-        index = 0
-        for i in trainingSamples:
+        for i in range(len(trainingSamples)):
             # tooth j model in model coordinate frame to image coordinate frame
-            xs, ys = mu.extract_coordinates(mu.full_align_with(MS[j], XS[j,index,:]))
-            
-            GS[j,index,:] = create_G(gradients[j,:], xs, ys, offsetX, offsetY, k)
-            index += 1
+            xs, ys = mu.extract_coordinates(mu.full_align_with(MS[j], XS[j,i,:]))
+            GS[j,i,:] = create_G(gradients[i,:], k, xs, ys, offsetX, offsetY)
     return GS
     
-def create_gradient_images(trainingSamples, method=''):
+def create_gradients(trainingSamples, method=''):
     index = 0
     for i in trainingSamples:
         fname = c.get_fname_vis_pre(i, method)
         img = cv2.imread(fname)
-        if index==0: 
+        if index == 0: 
             gradients = np.zeros((len(trainingSamples), img.shape[0], img.shape[1], img.shape[2]))
-        temp = cv2.Scharr(img, ddepth=-1, dx=1, dy=0)
-        gradients[index,:] = cv2.Scharr(temp, ddepth=-1, dx=0, dy=1)
+        gradients[index,:] = create_gradient(img)
         index += 1
     return gradients
+    
+def create_gradient(img):
+    temp = cv2.Scharr(img, ddepth=-1, dx=1, dy=0)
+    return cv2.Scharr(temp, ddepth=-1, dx=0, dy=1)
                  
-def create_G(img, xs, ys, offsetX, offsetY, k):
+def create_G(img, k, xs, ys, offsetX, offsetY):
     G = np.zeros((c.get_nb_landmarks(), 2*k+1))
     for i in range(c.get_nb_landmarks()):
-        x = xs[i] - offsetX
-        y = ys[i] - offsetY
-        if (i == 0):
-            x_min = xs[-1] - offsetX
-            y_min = ys[-1] - offsetY
-            x_max = xs[1] - offsetX
-            y_max = ys[1] - offsetY
-        elif (i == xs.shape[0]-1):
-            x_min = xs[(i-1)] - offsetX
-            y_min = ys[(i-1)] - offsetY
-            x_max = xs[0] - offsetX
-            y_max = ys[0] - offsetY
-        else:
-            x_min = xs[(i-1)] - offsetX
-            y_min = ys[(i-1)] - offsetY
-            x_max = xs[(i+1)] - offsetX
-            y_max = ys[(i+1)] - offsetY
-            
-        dx = x_max - x_min
-        dy = y_max - y_min
-        sq = math.sqrt(dx*dx+dy*dy)
-        
-        #Profile Normal to Boundary
-        nx = (- dy / sq)
-        ny = (dx / sq)
-        
-        G[i,:] = create_Gi(img, k, x, y, nx, ny)
+        G[i,:] = mu.normalize_vector(create_Gi(img, k, i, xs, ys, offsetX, offsetY))
     return G
+    
+def create_Gi(img, k, i, xs, ys, offsetX, offsetY, sx=1, sy=1):
+    x = xs[i] - offsetX
+    y = ys[i] - offsetY
+    if (i == 0):
+        x_min = xs[-1] - offsetX
+        y_min = ys[-1] - offsetY
+        x_max = xs[1] - offsetX
+        y_max = ys[1] - offsetY
+    elif (i == xs.shape[0]-1):
+        x_min = xs[(i-1)] - offsetX
+        y_min = ys[(i-1)] - offsetY
+        x_max = xs[0] - offsetX
+        y_max = ys[0] - offsetY
+    else:
+        x_min = xs[(i-1)] - offsetX
+        y_min = ys[(i-1)] - offsetY
+        x_max = xs[(i+1)] - offsetX
+        y_max = ys[(i+1)] - offsetY
         
-def create_Gi(img, k, x, y, nx, ny, sx=1, sy=1):
+    dx = x_max - x_min
+    dy = y_max - y_min
+    sq = math.sqrt(dx*dx+dy*dy)
+    
+    #Profile Normal to Boundary
+    nx = (- dy / sq) * sx
+    ny = (dx / sq) * sy
+    
+    #We explicitly don't want a normalized vector at this stage
+    return create_raw_Gi(img, k, x, y, nx, ny)
+    
+        
+def create_raw_Gi(img, k, x, y, nx, ny):
     '''
     @param img:             the training sample
     @param k:               the number of pixels we sample either side of the model point  along a profile
@@ -95,14 +94,11 @@ def create_Gi(img, k, x, y, nx, ny, sx=1, sy=1):
     @param y:               y position of the model point in the image
     @param nx:
     @param ny:
-    @param sx:
-    @param sy:
     '''
-    nx *= sx
-    ny *= sy
     
     Gi = np.zeros((2*k+1)) #2k + 1 samples
     Gi[0] = img[y,x,0] #The model point itself
+    
     index = 1
     for i in range(1,k+1):
         kx = int(x + i * nx)
@@ -114,4 +110,6 @@ def create_Gi(img, k, x, y, nx, ny, sx=1, sy=1):
         ky = int(y - i * ny)
         Gi[index] = img[ky,kx,0]
         index += 1
-    return mu.normalize_vector(Gi)
+    
+    #We explicitly don't want a normalized vector at this stage
+    return Gi
