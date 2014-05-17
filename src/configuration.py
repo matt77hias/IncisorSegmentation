@@ -196,7 +196,7 @@ def get_fname_vis_pre(nr_trainingSample, method=''):
     
     return fname
     
-def get_fname_ff_gradients(nr_trainingSample, method=''):
+def get_fname_vis_ff_gradients(nr_trainingSample, method=''):
     if (not is_valid_trainingSample(nr_trainingSample)):
         raise InvalidFileName
     
@@ -210,7 +210,7 @@ def get_fname_ff_gradients(nr_trainingSample, method=''):
     
     return fname
     
-def get_fname_ff_landmarks(nr_trainingSample, method=''):
+def get_fname_vis_ff_landmarks(nr_trainingSample, method=''):
     if (not is_valid_trainingSample(nr_trainingSample)):
         raise InvalidFileName
     
@@ -224,7 +224,7 @@ def get_fname_ff_landmarks(nr_trainingSample, method=''):
     
     return fname
     
-def get_fname_ff_landmarks_and_models(nr_trainingSample, method=''):
+def get_fname_vis_ff_landmarks_and_models(nr_trainingSample, method=''):
     if (not is_valid_trainingSample(nr_trainingSample)):
         raise InvalidFileName
     
@@ -238,7 +238,7 @@ def get_fname_ff_landmarks_and_models(nr_trainingSample, method=''):
     
     return fname
     
-def get_fname_ff_models(nr_trainingSample, method=''):
+def get_fname_vis_ff_models(nr_trainingSample, method=''):
     if (not is_valid_trainingSample(nr_trainingSample)):
         raise InvalidFileName
     
@@ -252,7 +252,7 @@ def get_fname_ff_models(nr_trainingSample, method=''):
     
     return fname
     
-def get_fname_ff_profile_normals(nr_trainingSample, method=''):
+def get_fname_vis_ff_profile_normals(nr_trainingSample, method=''):
     if (not is_valid_trainingSample(nr_trainingSample)):
         raise InvalidFileName
     
