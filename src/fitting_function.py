@@ -37,9 +37,7 @@ def create_partial_GS(trainingSamples, XS, MS, offsetX=0, offsetY=0, k=5, method
         index = 0
         for i in trainingSamples:
             # tooth j model in model coordinate frame to image coordinate frame
-            X = XS[j,index,:]
-            M = mu.align_with(mu.center_on(MS[j], X), X)
-            xs, ys = mu.extract_coordinates(M)
+            xs, ys = mu.extract_coordinates(mu.full_align_with(MS[j], XS[j,index,:]))
             
             GS[j,index,:] = create_G(gradients[j,:], xs, ys, offsetX, offsetY, k)
             index += 1
