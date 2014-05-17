@@ -4,12 +4,12 @@ import loader as l
 import numpy as np
 import cv2
 
+import math
 import math_utils as mu
 import procrustes_analysis as pa
 import principal_component_analysis as pca
 import fitting_function as ff
 
-XS = None
 MS = None
 EWS = []
 fs = None
@@ -20,29 +20,54 @@ k = 5
 m = 10
 method='SCD'
 
+convergence_threshold = 0.00001
+tolerable_deviation = 3
 
-def fit(P, nr_sample, method=''):
+def fit(P, tooth_index, nr_sample, method=''):
     fname = c.get_fname_vis_pre(nr_sample, method)
     img = cv2.imread(fname)
     gradient = ff.create_gradient(img)
     
     nb_tests = 2*(m-k)+1
     pxs, pys = mu.extract_coordinates(P)
+    j = tooth_index
     
-    for i in range(c.get_nb_landmarks()):
-        Gi = ff.create_Gi(img, m, i, pxs, pys, offsetX, offsetY)
-        for t in range(nb_tests):
-           Gi[t:t+2*k+1]
+    convergence = False
+    while (not convergence) :
+        for i in range(c.get_nb_landmarks()):
+            Gi, Coords = ff.create_Gi(gradient, m, i, pxs, pys, offsetX, offsetY)
+            g_optimal = mu.normalize(Gi[0:2*k+1])
+            f_optimal = np.linalg.norm(fs[j,i](g_optimal))
+            c_optimal = k
+            for t in range(1,nb_tests):
+                g = mu.normalize(Gi[t:t+2*k+1])
+                f = np.linalg.norm(fs[j,i](g))
+                if f < f_optimal:
+                    g_optimal = g
+                    f_optimal = f
+                    c_optimal = t+k
+            pxs[i] = Coords[(2*c_optimal)] 
+            pys[i] = Coords[(2*c_optimal+1)]
         
-    
-    
-    
-    
-    
-    
+        P_new = validate(j, mu.zip_coordinates(pxs, pys))
+        if (np.linalg.norm(P-P_new) < convergence_threshold): convergence = True    
+                
+def validate(tooth_index, P):
+    MU = MS[tooth_index]
+    E, W = EWS[tooth_index]
+    bs = pca.project(W, P, MU)
+
+    for i in range(E.shape[0]):
+        b_min = -tolerable_deviation*math.sqrt(E[i])
+        b_max =  tolerable_deviation*math.sqrt(E[i])
+        b = bs[i]
+        if b < b_min: bs[i] = b_min     #TODO: more robust limitations
+        elif b > b_max: bs[i] = b_max   #TODO: more robust limitations
+
+    return pca.reconstruct(W, bs, MU)
 
 def preprocess(trainingSamples):
-    global XS, MS, EWS, fs
+    global MS, EWS, fs
     XS = l.create_partial_XS(trainingSamples)
     MS = np.zeros((c.get_nb_teeth(), c.get_nb_dim()))
     
