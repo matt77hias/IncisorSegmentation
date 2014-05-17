@@ -36,14 +36,11 @@ def fit(P, tooth_index, nr_sample, method=''):
     while (not convergence) :
         for i in range(c.get_nb_landmarks()):
             Gi, Coords = ff.create_Gi(gradient, m, i, pxs, pys, offsetX, offsetY)
-            g_optimal = mu.normalize(Gi[0:2*k+1])
-            f_optimal = np.linalg.norm(fs[j,i](g_optimal))
+            f_optimal = np.linalg.norm(fs[j,i](mu.normalize(Gi[0:2*k+1])))
             c_optimal = k
             for t in range(1,nb_tests):
-                g = mu.normalize(Gi[t:t+2*k+1])
-                f = np.linalg.norm(fs[j,i](g))
+                f = np.linalg.norm(fs[j,i](mu.normalize(Gi[t:t+2*k+1])))
                 if f < f_optimal:
-                    g_optimal = g
                     f_optimal = f
                     c_optimal = t+k
             pxs[i] = Coords[(2*c_optimal)] 
