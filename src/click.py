@@ -48,4 +48,4 @@ def draw_and_write(nr_trainingSample, nr_tooth, method=''):
     selected.tofile(fname, sep=" ", format="%s")
 
 if __name__ == "__main__":
-    draw_and_write(nr_trainingSample=1, nr_tooth=1, 'SCD')
+    draw_and_write(nr_trainingSample=1, nr_tooth=1, method='SCD')

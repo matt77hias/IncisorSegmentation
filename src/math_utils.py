@@ -59,6 +59,18 @@ def normalize_vector(v):
         return v
     return v/norm
     
+def full_align_with(v, t):
+    '''
+    Fully alligns the given vector v with the given vector t
+    without preconditions.
+    @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
+    @param v:           the vector to align.
+    @param t:           the vector to align with.
+    '''
+    ov = center_onOrigin(v)
+    ot = center_onOrigin(t)
+    return center_on(align_with(ov, ot), t)
+    
 def center_on(v, t):
     '''
     Centers the given vector v on the center of gravity of the given vector t.
