@@ -100,26 +100,22 @@ def create_raw_Gi(img, k, x, y, nx, ny):
     '''
     
     Gi = np.zeros((2*k+1)) #2k + 1 samples
-    Gi[0] = img[y,x,0] #The model point itself
     
-    index = 1
-    
+    index = 0
     for i in range(1,k+1):
         kx = int(x + i * nx)
         ky = int(y + i * ny)
         Gi[index] = img[ky,kx,0]
         index += 1
         
+    Gi[index] = img[y,x,0] #The model point itself
+    index += 1
+        
     for i in range(1,k+1):
         kx = int(x - i * nx)
         ky = int(y - i * ny)
         Gi[index] = img[ky,kx,0]
         index += 1
-<<<<<<< HEAD
     
     #We explicitly don't want a normalized vector at this stage
     return Gi
-=======
-        
-    return mu.normalize_vector(Gi)
->>>>>>> 075a3c6a99b0b5c0f1fb304ed1c0987504edb74b
