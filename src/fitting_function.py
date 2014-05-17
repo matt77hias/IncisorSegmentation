@@ -90,11 +90,21 @@ def create_G(img, xs, ys, offsetX, offsetY, k):
     return G
         
 def create_Gi(img, k, x, y, nx, ny, sx=1, sy=1):
+    '''
+    @param img:             the training sample
+    @param k:               the number of pixels we sample either side of the model point  along a profile
+    @param x:               x position of the model point in the image
+    @param y:               y position of the model point in the image
+    @param nx:
+    @param ny:
+    @param sx:
+    @param sy:
+    '''
     nx *= sx
     ny *= sy
     
-    Gi = np.zeros((2*k+1))
-    Gi[0] = img[y,x,0]
+    Gi = np.zeros((2*k+1)) #2k + 1 samples
+    Gi[0] = img[y,x,0] #The model point itself
     index = 1
     for i in range(1,k+1):
         kx = int(x + i * nx)
