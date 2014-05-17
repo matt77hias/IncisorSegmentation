@@ -21,7 +21,11 @@ dir_vis_landmarks = "data/Visualizations/Landmarks"
 dir_vis_pa = "data/Visualizations/PA"
 dir_vis_pca = "data/Visualizations/PCA"
 dir_vis_pre = "data/Visualizations/Preproccess"
-
+dir_vis_ff_gradients = "data/Visualizations/Fitting Function/Gradients"
+dir_vis_ff_landmarks = "data/Visualizations/Fitting Function/Landmarks"
+dir_vis_ff_landmarks_and_models = "data/Visualizations/Fitting Function/Landmarks and Models"
+dir_vis_ff_models = "data/Visualizations/Fitting Function/Models"
+dir_vis_ff_profile_normals = "data/Visualizations/Fitting Function/Profile Normals"
 
 nb_trainingSamples = 14     #from 1 to 14
 nb_testSamples = 16         #from 15 to 30
@@ -69,6 +73,21 @@ def get_dir_vis_pca():
 
 def get_dir_vis_pre():
     return get_dir_prefix() + dir_vis_pre    
+    
+def get_dir_vis_ff_gradients():
+    return get_dir_prefix() + dir_vis_ff_gradients  
+    
+def get_dir_vis_ff_landmarks():
+    return get_dir_prefix() + dir_vis_ff_landmarks  
+    
+def get_dir_vis_ff_landmarks_and_models():
+    return get_dir_prefix() + dir_vis_ff_landmarks_and_models 
+    
+def get_dir_vis_ff_models():
+    return get_dir_prefix() + dir_vis_ff_models  
+    
+def get_dir_vis_ff_profile_normals():
+    return get_dir_prefix() + dir_vis_ff_profile_normals 
 
 #File names
   
@@ -171,6 +190,76 @@ def get_fname_vis_pre(nr_trainingSample, method=''):
     if (nr_trainingSample < 10):
         s = '/' + method + '0'
     fname = (get_dir_vis_pre() + s + str(nr_trainingSample) + '.png')
+    
+    if (not is_valid_trainingSample(nr_trainingSample)):
+        raise InvalidFileName(fname)
+    
+    return fname
+    
+def get_fname_ff_gradients(nr_trainingSample, method=''):
+    if (not is_valid_trainingSample(nr_trainingSample)):
+        raise InvalidFileName
+    
+    s = '/' + method
+    if (nr_trainingSample < 10):
+        s = '/' + method + '0'
+    fname = (get_dir_vis_ff_gradients() + s + str(nr_trainingSample) + '.png')
+    
+    if (not is_valid_trainingSample(nr_trainingSample)):
+        raise InvalidFileName(fname)
+    
+    return fname
+    
+def get_fname_ff_landmarks(nr_trainingSample, method=''):
+    if (not is_valid_trainingSample(nr_trainingSample)):
+        raise InvalidFileName
+    
+    s = '/' + method
+    if (nr_trainingSample < 10):
+        s = '/' + method + '0'
+    fname = (get_dir_vis_ff_landmarks() + s + str(nr_trainingSample) + '.png')
+    
+    if (not is_valid_trainingSample(nr_trainingSample)):
+        raise InvalidFileName(fname)
+    
+    return fname
+    
+def get_fname_ff_landmarks_and_models(nr_trainingSample, method=''):
+    if (not is_valid_trainingSample(nr_trainingSample)):
+        raise InvalidFileName
+    
+    s = '/' + method
+    if (nr_trainingSample < 10):
+        s = '/' + method + '0'
+    fname = (get_dir_vis_ff_landmarks_and_models() + s + str(nr_trainingSample) + '.png')
+    
+    if (not is_valid_trainingSample(nr_trainingSample)):
+        raise InvalidFileName(fname)
+    
+    return fname
+    
+def get_fname_ff_models(nr_trainingSample, method=''):
+    if (not is_valid_trainingSample(nr_trainingSample)):
+        raise InvalidFileName
+    
+    s = '/' + method
+    if (nr_trainingSample < 10):
+        s = '/' + method + '0'
+    fname = (get_dir_vis_ff_models() + s + str(nr_trainingSample) + '.png')
+    
+    if (not is_valid_trainingSample(nr_trainingSample)):
+        raise InvalidFileName(fname)
+    
+    return fname
+    
+def get_fname_ff_profile_normals(nr_trainingSample, method=''):
+    if (not is_valid_trainingSample(nr_trainingSample)):
+        raise InvalidFileName
+    
+    s = '/' + method
+    if (nr_trainingSample < 10):
+        s = '/' + method + '0'
+    fname = (get_dir_vis_ff_profile_normals() + s + str(nr_trainingSample) + '.png')
     
     if (not is_valid_trainingSample(nr_trainingSample)):
         raise InvalidFileName(fname)
