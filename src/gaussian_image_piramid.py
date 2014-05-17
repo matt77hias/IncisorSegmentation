@@ -19,11 +19,11 @@ def form_pyramids():
         test_image = cv2.imread(c.get_fname_test_radiograph(i))
         for j in range(lmax+1):
             if j == 0:
-                fname = c.get_fname_pyramid(i, j) 
+                fname = c.get_fname_pyramids(i, j) 
                 cv2.imwrite(fname, test_image)
             else:
                 test_image = cv2.pyrDown(test_image)
-                fname = c.get_fname_pyramid(i, j) 
+                fname = c.get_fname_pyramids(i, j) 
                 cv2.imwrite(fname, test_image)
 
 if __name__ == '__main__':
