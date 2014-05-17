@@ -23,7 +23,11 @@ method='SCD'
 convergence_threshold = 0.00001
 tolerable_deviation = 3
 
-def fit(img, P, tooth_index):
+def fit_all_teeth(img, PS):
+    for j in range(PS.shape[0]):
+        fit_tooth(img, PS[j], j)
+
+def fit_tooth(img, P, tooth_index):
     gradient = ff.create_gradient(img)
     nb_tests = 2*(m-k)+1
     pxs, pys = mu.extract_coordinates(P)
