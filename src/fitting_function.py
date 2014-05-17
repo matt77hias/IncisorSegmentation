@@ -52,7 +52,8 @@ def create_gradient(img):
 def create_G(img, k, xs, ys, offsetX, offsetY):
     G = np.zeros((c.get_nb_landmarks(), 2*k+1))
     for i in range(c.get_nb_landmarks()):
-        G[i,:] = mu.normalize_vector(create_Gi(img, k, i, xs, ys, offsetX, offsetY))
+        Gi, Coords = create_Gi(img, k, i, xs, ys, offsetX, offsetY)
+        G[i,:] = mu.normalize_vector(Gi)
     return G
     
 def create_Gi(img, k, i, xs, ys, offsetX, offsetY, sx=1, sy=1):
@@ -100,6 +101,7 @@ def create_raw_Gi(img, k, x, y, nx, ny):
     '''
     
     Gi = np.zeros((2*k+1)) #2k + 1 samples
+    Coords = np.zeros(2*(2*k+1))
     
     index = 0
     for i in range(1,k+1):
@@ -107,15 +109,21 @@ def create_raw_Gi(img, k, x, y, nx, ny):
         ky = int(y + i * ny)
         Gi[index] = img[ky,kx,0]
         index += 1
+        Coords[(2*i)] = kx
+        Coords[(2*i+1)] = ky
         
     Gi[index] = img[y,x,0] #The model point itself
     index += 1
+    Coords[(2*i)] = x
+    Coords[(2*i+1)] = y
         
     for i in range(1,k+1):
         kx = int(x - i * nx)
         ky = int(y - i * ny)
         Gi[index] = img[ky,kx,0]
         index += 1
+        Coords[(2*i)] = kx
+        Coords[(2*i+1)] = ky
     
     #We explicitly don't want a normalized vector at this stage
-    return Gi
+    return Gi, Coords

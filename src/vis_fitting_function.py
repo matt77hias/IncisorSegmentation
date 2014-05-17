@@ -12,6 +12,7 @@ import loader as l
 import math
 import math_utils as mu
 import procrustes_analysis as pa
+import fitting_function as ff
 
 XS = None
 MS = None
@@ -28,8 +29,7 @@ def create_gradients_images(method=''):
     for i in c.get_trainingSamples_range():
         fname = c.get_fname_vis_pre(i, method)
         img = cv2.imread(fname)
-        temp = cv2.Scharr(img, ddepth=-1, dx=1, dy=0)
-        gradient = cv2.Scharr(temp, ddepth=-1, dx=0, dy=1)
+        gradient = ff.create_gradient(img)
         fname = c.get_fname_vis_ff_gradients(i, method)
         cv2.imwrite(fname, gradient)
     
@@ -190,44 +190,18 @@ def create_profile_normals_images(color_init=np.array([0,255,255]), color_mid=np
                     img[y,x] = color_end
                 else:
                     img[y,x] = color_mid
-                    
-                if (k == 0):
-                    x_min = xs[-1] - offsetX
-                    y_min = ys[-1] - offsetY
-                    x_max = xs[1] - offsetX
-                    y_max = ys[1] - offsetY
-                elif (k == xs.shape[0]-1):
-                    x_min = xs[(k-1)] - offsetX
-                    y_min = ys[(k-1)] - offsetY
-                    x_max = xs[0] - offsetX
-                    y_max = ys[0] - offsetY
-                else:
-                    x_min = xs[(k-1)] - offsetX
-                    y_min = ys[(k-1)] - offsetY
-                    x_max = xs[(k+1)] - offsetX
-                    y_max = ys[(k+1)] - offsetY
-                
-                dx = x_max - x_min
-                dy = y_max - y_min
-                sq = math.sqrt(dx*dx+dy*dy)
-                #Profile Normal to Boundary
-                nx = (- dy / sq)
-                ny = (dx / sq)   
-                draw_profile_points(img, 5, x, y, nx, ny)
+              
+                  
+                Gi, Coords = ff.create_Gi(img, 5, k, xs, ys, offsetX, offsetY, sx=1, sy=1)
+                draw_profile_points(img, Coords)
                 
             fname = c.get_fname_vis_ff_profile_normals(i, method)
             cv2.imwrite(fname, img) 
         
-def draw_profile_points(img, k, x, y, nx, ny, sx=1, sy=1, color=np.array([0,255,0])):
-    nx *= sx
-    ny *= sy
-    for i in range(1,k+1):
-        kx = int(x + i * nx)
-        ky = int(y + i * ny)
-        img[ky, kx] = color
-    for i in range(1,k+1):
-        kx = int(x - i * nx)
-        ky = int(y - i * ny)
+def draw_profile_points(img, Coords, color=np.array([0,255,0])):
+    for i in range(Coords.shape[0] / 2):
+        kx = int(Coords[(2*i)])
+        ky = int(Coords[(2*i+1)])
         img[ky, kx] = color
             
 def preprocess():
