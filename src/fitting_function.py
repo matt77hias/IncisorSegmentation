@@ -58,6 +58,16 @@ def create_gradient_images(trainingSamples, method=''):
     return gradients
                  
 def create_G(img, xs, ys, offsetX, offsetY, k):
+    '''
+    TODO
+    @param img:             the training sample
+    @param xs:
+    @param ys:
+    @param offsetX:
+    @param offsetY:
+    @param k:               the number of pixels we sample either side of the model point along a profile
+    @return 
+    '''
     G = np.zeros((c.get_nb_landmarks(), 2*k+1))
     for i in range(c.get_nb_landmarks()):
         x = xs[i] - offsetX
@@ -82,23 +92,27 @@ def create_G(img, xs, ys, offsetX, offsetY, k):
         dy = y_max - y_min
         sq = math.sqrt(dx*dx+dy*dy)
         
-        #Profile Normal to Boundary
+        #Profile normal to the boundary
         nx = (- dy / sq)
         ny = (dx / sq)
         
         G[i,:] = create_Gi(img, k, x, y, nx, ny)
+        
     return G
         
 def create_Gi(img, k, x, y, nx, ny, sx=1, sy=1):
     '''
+    Sample along a profile k pixels either side of the model point in the training image
+    to create a vector Gi.
     @param img:             the training sample
-    @param k:               the number of pixels we sample either side of the model point  along a profile
+    @param k:               the number of pixels we sample either side of the model point along a profile
     @param x:               x position of the model point in the image
     @param y:               y position of the model point in the image
-    @param nx:
-    @param ny:
-    @param sx:
-    @param sy:
+    @param nx:              profile normal x
+    @param ny:              profile normal y
+    @param sx:              length of step x
+    @param sy:              length of step y
+    @return The normalised sample Gi for the given model point
     '''
     nx *= sx
     ny *= sy
@@ -106,14 +120,17 @@ def create_Gi(img, k, x, y, nx, ny, sx=1, sy=1):
     Gi = np.zeros((2*k+1)) #2k + 1 samples
     Gi[0] = img[y,x,0] #The model point itself
     index = 1
+    
     for i in range(1,k+1):
         kx = int(x + i * nx)
         ky = int(y + i * ny)
         Gi[index] = img[ky,kx,0]
         index += 1
+        
     for i in range(1,k+1):
         kx = int(x - i * nx)
         ky = int(y - i * ny)
         Gi[index] = img[ky,kx,0]
         index += 1
+        
     return mu.normalize_vector(Gi)
