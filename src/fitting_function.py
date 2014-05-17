@@ -108,22 +108,22 @@ def create_raw_Gi(img, k, x, y, nx, ny):
         kx = int(x + i * nx)
         ky = int(y + i * ny)
         Gi[index] = img[ky,kx,0]
+        Coords[(2*index)] = kx
+        Coords[(2*index+1)] = ky
         index += 1
-        Coords[(2*i)] = kx
-        Coords[(2*i+1)] = ky
         
     Gi[index] = img[y,x,0] #The model point itself
+    Coords[(2*index)] = x
+    Coords[(2*index+1)] = y
     index += 1
-    Coords[(2*i)] = x
-    Coords[(2*i+1)] = y
         
     for i in range(1,k+1):
         kx = int(x - i * nx)
         ky = int(y - i * ny)
         Gi[index] = img[ky,kx,0]
+        Coords[(2*index)] = kx
+        Coords[(2*index+1)] = ky
         index += 1
-        Coords[(2*i)] = kx
-        Coords[(2*i+1)] = ky
     
     #We explicitly don't want a normalized vector at this stage
     return Gi, Coords

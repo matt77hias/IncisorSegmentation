@@ -182,6 +182,9 @@ def create_profile_normals_images(color_init=np.array([0,255,255]), color_mid=np
                 cv2.line(img, (x,y), (x_succ,y_succ), color_line)
           
             for k in range(c.get_nb_landmarks()):
+                Gi, Coords = ff.create_Gi(img, 5, k, xs, ys, offsetX, offsetY, sx=1, sy=1)
+                draw_profile_points(img, Coords)
+                
                 x = int(xs[k] - offsetX)
                 y = int(ys[k] - offsetY)
                 if (k == 0):
@@ -190,10 +193,6 @@ def create_profile_normals_images(color_init=np.array([0,255,255]), color_mid=np
                     img[y,x] = color_end
                 else:
                     img[y,x] = color_mid
-              
-                  
-                Gi, Coords = ff.create_Gi(img, 5, k, xs, ys, offsetX, offsetY, sx=1, sy=1)
-                draw_profile_points(img, Coords)
                 
             fname = c.get_fname_vis_ff_profile_normals(i, method)
             cv2.imwrite(fname, img) 
