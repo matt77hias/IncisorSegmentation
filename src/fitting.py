@@ -23,30 +23,26 @@ method='SCD'
 convergence_threshold = 0.00001
 tolerable_deviation = 3
 
-def fit(P, tooth_index, nr_sample, method=''):
-    fname = c.get_fname_vis_pre(nr_sample, method)
-    img = cv2.imread(fname)
+def fit(img, P, tooth_index):
     gradient = ff.create_gradient(img)
-    
     nb_tests = 2*(m-k)+1
     pxs, pys = mu.extract_coordinates(P)
-    j = tooth_index
     
     convergence = False
     while (not convergence) :
         for i in range(c.get_nb_landmarks()):
             Gi, Coords = ff.create_Gi(gradient, m, i, pxs, pys, offsetX, offsetY)
-            f_optimal = np.linalg.norm(fs[j,i](mu.normalize(Gi[0:2*k+1])))
+            f_optimal = np.linalg.norm(fs[tooth_index,i](mu.normalize(Gi[0:2*k+1])))
             c_optimal = k
             for t in range(1,nb_tests):
-                f = np.linalg.norm(fs[j,i](mu.normalize(Gi[t:t+2*k+1])))
+                f = np.linalg.norm(fs[tooth_index,i](mu.normalize(Gi[t:t+2*k+1])))
                 if f < f_optimal:
                     f_optimal = f
                     c_optimal = t+k
             pxs[i] = Coords[(2*c_optimal)] 
             pys[i] = Coords[(2*c_optimal+1)]
         
-        P_new = validate(j, mu.zip_coordinates(pxs, pys))
+        P_new = validate(tooth_index, mu.zip_coordinates(pxs, pys))
         if (np.linalg.norm(P-P_new) < convergence_threshold): convergence = True    
                 
 def validate(tooth_index, P):
