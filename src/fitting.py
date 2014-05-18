@@ -66,7 +66,8 @@ def fit_tooth(img, P, tooth_index, show=False):
 def validate(tooth_index, P):
     MU = MS[tooth_index]
     E, W = EWS[tooth_index]
-    bs = pca.project(W, P, MU)
+    PY = mu.full_align_with(P, MU)
+    bs = pca.project(W, PY, MU)
 
     for i in range(E.shape[0]):
         b_min = -tolerable_deviation*math.sqrt(E[i])
@@ -75,7 +76,9 @@ def validate(tooth_index, P):
         if b < b_min: bs[i] = b_min     #TODO: more robust limitations
         elif b > b_max: bs[i] = b_max   #TODO: more robust limitations
 
-    return pca.reconstruct(W, bs, MU) #ERROR: wrong reconstruction
+    PY = pca.reconstruct(W, bs, MU)
+    P = mu.full_align_with(PY, P)
+    return P
     
 def show_interation(img, nb_it, P, color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0]), color_line=np.array([255,0,0])):
     xs, ys = mu.extract_coordinates(P)  
@@ -135,7 +138,7 @@ if __name__ == "__main__":
     fname = c.get_fname_original_landmark(1, 1)
     P = original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
     
-    #fit_tooth(img, P, 0, show=False)
+    fit_tooth(img, P, 0, show=True)
  
 
     #to separate .py
