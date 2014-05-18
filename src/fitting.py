@@ -55,7 +55,6 @@ def fit_tooth(img, P, tooth_index, show=False):
         if (np.linalg.norm(P-P_new) < convergence_threshold): convergence = True    
         
         P = P_new
-        print(P)
         
         if (show): 
             show_interation(np.copy(img), nb_it, P)
@@ -76,8 +75,15 @@ def validate(tooth_index, P):
         b_min = -tolerable_deviation*math.sqrt(E[i])
         b_max =  tolerable_deviation*math.sqrt(E[i])
         b = bs[i]
-        if b < b_min: bs[i] = b_min  #TODO: more robust limitations
-        if b > b_max: bs[i] = b_max  #TODO: more robust limitations
+        
+        print(str(b_min) + ' # ' + str(b) + ' # ' + str(b_max))
+        
+        if b < b_min: 
+            bs[i] = b_min  #TODO: more robust limitations
+            print ('min')
+        if b > b_max: 
+            bs[i] = b_max  #TODO: more robust limitations
+            print ('max')
 
     PY = pca.reconstruct(W, bs, MU)
     P = mu.full_align(PY, xm, ym, 1.0 / s, -theta)
