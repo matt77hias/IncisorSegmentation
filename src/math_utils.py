@@ -59,6 +59,17 @@ def normalize_vector(v):
         return v
     return v/norm
     
+def get_center_of_gravity(v):
+    '''
+    Returns the center of gravity of the given vector v.
+    @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
+    @param v:           the vector v
+    @return The center of gravity of the given vector v.
+    '''
+    xs, ys = extract_coordinates(v)
+    n = v.shape[0] / 2
+    return (sum(xs) / n, sum(ys) / n)
+    
 def full_align_with(v, t):
     '''
     Fully alligns the given vector v with the given vector t
@@ -66,10 +77,53 @@ def full_align_with(v, t):
     @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
     @param v:           the vector to align.
     @param t:           the vector to align with.
+    @return The fully aligned vector.
     '''
     ov = center_onOrigin(v)
     ot = center_onOrigin(t)
     return center_on(align_with(ov, ot), t)
+    
+def full_align_params(v, t):
+    '''
+    Returns the transformation parameters (tx, ty, s, theta) used
+    for translating v with tx in the x direction,
+    for translating with ty in the u direction,
+    for scaling v with s and for rotating v with theta
+    in order to align the transformed v with y.
+    @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
+    @param v:           the vector to align.
+    @param t:           the vector to align with.
+    @return The transformation parameters (tx, ty, s, theta) for aligning v with t.
+    '''
+    s, theta = align_params(center_onOrigin(v), center_onOrigin(t))
+    txm, tym = get_center_of_gravity(t)
+    return txm, tym, s, theta
+    
+def full_align(v, tx, ty, s, theta):
+    '''
+    Fully alligns the given vector v with the given vector t
+    with the given transformation parameters.
+    @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
+    @param v:           the vector to align.
+    @param tx:          the translation parameter in the x direction
+    @param ty:          the translation parameter in the y direction
+    @param s:           the scaling parameter
+    @param theta:       the rotation parameter
+    @return The fully aligned vector.
+    '''
+    return translate(align(center_onOrigin(v), s, theta), tx, ty)
+    
+def translate(v, tx, ty):
+    '''
+    Translates the given vector v with tx in x direction
+    and ty in y direction.
+    @return The translated vector.
+    '''
+    r = np.zeros(v.shape)
+    for i in range(r.shape[0] / 2):
+        r[(2*i)] = v[(2*i)] + tx
+        r[(2*i+1)] = v[(2*i+1)] + ty
+    return r
     
 def center_on(v, t):
     '''
@@ -80,18 +134,8 @@ def center_on(v, t):
     @param t:           the vector to center on.
     @return The centered vector.
     '''
-    txs, tys = extract_coordinates(t)
-    tn = t.shape[0] / 2
-    txm = sum(txs) / tn
-    tym = sum(tys) / tn
-    
-    r = np.zeros(v.shape)
-    vn = v.shape[0] / 2
-    for i in range(vn):
-        r[(2*i)] = v[(2*i)] + txm
-        r[(2*i+1)] = v[(2*i+1)] + tym
-    return r
-    
+    txm, tym = get_center_of_gravity(t)
+    return translate(v, txm, tym)
     
 def center_onOrigin(v):
     '''
@@ -100,44 +144,38 @@ def center_onOrigin(v):
     @param v:           the vector to center on the origin.
     @return The centered vector.
     '''
-    xCoords, yCoords = extract_coordinates(v)
-    n = v.shape[0] / 2
-    xm = sum(xCoords) / n
-    ym = sum(yCoords) / n
-    for i in range(n):
-        xCoords[i] -= xm
-        yCoords[i] -= ym
-    return zip_coordinates(xCoords, yCoords)
+    xm, ym = get_center_of_gravity(v)
+    return translate(v, -xm, -ym)
     
-def align_with(x1, x2):
+def align_with(v, t):
     '''
-    Aligns x1 with x2
-    @pre    x1 and x2 are centered on the origin
+    Aligns v with t
+    @pre    v and t are centered on the origin
     @pre    The landmark coordinates are stored as successive xi, yi, xj, yj, ...
-    @param x1           the vector to align
-    @param x2           the vector to align with
-    @return The aligned vector for x1
+    @param v           the vector to align
+    @param t           the vector to align with
+    @return The aligned vector.
     '''
-    s, theta = align_params(x1, x2)
-    return align(x1, s, theta) 
+    s, theta = align_params(v, t)
+    return align(v, s, theta) 
     
-def align_params(x1, x2):
+def align_params(v, t):
     '''
     Returns the transformation parameters (s, theta) used for scaling
-    x1 with s and rotating x1 with theta in order to align the transformed
-    x1 with x2. This method tries to minimize |s.R(theta).x1-x2|.
-    @pre    x1 and x2 are centered on the origin
+    v with s and for rotating v with theta in order to align the transformed
+    v with t. This method tries to minimize |s.R(theta).v-t|.
+    @pre    v and t are centered on the origin
     @pre    The landmark coordinates are stored as successive xi, yi, xj, yj, ...
-    @param x1           the vector to align
-    @param x2           the vector to align with
-    @return The transformation parameters (s, theta) for aligning x1 with x2.
+    @param v           the vector to align
+    @param t           the vector to align with
+    @return The transformation parameters (s, theta) for aligning v with t.
     '''
-    n = pow(np.linalg.norm(x1), 2)
-    a = np.dot(x1, x2) / n
+    n = pow(np.linalg.norm(v), 2)
+    a = np.dot(v, t) / n
     b = 0
-    for i in range(x1.shape[0] / 2):
+    for i in range(v.shape[0] / 2):
         #landmark coordinates stored as successive xi, yi, xj, yj
-        b += x1[(2*i)]*x2[(2*i+1)] - x1[(2*i+1)]*x2[(2*i)]
+        b += v[(2*i)]*t[(2*i+1)] - v[(2*i+1)]*t[(2*i)]
     b /= n
     
     s = math.sqrt(a*a+b*b)
@@ -152,7 +190,7 @@ def align(v, s=1, theta=0):
     @param v:           the vector to align
     @param s:           the scaling parameter
     @param theta:       the rotation parameter
-    @return The aligned vector for v
+    @return The aligned vector.
     '''
     sc = s*math.cos(theta)
     ss = s*math.sin(theta)

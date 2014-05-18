@@ -20,7 +20,7 @@ k = 5
 m = 10
 method='SCD'
 
-convergence_threshold = 0.00001
+convergence_threshold = 0.0001
 tolerable_deviation = 3
 
 def fit_all_teeth(img, PS):
@@ -66,18 +66,21 @@ def fit_tooth(img, P, tooth_index, show=False):
 def validate(tooth_index, P):
     MU = MS[tooth_index]
     E, W = EWS[tooth_index]
-    PY = mu.full_align_with(P, MU)
-    bs = pca.project(W, PY, MU)
 
+    xm, ym = mu.get_center_of_gravity(P)
+    tx, ty, s, theta = mu.full_align_params(P, MU)
+    PY = mu.full_align(P, tx, ty, s, theta)
+    
+    bs = pca.project(W, PY, MU)
     for i in range(E.shape[0]):
         b_min = -tolerable_deviation*math.sqrt(E[i])
         b_max =  tolerable_deviation*math.sqrt(E[i])
         b = bs[i]
-        if b < b_min: bs[i] = b_min     #TODO: more robust limitations
-        elif b > b_max: bs[i] = b_max   #TODO: more robust limitations
+        if b < b_min: bs[i] = b_min  #TODO: more robust limitations
+        if b > b_max: bs[i] = b_max  #TODO: more robust limitations
 
     PY = pca.reconstruct(W, bs, MU)
-    P = mu.full_align_with(PY, P)
+    P = mu.full_align(PY, xm, ym, 1.0 / s, -theta)
     return P
     
 def show_interation(img, nb_it, P, color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0]), color_line=np.array([255,0,0])):
