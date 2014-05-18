@@ -27,19 +27,24 @@ def fit_all_teeth(img, PS):
     for j in range(PS.shape[0]):
         fit_tooth(img, PS[j], j)
 
-def fit_tooth(img, P, tooth_index):
+def fit_tooth(img, P, tooth_index, show=False):
     gradient = ff.create_gradient(img)
     nb_tests = 2*(m-k)+1
-    pxs, pys = mu.extract_coordinates(P)
     
+    if (show): 
+        show_interation(np.copy(img), 0, P)
+        cv2.waitKey(0)
+    
+    nb_it = 1
     convergence = False
     while (not convergence) :
+        pxs, pys = mu.extract_coordinates(P)
         for i in range(c.get_nb_landmarks()):
-            Gi, Coords = ff.create_Gi(gradient, m, i, pxs, pys, offsetX, offsetY)
-            f_optimal = np.linalg.norm(fs[tooth_index,i](mu.normalize(Gi[0:2*k+1])))
+            Gi, Coords = ff.create_Gi(gradient, m, i, pxs, pys)
+            f_optimal = fs[tooth_index][i](mu.normalize_vector(Gi[0:2*k+1]))
             c_optimal = k
             for t in range(1,nb_tests):
-                f = np.linalg.norm(fs[tooth_index,i](mu.normalize(Gi[t:t+2*k+1])))
+                f = fs[tooth_index][i](mu.normalize_vector(Gi[t:t+2*k+1]))
                 if f < f_optimal:
                     f_optimal = f
                     c_optimal = t+k
@@ -48,6 +53,15 @@ def fit_tooth(img, P, tooth_index):
         
         P_new = validate(tooth_index, mu.zip_coordinates(pxs, pys))
         if (np.linalg.norm(P-P_new) < convergence_threshold): convergence = True    
+        
+        P = P_new
+        print(P)
+        
+        if (show): 
+            show_interation(np.copy(img), nb_it, P)
+            cv2.waitKey(0)
+        
+        nb_it += 1
                 
 def validate(tooth_index, P):
     MU = MS[tooth_index]
@@ -61,7 +75,33 @@ def validate(tooth_index, P):
         if b < b_min: bs[i] = b_min     #TODO: more robust limitations
         elif b > b_max: bs[i] = b_max   #TODO: more robust limitations
 
-    return pca.reconstruct(W, bs, MU)
+    return pca.reconstruct(W, bs, MU) #ERROR: wrong reconstruction
+    
+def show_interation(img, nb_it, P, color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0]), color_line=np.array([255,0,0])):
+    xs, ys = mu.extract_coordinates(P)  
+    for k in range(c.get_nb_landmarks()):
+        x = int(xs[k])
+        y = int(ys[k])
+        if (k == c.get_nb_landmarks()-1):
+            x_succ = int(xs[0])
+            y_succ = int(ys[0])
+        else:
+            x_succ = int(xs[(k+1)])
+            y_succ = int(ys[(k+1)])
+        cv2.line(img, (x,y), (x_succ,y_succ), color_line)
+    
+    for k in range(c.get_nb_landmarks()):
+        x = int(xs[k])
+        y = int(ys[k])
+        if (k == 0):
+            img[y,x] = color_init
+        elif (k == c.get_nb_landmarks()-1):
+            img[y,x] = color_end
+        else:
+            img[y,x] = color_mid
+    
+    txt = 'Iteration: ' + str(nb_it)
+    cv2.imshow(txt, img)
 
 def preprocess(trainingSamples):
     global MS, EWS, fs
@@ -69,18 +109,34 @@ def preprocess(trainingSamples):
     MS = np.zeros((c.get_nb_teeth(), c.get_nb_dim()))
     
     for j in range(c.get_nb_teeth()):
-        M, Y = pa.PA(l.create_full_X(j+1))
+        M, Y = pa.PA(XS[j,:,:])
         MS[j,:] = M
-        MU, E, W = pca.pca_percentage(Y)
+        E, W, MU = pca.pca_percentage(Y)
         EWS.append((E, W))
 
     GS = ff.create_partial_GS(trainingSamples, XS, MS, offsetX=offsetX, offsetY=offsetY, k=k, method=method)
     fs = ff.create_fitting_functions(GS)
     
+def original_to_cropped(P):
+    for i in range(P.shape[0] / 2):
+        P[(2*i)] -= offsetX
+        P[(2*i+1)] -= offsetY
+    return P
+    
 if __name__ == "__main__":
-    preprocess(c.get_trainingSamples_range())
-
-        
+    trainingSamples = range(2, (c.get_nb_trainingSamples()+1))
+    preprocess(trainingSamples)
+    
+    fname = c.get_fname_vis_pre(1, 'SCD')
+    img = cv2.imread(fname)
+    
+    #fname = c.get_fname_fitting_manual_landmark(1, 1)
+    #P = original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+    fname = c.get_fname_original_landmark(1, 1)
+    P = original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+    
+    #fit_tooth(img, P, 0, show=False)
+ 
 
     #to separate .py
     

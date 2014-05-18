@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import scipy as sp
+import scipy.spatial.distance as dist
 import configuration as c
 import math
 import math_utils as mu
@@ -15,13 +15,12 @@ def get_fitting_function(nr_tooth, nr_landmark, GS):
         G[i,:] = GS[nr_tooth, i, nr_landmark, :]
     
     G -= G.mean(axis=0)[None, :]
-    C = (np.dot(G, G.T) / float(G.shape[0]))
-    g_mu = G.mean(axis=0) 
+    C = (np.dot(G.T, G) / float(G.shape[0]))
+    g_mu = G.mean(axis=0)
     
     def fitting_function(g):
-        x = g - g_mu
-        return sp.spatial.distance.mahalanobis(x.T, np.linalg.inv(C), x)
-    
+        return dist.mahalanobis(g, g_mu, np.linalg.pinv(C))
+
     return fitting_function  
     
 def create_partial_GS(trainingSamples, XS, MS, offsetX=0, offsetY=0, k=5, method=''):
@@ -49,14 +48,14 @@ def create_gradient(img):
     temp = cv2.Scharr(img, ddepth=-1, dx=1, dy=0)
     return cv2.Scharr(temp, ddepth=-1, dx=0, dy=1)
                  
-def create_G(img, k, xs, ys, offsetX, offsetY):
+def create_G(img, k, xs, ys, offsetX=0, offsetY=0):
     G = np.zeros((c.get_nb_landmarks(), 2*k+1))
     for i in range(c.get_nb_landmarks()):
         Gi, Coords = create_Gi(img, k, i, xs, ys, offsetX, offsetY)
         G[i,:] = mu.normalize_vector(Gi)
     return G
     
-def create_Gi(img, k, i, xs, ys, offsetX, offsetY, sx=1, sy=1):
+def create_Gi(img, k, i, xs, ys, offsetX=0, offsetY=0, sx=1, sy=1):
     x = xs[i] - offsetX
     y = ys[i] - offsetY
     if (i == 0):
