@@ -11,7 +11,7 @@ import numpy as np
 def make_circular(v):
     '''
     Makes the given vector circular by appending the first entry.
-    @param v:           the vector to make circular.
+    @param v:           the vector to make circular
     @return The circular vector.
     '''
     w = np.zeros((v.shape[0]+1))
@@ -23,7 +23,7 @@ def extract_coordinates(v):
     '''
     Extracts the x and y coordinates from the given vector.
     @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
-    @param v:            the vector to extract the coordinates from.
+    @param v:            the vector to extract the coordinates from
     @return The x and y coordinates extracted from the given vector.
     '''
     n = v.shape[0] / 2
@@ -51,7 +51,7 @@ def zip_coordinates(xCoords, yCoords):
 def normalize_vector(v):
     '''
     Normalize the given vector.
-    @param v:           the vector to normalize.
+    @param v:           the vector to normalize
     @return The normalized vector.
     '''
     norm=np.linalg.norm(v)
@@ -75,8 +75,8 @@ def full_align_with(v, t):
     Fully alligns the given vector v with the given vector t
     without preconditions.
     @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
-    @param v:           the vector to align.
-    @param t:           the vector to align with.
+    @param v:           the vector to align
+    @param t:           the vector to align with
     @return The fully aligned vector.
     '''
     ov = center_onOrigin(v)
@@ -91,8 +91,8 @@ def full_align_params(v, t):
     for scaling v with s and for rotating v with theta
     in order to align the transformed v with y.
     @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
-    @param v:           the vector to align.
-    @param t:           the vector to align with.
+    @param v:           the vector to align
+    @param t:           the vector to align with
     @return The transformation parameters (tx, ty, s, theta) for aligning v with t.
     '''
     s, theta = align_params(center_onOrigin(v), center_onOrigin(t))
@@ -130,8 +130,8 @@ def center_on(v, t):
     Centers the given vector v on the center of gravity of the given vector t.
     @pre    v is centered on the origin
     @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
-    @param v:           the vector to center.
-    @param t:           the vector to center on.
+    @param v:           the vector to center
+    @param t:           the vector to center on
     @return The centered vector.
     '''
     txm, tym = get_center_of_gravity(t)
@@ -141,7 +141,7 @@ def center_onOrigin(v):
     '''
     Centers the given vector on the origin.
     @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
-    @param v:           the vector to center on the origin.
+    @param v:           the vector to center on the origin
     @return The centered vector.
     '''
     xm, ym = get_center_of_gravity(v)

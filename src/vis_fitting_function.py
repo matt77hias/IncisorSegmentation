@@ -52,10 +52,11 @@ def create_landmarks_images(color_init=np.array([0,255,255]), color_mid=np.array
     '''
     Stores all the preprocessed images corresponding to the given method with the landmarks
     of the training samples marked.
-    @param color_init:  the BGR color for the first landmark. 
-    @param color_mid:   the BGR color for all landmarks except the first and last landmark.
-    @param color_end:   the BGR color for the last landmark.
-    @param color_line:  the BGR color for the line between two consecutive landmarks.
+    @param color_init:  the BGR color for the first landmark 
+    @param color_mid:   the BGR color for all landmarks except the first and last landmark
+    @param color_end:   the BGR color for the last landmark
+    @param color_line:  the BGR color for the line between two consecutive landmarks
+    @param method:      the method used for preproccesing
     '''
     for i in c.get_trainingSamples_range():
         fname = c.get_fname_vis_pre(i, method)
@@ -101,11 +102,12 @@ def create_landmarks_and_models_images(color_init=np.array([0,255,255]), color_m
     '''
     Stores all the preprocessed images corresponding to the given method with the landmarks
     of the training samples and models (transformed to the image coordinate system) marked.
-    @param color_init:  the BGR color for the first landmark. 
-    @param color_mid:   the BGR color for all landmarks except the first and last landmark.
-    @param color_end:   the BGR color for the last landmark.
-    @param color_line:  the BGR color for the line between two consecutive landmarks of the training samples.
-    @param color_model_line:    the BGR color for the line between two consecutive landmarks of the models.
+    @param color_init:  the BGR color for the first landmark 
+    @param color_mid:   the BGR color for all landmarks except the first and last landmark
+    @param color_end:   the BGR color for the last landmark
+    @param color_line:  the BGR color for the line between two consecutive landmarks of the training samples
+    @param color_model_line:    the BGR color for the line between two consecutive landmarks of the models
+    @param method:      the method used for preproccesing
     '''
     for i in c.get_trainingSamples_range():
         fname = c.get_fname_vis_pre(i, method)
@@ -164,10 +166,11 @@ def create_models_images(color_init=np.array([0,255,255]), color_mid=np.array([2
     '''
     Stores all the preprocessed images corresponding to the given method with the landmarks
     of the models (transformed to the image coordinate system) marked.
-    @param color_init:  the BGR color for the first landmark. 
-    @param color_mid:   the BGR color for all landmarks except the first and last landmark.
-    @param color_end:   the BGR color for the last landmark.
-    @param color_line:  the BGR color for the line between two consecutive landmarks.
+    @param color_init:  the BGR color for the first landmark
+    @param color_mid:   the BGR color for all landmarks except the first and last landmark
+    @param color_end:   the BGR color for the last landmark
+    @param color_line:  the BGR color for the line between two consecutive landmarks
+    @param method:      the method used for preproccesing
     '''
     for i in c.get_trainingSamples_range():
         fname = c.get_fname_vis_pre(i, method)
@@ -215,10 +218,11 @@ def create_profile_normals_images(color_init=np.array([0,255,255]), color_mid=np
     Stores all the preprocessed images corresponding to the given method with the landmarks
     of the models (transformed to the image coordinate system) and the points along the profile
     normals marked.
-    @param color_init:  the BGR color for the first landmark. 
-    @param color_mid:   the BGR color for all landmarks except the first and last landmark.
-    @param color_end:   the BGR color for the last landmark.
-    @param color_line:  the BGR color for the line between two consecutive landmarks.
+    @param color_init:  the BGR color for the first landmark 
+    @param color_mid:   the BGR color for all landmarks except the first and last landmark
+    @param color_end:   the BGR color for the last landmark
+    @param color_line:  the BGR color for the line between two consecutive landmarks
+    @param method:      the method used for preproccesing
     '''
     for i in c.get_trainingSamples_range():
         fname = c.get_fname_vis_pre(i, method)
@@ -258,9 +262,9 @@ def draw_profile_points(img, Coords, color=np.array([0,255,0])):
     Marks the points along a (single) profile normal on the given image.
     @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
     @param img:     the image.
-    @param Coords:  the coordinates for the points along the profile normal.
-    @param color:   the BGR color for the points along the profile normal. 
-    @return  The image with the points along the given profile normal marked.
+    @param Coords:  the coordinates for the points along the profile normal
+    @param color:   the BGR color for the points along the profile normal 
+    @return  The image with the points along the given profile normal marked
     '''
     for i in range(Coords.shape[0] / 2):
         kx = int(Coords[(2*i)])
