@@ -1,3 +1,8 @@
+'''
+Single-Resolution Active Shape Models' fitting procedure.
+@author     Matthias Moulin & Milan Samyn
+@version    1.0
+'''
 
 import configuration as c
 import loader as l
@@ -10,24 +15,41 @@ import procrustes_analysis as pa
 import principal_component_analysis as pca
 import fitting_function as ff
 
-MS = None
-EWS = []
-fs = None
+MS = None                       #MS contains for each tooth, the tooth model (in the model coordinate frame)
+EWS = []                        #EWS contains for each tooth, a (Eigenvalues, Eigenvectors) pair (in the model coordinate frame)
+fs = None                       #fitting function for each tooth, for each landmark.
 
-offsetY = 497.0
-offsetX = 1234.0
-k = 5
-m = 10
-method='SCD'
+offsetY = 497.0                 #The landmarks refer to the non-cropped images, so we need the vertical offset (up->down)
+                                #to locate them on the cropped images.
+offsetX = 1234.0                #The landmarks refer to the non-cropped images, so we need the horizontal offset (left->right)
+                                #to locate them on the cropped images.
 
-convergence_threshold = 0.0001
-tolerable_deviation = 3
+k = 5                           #The number of pixels to sample either side for each of the model points along the profile normal
+                                #(used for creating the fitting functions)
+m = 10                          #The number of pixels to sample either side for each of the model points along the profile normal
+                                #(used while iterating)
+method='SCD'                    #The method used for preproccesing.
+
+convergence_threshold = 0.0001  #The convergence threshold (used while iterating).
+tolerable_deviation = 3         #The number of deviations that are tolerable by the models (used for limiting the shape).
 
 def fit_all_teeth(img, PS):
+    '''
+    Fits all the teeth in the given image.
+    @param img:             the image  
+    @param PS:              the start points for each tooth
+    '''
     for j in range(PS.shape[0]):
         fit_tooth(img, PS[j], j)
 
 def fit_tooth(img, P, tooth_index, show=False):
+    '''
+    Fits all the tooth corresponding to the given tooth index in the given image.
+    @param img:             the image  
+    @param P:               the start points for the target tooth
+    @param tooth_index:     the index of the the target tooth (used in MS, EWS, fs)
+    @param show:            must the intermediate results (after each iteration) be displayed
+    '''
     gradient = ff.create_gradient(img)
     nb_tests = 2*(m-k)+1
     
@@ -63,6 +85,12 @@ def fit_tooth(img, P, tooth_index, show=False):
         nb_it += 1
                 
 def validate(tooth_index, P):
+    '''
+    Validates the current points P for the target tooth corresponding to the given
+    tooth index.
+    @param P:               the current points for the target tooth
+    @param tooth_index:     the index of the the target tooth (used in MS, EWS, fs)
+    '''
     MU = MS[tooth_index]
     E, W = EWS[tooth_index]
 
@@ -79,10 +107,10 @@ def validate(tooth_index, P):
         print(str(b_min) + ' # ' + str(b) + ' # ' + str(b_max))
         
         if b < b_min: 
-            bs[i] = b_min  #TODO: more robust limitations
+            bs[i] = b_min
             print ('min')
         if b > b_max: 
-            bs[i] = b_max  #TODO: more robust limitations
+            bs[i] = b_max
             print ('max')
 
     PY = pca.reconstruct(W, bs, MU)
@@ -90,6 +118,16 @@ def validate(tooth_index, P):
     return P
     
 def show_interation(img, nb_it, P, color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0]), color_line=np.array([255,0,0])):
+    '''
+    Displays the current points markes on the given image.
+    @param img:         the image
+    @param nb_it:       the number of this iteration
+    @param P:           the current points for the target tooth
+    @param color_init:  the BGR color for the first landmark 
+    @param color_mid:   the BGR color for all landmarks except the first and last landmark
+    @param color_end:   the BGR color for the last landmark
+    @param color_line:  the BGR color for the line between two consecutive landmarks
+    '''
     xs, ys = mu.extract_coordinates(P)  
     for k in range(c.get_nb_landmarks()):
         x = int(xs[k])
@@ -116,6 +154,12 @@ def show_interation(img, nb_it, P, color_init=np.array([0,255,255]), color_mid=n
     cv2.imshow(txt, img)
 
 def preprocess(trainingSamples):
+    '''
+    Creates MS, EWS and fs, used by the fitting procedure
+        * MS contains for each tooth, the tooth model (in the model coordinate frame)
+        * EWS contains for each tooth, a (Eigenvalues, Eigenvectors) pair (in the model coordinate frame)
+        * fitting function for each tooth, for each landmark.
+    '''
     global MS, EWS, fs
     XS = l.create_partial_XS(trainingSamples)
     MS = np.zeros((c.get_nb_teeth(), c.get_nb_dim()))
@@ -130,6 +174,13 @@ def preprocess(trainingSamples):
     fs = ff.create_fitting_functions(GS)
     
 def original_to_cropped(P):
+    '''
+    Crops the given points. Used when working with non-cropped initial target points.
+    The whole fitting procdure itself doesn't work with offsets at all.
+    @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
+    @param  P:   the points to crop
+    @return The cropped version of P.
+    '''
     for i in range(P.shape[0] / 2):
         P[(2*i)] -= offsetX
         P[(2*i+1)] -= offsetY

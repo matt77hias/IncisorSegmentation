@@ -1,3 +1,11 @@
+'''
+Construction of the fitting functions (for each tooth, for each landmark)
+by sampling the along the profile normal to the boundary in the training set
+and building a statistical model of the grey-level structure.
+@author     Matthias Moulin & Milan Samyn
+@version    1.0
+'''
+
 import cv2
 import numpy as np
 import scipy.spatial.distance as dist
@@ -90,6 +98,9 @@ def create_gradient(img):
     @param img:          the image
     @return The gradient image.
     '''
+    #When the size of the kernel is 3, the Sobel kernel may produce noticeable inaccuracies
+    #(after all, Sobel is only an approximation of the derivative). OpenCV addresses this
+    #inaccuracy for kernels of size 3 by using the Scharr function.
     temp = cv2.Scharr(img, ddepth=-1, dx=1, dy=0)
     return cv2.Scharr(temp, ddepth=-1, dx=0, dy=1)
                  

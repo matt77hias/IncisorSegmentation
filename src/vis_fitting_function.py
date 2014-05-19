@@ -274,8 +274,8 @@ def draw_profile_points(img, Coords, color=np.array([0,255,0])):
 def preprocess():
     '''
     Creates XS and MS, used by the drawing functions.
-    XS contains for each tooth, for each training sample, all landmarks (in the image coordinate frame)
-    MS contains for each tooth, the tooth model (in the model coordinate frame)
+        * XS contains for each tooth, for each training sample, all landmarks (in the image coordinate frame)
+        * MS contains for each tooth, the tooth model (in the model coordinate frame)
     '''
     global XS, MS
     XS = l.create_full_XS()
