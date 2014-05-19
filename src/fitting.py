@@ -115,6 +115,7 @@ def validate(img, tooth_index, P, nb_it, show=False):
         show_validation(nb_it, PY_before, PY_after, tooth_index)
         show_interation(np.copy(img), nb_it, P, P_after)
         cv2.waitKey(0)
+        pyplot.close()
 
     return P_after
     
