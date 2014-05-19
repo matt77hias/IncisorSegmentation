@@ -8,12 +8,13 @@ import configuration as c
 import loader as l
 import numpy as np
 import cv2
-
 import math
 import math_utils as mu
 import procrustes_analysis as pa
 import principal_component_analysis as pca
 import fitting_function as ff
+
+from matplotlib import pyplot
 
 MS = None                       #MS contains for each tooth, the tooth model (in the model coordinate frame)
 EWS = []                        #EWS contains for each tooth, a (Eigenvalues, Eigenvectors) pair (in the model coordinate frame)
@@ -53,10 +54,6 @@ def fit_tooth(img, P, tooth_index, show=False):
     gradient = ff.create_gradient(img)
     nb_tests = 2*(m-k)+1
     
-    if (show): 
-        show_interation(np.copy(img), 0, P)
-        cv2.waitKey(0)
-    
     nb_it = 1
     convergence = False
     while (not convergence) :
@@ -73,32 +70,30 @@ def fit_tooth(img, P, tooth_index, show=False):
             pxs[i] = Coords[(2*c_optimal)] 
             pys[i] = Coords[(2*c_optimal+1)]
         
-        P_new = validate(tooth_index, mu.zip_coordinates(pxs, pys))
+        P_new = validate(img, tooth_index, mu.zip_coordinates(pxs, pys), nb_it, show)
         if (np.linalg.norm(P-P_new) < convergence_threshold): convergence = True    
         
         P = P_new
-        
-        if (show): 
-            show_interation(np.copy(img), nb_it, P)
-            cv2.waitKey(0)
-        
         nb_it += 1
                 
-def validate(tooth_index, P):
+def validate(img, tooth_index, P, nb_it, show=False):
     '''
     Validates the current points P for the target tooth corresponding to the given
     tooth index.
+    @param img:             the image
     @param P:               the current points for the target tooth
     @param tooth_index:     the index of the the target tooth (used in MS, EWS, fs)
+    @param nb_it:           the number of this iteration
+    @param show:            must the intermediate results (after each iteration) be displayed
     '''
     MU = MS[tooth_index]
     E, W = EWS[tooth_index]
 
     xm, ym = mu.get_center_of_gravity(P)
     tx, ty, s, theta = mu.full_align_params(P, MU)
-    PY = mu.full_align(P, tx, ty, s, theta)
+    PY_before = mu.full_align(P, tx, ty, s, theta)
     
-    bs = pca.project(W, PY, MU)
+    bs = pca.project(W, PY_before, MU)
     for i in range(E.shape[0]):
         b_min = -tolerable_deviation*math.sqrt(E[i])
         b_max =  tolerable_deviation*math.sqrt(E[i])
@@ -113,42 +108,100 @@ def validate(tooth_index, P):
             bs[i] = b_max
             print ('max')
 
-    PY = pca.reconstruct(W, bs, MU)
-    P = mu.full_align(PY, xm, ym, 1.0 / s, -theta)
-    return P
+    PY_after = pca.reconstruct(W, bs, MU)
+    P_after = mu.full_align(PY_after, xm, ym, 1.0 / s, -theta)
     
-def show_interation(img, nb_it, P, color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0]), color_line=np.array([255,0,0])):
+    if (show): 
+        show_validation(nb_it, PY_before, PY_after, tooth_index)
+        show_interation(np.copy(img), nb_it, P, P_after)
+        cv2.waitKey(0)
+
+    return P_after
+    
+def show_validation(nb_it, PY_before, PY_after, tooth_index):
+    '''
+    Plots the landmarks corresponding to the mean shape in the model coordinate frame
+    and the landmarks corresponding to the current points in the model coordinate frame
+    @param nb_it:           the number of this iteration
+    @param PY_before:       the current points for the target tooth before validation
+                            in the model coordinate frame
+    @param PY_after:        the current points for the target tooth after validation
+                            in the model coordinate frame
+    @param tooth_index:     the index of the the target tooth (used in MS, EWS, fs)
+    '''
+    mxs, mys = mu.extract_coordinates(MS[tooth_index,:])
+    mxs = mu.make_circular(mxs)
+    mys = mu.make_circular(mys)
+    rxs, rys = mu.extract_coordinates(PY_before)
+    rxs = mu.make_circular(rxs)
+    rys = mu.make_circular(rys)
+    gxs, gys = mu.extract_coordinates(PY_after)
+    gxs = mu.make_circular(gxs)
+    gys = mu.make_circular(gys)
+    
+    pyplot.figure(1)
+    # x coordinates , y coordinates
+    pyplot.plot(mxs, mys, '-+b')
+    pyplot.plot(rxs, rys, '-+r')
+    pyplot.plot(gxs, gys, '-+g')
+    txt = 'Iteration: ' + str(nb_it)
+    pyplot.title(txt)
+    pyplot.xlabel('x\'')
+    pyplot.ylabel('y\'')
+    pyplot.gca().invert_yaxis()
+    pyplot.axis('equal')
+    pyplot.show()
+    
+def show_interation(img, nb_it, P_before, P_after, color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0]), color_line_before=np.array([0,0,255]), color_line_after=np.array([0,255,0])):
     '''
     Displays the current points markes on the given image.
-    @param img:         the image
-    @param nb_it:       the number of this iteration
-    @param P:           the current points for the target tooth
-    @param color_init:  the BGR color for the first landmark 
-    @param color_mid:   the BGR color for all landmarks except the first and last landmark
-    @param color_end:   the BGR color for the last landmark
-    @param color_line:  the BGR color for the line between two consecutive landmarks
+    This method displays the movement in the image coordinate frame.
+    @param img:                 the image
+    @param nb_it:               the number of this iteration
+    @param P_before:            the current points for the target tooth before validation
+                                in the image coordinate frame
+    @param P_after:             the current points for the target tooth after validation
+                                in the image coordinate frame
+    @param color_init:          the BGR color for the first landmark 
+    @param color_mid:           the BGR color for all landmarks except the first and last landmark
+    @param color_end:           the BGR color for the last landmark
+    @param color_line_before:   the BGR color for the line between two consecutive landmarks
+    @param color_line_after:    the BGR color for the line between two consecutive landmarks
     '''
-    xs, ys = mu.extract_coordinates(P)  
+    rxs, rys = mu.extract_coordinates(P_before)
+    gxs, gys = mu.extract_coordinates(P_after)
     for k in range(c.get_nb_landmarks()):
-        x = int(xs[k])
-        y = int(ys[k])
+        rx = int(rxs[k])
+        ry = int(rys[k])
+        gx = int(gxs[k])
+        gy = int(gys[k])
         if (k == c.get_nb_landmarks()-1):
-            x_succ = int(xs[0])
-            y_succ = int(ys[0])
+            rx_succ = int(rxs[0])
+            ry_succ = int(rys[0])
+            gx_succ = int(gxs[0])
+            gy_succ = int(gys[0])
         else:
-            x_succ = int(xs[(k+1)])
-            y_succ = int(ys[(k+1)])
-        cv2.line(img, (x,y), (x_succ,y_succ), color_line)
+            rx_succ = int(rxs[(k+1)])
+            ry_succ = int(rys[(k+1)])
+            gx_succ = int(gxs[(k+1)])
+            gy_succ = int(gys[(k+1)])
+        cv2.line(img, (rx,ry), (rx_succ,ry_succ), color_line_before)
+        cv2.line(img, (gx,gy), (gx_succ,gy_succ), color_line_after)
     
     for k in range(c.get_nb_landmarks()):
-        x = int(xs[k])
-        y = int(ys[k])
+        rx = int(rxs[k])
+        ry = int(rys[k])
+        gx = int(gxs[k])
+        gy = int(gys[k])
         if (k == 0):
-            img[y,x] = color_init
+            img[ry,rx] = color_init
+            img[gy,gx] = color_init
         elif (k == c.get_nb_landmarks()-1):
-            img[y,x] = color_end
+            img[ry,rx] = color_end
+            img[gy,gx] = color_end
         else:
-            img[y,x] = color_mid
+            img[ry,rx] = color_mid
+            img[gy,gx] = color_mid
     
     txt = 'Iteration: ' + str(nb_it)
     cv2.imshow(txt, img)

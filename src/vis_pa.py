@@ -5,8 +5,6 @@ of the Procrustes Analysis
 @version    1.0
 '''
 
-import numpy as np
-
 import math_utils as mu
 import loader as l
 import procrustes_analysis as pa
