@@ -30,30 +30,24 @@ m = 10                          #The number of pixels to sample either side for 
                                 #(used while iterating)
 method='SCD'                    #The method used for preproccesing.
 
-convergence_threshold = 0.002  #The convergence threshold (used while iterating).
+convergence_threshold = 0.01  #The convergence threshold (used while iterating).
 tolerable_deviation = 3         #The number of deviations that are tolerable by the models (used for limiting the shape).
-
-def fit_all_teeth(img, PS):
-    '''
-    Fits all the teeth in the given image.
-    @param img:             the image  
-    @param PS:              the start points for each tooth
-    '''
-    for j in range(PS.shape[0]):
-        fit_tooth(img, PS[j], j)
 
 def fit_tooth(img, P, tooth_index, show=False):
     '''
-    Fits all the tooth corresponding to the given tooth index in the given image.
+    Fits the tooth corresponding to the given tooth index in the given image.
     @param img:             the image  
     @param P:               the start points for the target tooth
     @param tooth_index:     the index of the the target tooth (used in MS, EWS, fs)
     @param show:            must the intermediate results (after each iteration) be displayed
+    @return The fitted points for the tooth corresponding to the given tooth index
+            and the number of iterations used.
     '''
     nb_tests = 2*(m-k)+1
-    nb_it = 1
+    nb_it = 0
     convergence = False
     while (not convergence) :
+        nb_it += 1
         pxs, pys = mu.extract_coordinates(P)
         for i in range(c.get_nb_landmarks()):
             Gi, Coords = ff.create_Gi(img, m, i, pxs, pys)
@@ -69,11 +63,12 @@ def fit_tooth(img, P, tooth_index, show=False):
         
         P_new = validate(img, tooth_index, mu.zip_coordinates(pxs, pys), nb_it, show)
         conv  = np.linalg.norm(P-P_new)/np.linalg.norm(P)
-        print (conv)
-        if (conv < convergence_threshold): convergence = True    
-        
+        if (conv < convergence_threshold): convergence = True 
         P = P_new
-        nb_it += 1
+        if (nb_it > 300): convergence = True 
+        
+    print('Fitting number of iterations: ' + str(nb_it))
+    return P, nb_it
                 
 def validate(img, tooth_index, P_before, nb_it, show=False):
     '''
@@ -193,7 +188,8 @@ def show_interation(img, nb_it, P_before, P_after, color_init=np.array([0,255,25
             img[gy,gx] = color_mid
     
     txt = 'Image Coordinate Frame - Iteration: ' + str(nb_it)
-    cv2.imshow(txt, img)
+    #cv2.imshow(txt, img)
+    return img
 
 def preprocess(trainingSamples):
     '''
@@ -228,20 +224,24 @@ def original_to_cropped(P):
         P[(2*i+1)] -= offsetY
     return P
     
+def test():
+    for i in c.get_trainingSamples_range():
+        trainingSamples = c.get_trainingSamples_range()
+        trainingSamples.remove(i)
+        preprocess(trainingSamples)
+        
+        fname = c.get_fname_vis_pre(i, 'SCD')
+        img = cv2.imread(fname)
+        
+        for j in range(c.get_nb_teeth()):
+            fname = c.get_fname_original_landmark(i, (j+1))
+            P = original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+            R, nb_it = fit_tooth(img, P, j)
+            fname = str(i) + '-' + str((j+1)) + '#' + str(nb_it) + '.png'
+            cv2.imwrite(fname, show_interation(np.copy(img), nb_it, P, R))
+    
 if __name__ == "__main__":
-    trainingSamples = range(2, (c.get_nb_trainingSamples()+1))
-    preprocess(trainingSamples)
-    
-    fname = c.get_fname_vis_pre(1, 'SCD')
-    img = cv2.imread(fname)
-    
-    #fname = c.get_fname_fitting_manual_landmark(1, 1)
-    #P = original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
-    fname = c.get_fname_original_landmark(1, 1)
-    P = original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
-    
-    fit_tooth(img, P, 0, show=True)
- 
+    test()
 
     #to separate .py
     
