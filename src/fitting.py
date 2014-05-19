@@ -145,7 +145,7 @@ def show_validation(nb_it, PY_before, PY_after, tooth_index):
     pyplot.plot(mxs, mys, '-+b')
     pyplot.plot(rxs, rys, '-+r')
     pyplot.plot(gxs, gys, '-+g')
-    txt = 'Iteration: ' + str(nb_it)
+    txt = 'Model Coordinate Frame - Iteration: ' + str(nb_it)
     pyplot.title(txt)
     pyplot.xlabel('x\'')
     pyplot.ylabel('y\'')
@@ -204,7 +204,7 @@ def show_interation(img, nb_it, P_before, P_after, color_init=np.array([0,255,25
             img[ry,rx] = color_mid
             img[gy,gx] = color_mid
     
-    txt = 'Iteration: ' + str(nb_it)
+    txt = 'Image Coordinate Frame - Iteration: ' + str(nb_it)
     cv2.imshow(txt, img)
 
 def preprocess(trainingSamples):
