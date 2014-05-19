@@ -1,6 +1,6 @@
 '''
-Contains some visualization functions for displaying the results
-of the fitting functions (for each tooth, for each landmark) 
+Contains some visualization functions for displaying the intermediate results
+while constructing the fitting functions (for each tooth, for each landmark).
 @author     Matthias Moulin & Milan Samyn
 @version    1.0
 '''
@@ -9,23 +9,28 @@ import numpy as np
 import cv2
 import configuration as c
 import loader as l
-import math
 import math_utils as mu
 import procrustes_analysis as pa
 import fitting_function as ff
 
-XS = None
-MS = None
-offsetY = 497.0
-offsetX = 1234.0
+XS = None           #XS contains for each tooth, for each training sample, all landmarks (in the image coordinate frame)
+MS = None           #MS contains for each tooth, the tooth model (in the model coordinate frame)
+offsetY = 497.0     #The landmarks refer to the non-cropped images, so we need the vertical offset (up->down) to locate them on the cropped images.
+offsetX = 1234.0    #The landmarks refer to the non-cropped images, so we need the horizontal offset (left->right) to locate them on the cropped images.
 
 def create_all_gradients_images():
+    '''
+    Stores the gradients of all the preprocessed images corresponding to all methods used.
+    '''
     create_gradients_images(method='SC')
     create_gradients_images(method='SCD')
     create_gradients_images(method='EH')
     create_gradients_images(method='EHD')
 
 def create_gradients_images(method=''):
+    '''
+    Stores the gradients of all the preprocessed images corresponding to the given method.
+    '''
     for i in c.get_trainingSamples_range():
         fname = c.get_fname_vis_pre(i, method)
         img = cv2.imread(fname)
@@ -33,13 +38,25 @@ def create_gradients_images(method=''):
         fname = c.get_fname_vis_ff_gradients(i, method)
         cv2.imwrite(fname, gradient)
     
-def create_all_landmarks_images(): 
+def create_all_landmarks_images():
+    '''
+    Stores all the preprocessed images corresponding to all methods used with the landmarks
+    of the training samples marked.
+    '''
     create_landmarks_images(method='SC')
     create_landmarks_images(method='SCD')
     create_landmarks_images(method='EH')
     create_landmarks_images(method='EHD')    
                 
 def create_landmarks_images(color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0]), color_line=np.array([0,0,255]), method=''):
+    '''
+    Stores all the preprocessed images corresponding to the given method with the landmarks
+    of the training samples marked.
+    @param color_init:  the BGR color for the first landmark. 
+    @param color_mid:   the BGR color for all landmarks except the first and last landmark.
+    @param color_end:   the BGR color for the last landmark.
+    @param color_line:  the BGR color for the line between two consecutive landmarks.
+    '''
     for i in c.get_trainingSamples_range():
         fname = c.get_fname_vis_pre(i, method)
         img = cv2.imread(fname)
@@ -70,13 +87,26 @@ def create_landmarks_images(color_init=np.array([0,255,255]), color_mid=np.array
             fname = c.get_fname_vis_ff_landmarks(i, method)
             cv2.imwrite(fname, img)
             
-def create_all_landmarks_and_models_images(): 
+def create_all_landmarks_and_models_images():
+    '''
+    Stores all the preprocessed images corresponding to all the method used with the landmarks
+    of the training samples and models (transformed to the image coordinate system) marked.
+    '''
     create_landmarks_and_models_images(method='SC')
     create_landmarks_and_models_images(method='SCD')
     create_landmarks_and_models_images(method='EH')
     create_landmarks_and_models_images(method='EHD')
     
 def create_landmarks_and_models_images(color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0]), color_line=np.array([0,0,255]), color_model_line=np.array([255,0,0]), method=''):
+    '''
+    Stores all the preprocessed images corresponding to the given method with the landmarks
+    of the training samples and models (transformed to the image coordinate system) marked.
+    @param color_init:  the BGR color for the first landmark. 
+    @param color_mid:   the BGR color for all landmarks except the first and last landmark.
+    @param color_end:   the BGR color for the last landmark.
+    @param color_line:  the BGR color for the line between two consecutive landmarks of the training samples.
+    @param color_model_line:    the BGR color for the line between two consecutive landmarks of the models.
+    '''
     for i in c.get_trainingSamples_range():
         fname = c.get_fname_vis_pre(i, method)
         img = cv2.imread(fname)
@@ -120,13 +150,25 @@ def create_landmarks_and_models_images(color_init=np.array([0,255,255]), color_m
             fname = c.get_fname_vis_ff_landmarks_and_models(i, method)
             cv2.imwrite(fname, img) 
                         
-def create_all_models_images(): 
+def create_all_models_images():
+    '''
+    Stores all the preprocessed images corresponding to all the method used with the landmarks
+    of the models (transformed to the image coordinate system) marked.
+    ''' 
     create_models_images(method='SC')
     create_models_images(method='SCD')
     create_models_images(method='EH')
     create_models_images(method='EHD') 
     
 def create_models_images(color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0]), color_line=np.array([255,0,0]), method=''):
+    '''
+    Stores all the preprocessed images corresponding to the given method with the landmarks
+    of the models (transformed to the image coordinate system) marked.
+    @param color_init:  the BGR color for the first landmark. 
+    @param color_mid:   the BGR color for all landmarks except the first and last landmark.
+    @param color_end:   the BGR color for the last landmark.
+    @param color_line:  the BGR color for the line between two consecutive landmarks.
+    '''
     for i in c.get_trainingSamples_range():
         fname = c.get_fname_vis_pre(i, method)
         img = cv2.imread(fname)
@@ -157,13 +199,27 @@ def create_models_images(color_init=np.array([0,255,255]), color_mid=np.array([2
             fname = c.get_fname_vis_ff_models(i, method)
             cv2.imwrite(fname, img) 
             
-def create_all_profile_normals_images(): 
+def create_all_profile_normals_images():
+    '''
+    Stores all the preprocessed images corresponding to all the methods used with the landmarks
+    of the models (transformed to the image coordinate system) and the points along the profile
+    normals marked.
+    '''
     create_profile_normals_images(method='SC')
     create_profile_normals_images(method='SCD')
     create_profile_normals_images(method='EH')
     create_profile_normals_images(method='EHD') 
     
 def create_profile_normals_images(color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0]), color_line=np.array([255,0,0]), method=''):
+    '''
+    Stores all the preprocessed images corresponding to the given method with the landmarks
+    of the models (transformed to the image coordinate system) and the points along the profile
+    normals marked.
+    @param color_init:  the BGR color for the first landmark. 
+    @param color_mid:   the BGR color for all landmarks except the first and last landmark.
+    @param color_end:   the BGR color for the last landmark.
+    @param color_line:  the BGR color for the line between two consecutive landmarks.
+    '''
     for i in c.get_trainingSamples_range():
         fname = c.get_fname_vis_pre(i, method)
         img = cv2.imread(fname)
@@ -198,12 +254,25 @@ def create_profile_normals_images(color_init=np.array([0,255,255]), color_mid=np
             cv2.imwrite(fname, img) 
         
 def draw_profile_points(img, Coords, color=np.array([0,255,0])):
+    '''
+    Marks the points along a (single) profile normal on the given image.
+    @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
+    @param img:     the image.
+    @param Coords:  the coordinates for the points along the profile normal.
+    @param color:   the BGR color for the points along the profile normal. 
+    @return  The image with the points along the given profile normal marked.
+    '''
     for i in range(Coords.shape[0] / 2):
         kx = int(Coords[(2*i)])
         ky = int(Coords[(2*i+1)])
         img[ky, kx] = color
             
 def preprocess():
+    '''
+    Creates XS and MS, used by the drawing functions.
+    XS contains for each tooth, for each training sample, all landmarks (in the image coordinate frame)
+    MS contains for each tooth, the tooth model (in the model coordinate frame)
+    '''
     global XS, MS
     XS = l.create_full_XS()
     MS = np.zeros((c.get_nb_teeth(), c.get_nb_dim()))
@@ -212,6 +281,17 @@ def preprocess():
         MS[j,:] = M
         
 def create_all():
+    '''
+    Stores all the preprocessed images corresponding to all the methods used for all the visualizations:
+        * Stores the gradients of all the preprocessed images corresponding to all methods used.
+        * Stores all the preprocessed images corresponding to all methods used with the landmarks
+          of the training samples marked.
+        * Stores all the preprocessed images corresponding to all the method used with the landmarks
+          of the models (transformed to the image coordinate system) marked.
+        * Stores all the preprocessed images corresponding to all the methods used with the landmarks
+          of the models (transformed to the image coordinate system) and the points along the profile
+          normals marked.
+    '''
     create_all_gradients_images()
     create_all_landmarks_images()
     create_all_landmarks_and_models_images()
@@ -219,5 +299,7 @@ def create_all():
     create_all_profile_normals_images()
 
 if __name__ == '__main__':
+    #preprocess for visualizations
     preprocess()
+    #store all visualizations
     create_all()
