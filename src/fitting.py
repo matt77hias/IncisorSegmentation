@@ -17,7 +17,7 @@ import fitting_function as ff
 from matplotlib import pyplot
 
 MS = None                       #MS contains for each tooth, the tooth model (in the model coordinate frame)
-EWS = []                        #EWS contains for each tooth, a (Eigenvalues, Eigenvectors) pair (in the model coordinate frame)
+EWS = []                        #EWS contains for each tooth, a (sqrt(Eigenvalues), Eigenvectors) pair (in the model coordinate frame)
 fs = None                       #fitting function for each tooth, for each landmark.
 
 offsetY = 497.0                 #The landmarks refer to the non-cropped images, so we need the vertical offset (up->down)
@@ -94,19 +94,7 @@ def validate(img, tooth_index, P, nb_it, show=False):
     PY_before = mu.full_align(P, tx, ty, s, theta)
     
     bs = pca.project(W, PY_before, MU)
-    for i in range(E.shape[0]):
-        b_min = -tolerable_deviation*math.sqrt(E[i])
-        b_max =  tolerable_deviation*math.sqrt(E[i])
-        b = bs[i]
-        
-        print(str(b_min) + ' # ' + str(b) + ' # ' + str(b_max))
-        
-        if b < b_min: 
-            bs[i] = b_min
-            print ('min')
-        if b > b_max: 
-            bs[i] = b_max
-            print ('max')
+    bs = np.maximum(np.minimum(bs, tolerable_deviation*E), -tolerable_deviation*E)
 
     PY_after = pca.reconstruct(W, bs, MU)
     P_after = mu.full_align(PY_after, xm, ym, 1.0 / s, -theta)
@@ -211,7 +199,7 @@ def preprocess(trainingSamples):
     '''
     Creates MS, EWS and fs, used by the fitting procedure
         * MS contains for each tooth, the tooth model (in the model coordinate frame)
-        * EWS contains for each tooth, a (Eigenvalues, Eigenvectors) pair (in the model coordinate frame)
+        * EWS contains for each tooth, a (sqrt(Eigenvalues), Eigenvectors) pair (in the model coordinate frame)
         * fitting function for each tooth, for each landmark.
     '''
     global MS, EWS, fs
@@ -222,7 +210,7 @@ def preprocess(trainingSamples):
         M, Y = pa.PA(XS[j,:,:])
         MS[j,:] = M
         E, W, MU = pca.pca_percentage(Y)
-        EWS.append((E, W))
+        EWS.append((np.sqrt(E), W))
 
     GS = ff.create_partial_GS(trainingSamples, XS, MS, offsetX=offsetX, offsetY=offsetY, k=k, method=method)
     fs = ff.create_fitting_functions(GS)
