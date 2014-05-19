@@ -41,10 +41,10 @@ def fit_tooth(img, P, tooth_index, show=False):
         pxs, pys = mu.extract_coordinates(P)
         for i in range(c.get_nb_landmarks()):
             Gi, Coords = ff.create_Gi(gradient, m, i, pxs, pys)
-            f_optimal = fs[tooth_index][i](mu.normalize_vector(Gi[0:2*k+1]))
+            f_optimal = fs[tooth_index][i](ff.normalize_Gi(Gi[0:2*k+1]))
             c_optimal = k
             for t in range(1,nb_tests):
-                f = fs[tooth_index][i](mu.normalize_vector(Gi[t:t+2*k+1]))
+                f = fs[tooth_index][i](ff.normalize_Gi(Gi[t:t+2*k+1]))
                 if f < f_optimal:
                     f_optimal = f
                     c_optimal = t+k

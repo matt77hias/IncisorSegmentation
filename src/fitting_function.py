@@ -52,8 +52,16 @@ def create_G(img, k, xs, ys, offsetX=0, offsetY=0):
     G = np.zeros((c.get_nb_landmarks(), 2*k+1))
     for i in range(c.get_nb_landmarks()):
         Gi, Coords = create_Gi(img, k, i, xs, ys, offsetX, offsetY)
-        G[i,:] = mu.normalize_vector(Gi)
+        G[i,:] = normalize_Gi(Gi)
     return G
+    
+def normalize_Gi(Gi):
+    norm = 0
+    for i in range(Gi.shape[0]):
+        norm += abs(Gi[i])
+    if norm==0: 
+        return Gi
+    return Gi/norm
     
 def create_Gi(img, k, i, xs, ys, offsetX=0, offsetY=0, sx=1, sy=1):
     x = xs[i] - offsetX
@@ -103,7 +111,7 @@ def create_raw_Gi(img, k, x, y, nx, ny):
     Coords = np.zeros(2*(2*k+1))
     
     index = 0
-    for i in range(1,k+1):
+    for i in range(k,0,-1):
         kx = int(x + i * nx)
         ky = int(y + i * ny)
         Gi[index] = img[ky,kx,0]
