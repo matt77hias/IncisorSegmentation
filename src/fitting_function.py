@@ -1,6 +1,6 @@
 '''
 Construction of the fitting functions (for each tooth, for each landmark)
-by sampling the along the profile normal to the boundary in the training set
+by sampling along the profile normal to the boundary in the training set
 and building a statistical model of the grey-level structure.
 @author     Matthias Moulin & Milan Samyn
 @version    1.0
@@ -16,7 +16,7 @@ import math_utils as mu
 def create_fitting_functions(GS):
     '''
     Creates the fitting function for each tooth, for each landmark.
-    @param GS:              the matrix GS wich contains for each tooth, for each of the given training samples,
+    @param GS:              the matrix GS which contains for each tooth, for each of the given training samples,
                             for each landmark, a normalized sample (along the profile normal through that landmark)
     @return The fitting function for each tooth, for each landmark.
     '''          
@@ -27,8 +27,8 @@ def get_fitting_function(tooth_index, landmark_index, GS):
     '''
     Creates the fitting function for the given tooth index, for the given landmark index.
     @param tooth_index:     the index of the tooth (in GS)
-    @param landmark_index:  the index of the landmark (n GS)
-    @param GS:              the matrix GS wich contains for each tooth, for each of the given training samples,
+    @param landmark_index:  the index of the landmark (in GS)
+    @param GS:              the matrix GS which contains for each tooth, for each of the given training samples,
                             for each landmark, a normalized sample (along the profile normal through that landmark)
     @return The fitting function for the given tooth index, for the given landmark index.
     '''
@@ -38,32 +38,33 @@ def get_fitting_function(tooth_index, landmark_index, GS):
         G[i,:] = GS[tooth_index, i, landmark_index, :]
     
     G -= G.mean(axis=0)[None, :]
-    C = (np.dot(G.T, G) / float(G.shape[0]))
-    g_mu = G.mean(axis=0)
+    C = (np.dot(G.T, G) / float(G.shape[0])) #Covariance matrix
+    g_mu = G.mean(axis=0) #Model mean
     
-    def fitting_function(g):
+    def fitting_function(gs):
         '''
-        Calculate the Mahalanobis distance for the given sample
-        @param: g           the sample
-        @return The Mahalanobis distance for the given sample
+        Calculate the Mahalanobis distance for the given sample.
+        @param: gs           the new sample
+        @return The Mahalanobis distance for the given sample.
         '''
         #Use the Moore-Penrose pseudo-inverse because C can be singular
-        return dist.mahalanobis(g, g_mu, np.linalg.pinv(C))
+        #return np.dot(np.transpose(gs - g_mu), np.dot(np.linalg.pinv(C), (gs - g_mu)))
+        return dist.mahalanobis(gs, g_mu, np.linalg.pinv(C))
 
     return fitting_function  
     
 def create_partial_GS(trainingSamples, XS, MS, offsetX=0, offsetY=0, k=5, method=''):
     '''
-    Creates the matrix GS wich contains for each tooth, for each of the given training samples,
+    Creates the matrix GS which contains for each tooth, for each of the given training samples,
     for each landmark, a normalized sample (along the profile normal through that landmark).
     @param trainingSamples: the number of the training samples (not the test training samples!)
     @param XS:              contains for each tooth, for each training sample, all landmarks (in the image coordinate frame)
     @param MS:              contains for each tooth, the tooth model (in the model coordinate frame)
-    @param offsetX:         the offset in x direction (used when working with corpped images and non-cropped landmarks)
-    @param offsetY:         the offset in y direction (used when working with corpped images and non-cropped landmarks)
+    @param offsetX:         the possible offset in x direction (used when working with cropped images and non-cropped landmarks)
+    @param offsetY:         the possible offset in y direction (used when working with cropped images and non-cropped landmarks)
     @param k:               the number of pixels to sample either side for each of the model points along the profile normal
-    @param method:          the method used for preproccesing
-    @return The matrix GS wich contains for each tooth, for each of the given training samples,
+    @param method:          the method used for preprocessing
+    @return The matrix GS which contains for each tooth, for each of the given training samples,
             for each landmark, a normalized sample (along the profile normal through that landmark).
     '''
     gradients = create_gradients(trainingSamples, method)
@@ -77,10 +78,10 @@ def create_partial_GS(trainingSamples, XS, MS, offsetX=0, offsetY=0, k=5, method
     
 def create_gradients(trainingSamples, method=''):
     '''
-    Creates the gradient image for each of the given preprocced training samples with the given method.
+    Creates the gradient image for each of the given preprocessed training samples with the given method.
     @param trainingSamples: the number of the training samples
-    @param method:          the method used for preproccesing
-    @return The gradient image for each of the given preprocced training samples with the given method.
+    @param method:          the method used for preprocessing
+    @return The gradient image for each of the given preprocessed training samples with the given method.
     '''
     index = 0
     for i in trainingSamples:
@@ -94,7 +95,7 @@ def create_gradients(trainingSamples, method=''):
     
 def create_gradient(img):
     '''
-    Creates the gradient image for the given image by differentiate in x and y direction.
+    Creates the gradient image for the given image by differentiating in x and y direction.
     @param img:          the image
     @return The gradient image.
     '''
@@ -115,8 +116,8 @@ def create_G(img, k, xs, ys, offsetX=0, offsetY=0):
     @param i:            the index of the model point
     @param xs:           x positions of the model points in the image
     @param ys:           y positions of the model points in the image
-    @param offsetX:      the offset in x direction (used when working with corpped images and non-cropped xs & ys)
-    @param offsetY:      the offset in y direction (used when working with corpped images and non-cropped xs & ys)
+    @param offsetX:      the possible offset in x direction (used when working with cropped images and non-cropped xs & ys)
+    @param offsetY:      the possible offset in y direction (used when working with cropped images and non-cropped xs & ys)
     @return The matrix G, which contains for each landmark a normalized sample.
     '''
     G = np.zeros((c.get_nb_landmarks(), 2*k+1))
@@ -129,12 +130,12 @@ def normalize_Gi(Gi):
     '''
     Normalizes the given sample Gi by dividing through by the sum of the
     absolute element values.
-    @param Gi:           the sample to normalize.
+    @param Gi:           the sample to normalize
     @return The normalized sample.
     '''
     norm = 0
-    for i in range(Gi.shape[0]):
-        norm += abs(Gi[i])
+    for j in range(Gi.shape[0]):
+        norm += abs(Gi[j])
     if norm==0: 
         return Gi
     return Gi/norm
@@ -149,8 +150,8 @@ def create_Gi(img, k, i, xs, ys, offsetX=0, offsetY=0, sx=1, sy=1):
     @param i:            the index of the model point
     @param xs:           x positions of the model points in the image
     @param ys:           y positions of the model points in the image
-    @param offsetX:      the offset in x direction (used when working with corpped images and non-cropped xs & ys)
-    @param offsetY:      the offset in y direction (used when working with corpped images and non-cropped xs & ys)
+    @param offsetX:      the possible offset in x direction (used when working with cropped images and non-cropped xs & ys)
+    @param offsetY:      the possible offset in y direction (used when working with cropped images and non-cropped xs & ys)
     @param sx:           the step to multiply the profile normal x-change in direction with
     @param sy:           the step to multiply the profile normal y-change in direction with
     @return The (non-normalized) vector Gi and a vector containing the coordinates
