@@ -66,50 +66,24 @@ def create_partial_GS(trainingSamples, XS, MS, offsetX=0, offsetY=0, k=5, method
     @return The matrix GS wich contains for each tooth, for each of the given training samples,
             for each landmark, a normalized sample (along the profile normal through that landmark).
     '''
-    gradients = create_gradients(trainingSamples, method)
     GS = np.zeros((c.get_nb_teeth(), len(trainingSamples), c.get_nb_landmarks(), 2*k+1))
     for j in range(c.get_nb_teeth()):
-        for i in range(len(trainingSamples)):
+        index = 0
+        for i in trainingSamples:
             # tooth j model in model coordinate frame to image coordinate frame
-            xs, ys = mu.extract_coordinates(mu.full_align_with(MS[j], XS[j,i,:]))
-            GS[j,i,:] = create_G(gradients[i,:], k, xs, ys, offsetX, offsetY)
+            xs, ys = mu.extract_coordinates(mu.full_align_with(MS[j], XS[j,index,:]))
+            fname = c.get_fname_vis_pre(i, method)
+            img = cv2.imread(fname)
+            GS[j,index,:] = create_G(img, k, xs, ys, offsetX, offsetY)
+            index += 1
     return GS
-    
-def create_gradients(trainingSamples, method=''):
-    '''
-    Creates the gradient image for each of the given preprocced training samples with the given method.
-    @param trainingSamples: the number of the training samples
-    @param method:          the method used for preproccesing
-    @return The gradient image for each of the given preprocced training samples with the given method.
-    '''
-    index = 0
-    for i in trainingSamples:
-        fname = c.get_fname_vis_pre(i, method)
-        img = cv2.imread(fname)
-        if index == 0: 
-            gradients = np.zeros((len(trainingSamples), img.shape[0], img.shape[1], img.shape[2]))
-        gradients[index,:] = create_gradient(img)
-        index += 1
-    return gradients
-    
-def create_gradient(img):
-    '''
-    Creates the gradient image for the given image by differentiate in x and y direction.
-    @param img:          the image
-    @return The gradient image.
-    '''
-    #When the size of the kernel is 3, the Sobel kernel may produce noticeable inaccuracies
-    #(after all, Sobel is only an approximation of the derivative). OpenCV addresses this
-    #inaccuracy for kernels of size 3 by using the Scharr function.
-    temp = cv2.Scharr(img, ddepth=-1, dx=1, dy=0)
-    return cv2.Scharr(temp, ddepth=-1, dx=0, dy=1)
                  
 def create_G(img, k, xs, ys, offsetX=0, offsetY=0):
     '''
     Sample along the profile normal k pixels either side for each of the given model
     points (xs[i], ys[i]) in the given image to create the matrix G, which contains
     for each landmark a normalized sample.
-    @param img:          the (gradient) image
+    @param img:          the image
     @param k:            the number of pixels to sample either side for each of the
                          given model points (xs[i], ys[i]) along the profile normal
     @param i:            the index of the model point
@@ -143,7 +117,7 @@ def create_Gi(img, k, i, xs, ys, offsetX=0, offsetY=0, sx=1, sy=1):
     '''
     Sample along the profile normal k pixels either side of the given model point (xs[i], ys[i])
     in the given image to create a (non-normalized) vector Gi.
-    @param img:          the (gradient) image
+    @param img:          the image
     @param k:            the number of pixels to sample either side of the given model
                          point (xs[i], ys[i]) along the profile normal
     @param i:            the index of the model point
@@ -191,7 +165,7 @@ def create_raw_Gi(img, k, x, y, nx, ny):
     '''
     Sample along the profile normal characterized by (nx, ny) k pixels either side
     of the given model point (x, y) in the given image to create a (non-normalized) vector Gi.
-    @param img:          the (gradient) image
+    @param img:          the image
     @param k:            the number of pixels to sample either side of the given model
                          point along the profile normal characterized by (nx, ny)
     @param x:            x position of the model point in the image
@@ -202,13 +176,13 @@ def create_raw_Gi(img, k, x, y, nx, ny):
             of all the sample points used. (First the most distant point when adding
             a positive change, last the most distant point when adding a negative change) 
     '''
-    Gi = np.zeros((2*k+1))         #2k + 1 samples
-    Coords = np.zeros(2*(2*k+1))
+    Gi = np.zeros((2*k+2))
+    Coords = np.zeros(2*(2*k+2))
     
     index = 0
-    for i in range(k,0,-1):
-        kx = int(x + i * nx)
-        ky = int(y + i * ny)
+    for i in range(k+1,0,-1):
+        kx = int(x - i * nx)
+        ky = int(y - i * ny)
         Gi[index] = img[ky,kx,0]
         Coords[(2*index)] = kx
         Coords[(2*index+1)] = ky
@@ -220,12 +194,14 @@ def create_raw_Gi(img, k, x, y, nx, ny):
     index += 1
         
     for i in range(1,k+1):
-        kx = int(x - i * nx)
-        ky = int(y - i * ny)
+        kx = int(x + i * nx)
+        ky = int(y + i * ny)
         Gi[index] = img[ky,kx,0]
         Coords[(2*index)] = kx
         Coords[(2*index+1)] = ky
         index += 1
+        
+    Gi = (Gi[1:] - Gi[:-1])
     
     #We explicitly don't want a normalized vector at this stage
-    return Gi, Coords
+    return Gi, Coords[2:]

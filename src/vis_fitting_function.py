@@ -17,26 +17,6 @@ XS = None           #XS contains for each tooth, for each training sample, all l
 MS = None           #MS contains for each tooth, the tooth model (in the model coordinate frame)
 offsetY = 497.0     #The landmarks refer to the non-cropped images, so we need the vertical offset (up->down) to locate them on the cropped images.
 offsetX = 1234.0    #The landmarks refer to the non-cropped images, so we need the horizontal offset (left->right) to locate them on the cropped images.
-
-def create_all_gradients_images():
-    '''
-    Stores the gradients of all the preprocessed images corresponding to all methods used.
-    '''
-    create_gradients_images(method='SC')
-    create_gradients_images(method='SCD')
-    create_gradients_images(method='EH')
-    create_gradients_images(method='EHD')
-
-def create_gradients_images(method=''):
-    '''
-    Stores the gradients of all the preprocessed images corresponding to the given method.
-    '''
-    for i in c.get_trainingSamples_range():
-        fname = c.get_fname_vis_pre(i, method)
-        img = cv2.imread(fname)
-        gradient = ff.create_gradient(img)
-        fname = c.get_fname_vis_ff_gradients(i, method)
-        cv2.imwrite(fname, gradient)
     
 def create_all_landmarks_images():
     '''
@@ -287,7 +267,6 @@ def preprocess():
 def create_all():
     '''
     Stores all the preprocessed images corresponding to all the methods used for all the visualizations:
-        * Stores the gradients of all the preprocessed images corresponding to all methods used.
         * Stores all the preprocessed images corresponding to all methods used with the landmarks
           of the training samples marked.
         * Stores all the preprocessed images corresponding to all the method used with the landmarks
@@ -296,7 +275,6 @@ def create_all():
           of the models (transformed to the image coordinate system) and the points along the profile
           normals marked.
     '''
-    create_all_gradients_images()
     create_all_landmarks_images()
     create_all_landmarks_and_models_images()
     create_all_models_images()

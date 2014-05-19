@@ -8,7 +8,6 @@ import configuration as c
 import loader as l
 import numpy as np
 import cv2
-import math
 import math_utils as mu
 import procrustes_analysis as pa
 import principal_component_analysis as pca
@@ -51,15 +50,13 @@ def fit_tooth(img, P, tooth_index, show=False):
     @param tooth_index:     the index of the the target tooth (used in MS, EWS, fs)
     @param show:            must the intermediate results (after each iteration) be displayed
     '''
-    gradient = ff.create_gradient(img)
     nb_tests = 2*(m-k)+1
-    
     nb_it = 1
     convergence = False
     while (not convergence) :
         pxs, pys = mu.extract_coordinates(P)
         for i in range(c.get_nb_landmarks()):
-            Gi, Coords = ff.create_Gi(gradient, m, i, pxs, pys)
+            Gi, Coords = ff.create_Gi(img, m, i, pxs, pys)
             f_optimal = fs[tooth_index][i](ff.normalize_Gi(Gi[0:2*k+1]))
             c_optimal = k
             for t in range(1,nb_tests):
