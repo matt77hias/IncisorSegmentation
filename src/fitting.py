@@ -30,7 +30,7 @@ m = 10                          #The number of pixels to sample either side for 
                                 #(used while iterating)
 method='SCD'                    #The method used for preproccesing.
 
-convergence_threshold = 0.0001  #The convergence threshold (used while iterating).
+convergence_threshold = 0.002  #The convergence threshold (used while iterating).
 tolerable_deviation = 3         #The number of deviations that are tolerable by the models (used for limiting the shape).
 
 def fit_all_teeth(img, PS):
@@ -68,17 +68,20 @@ def fit_tooth(img, P, tooth_index, show=False):
             pys[i] = Coords[(2*c_optimal+1)]
         
         P_new = validate(img, tooth_index, mu.zip_coordinates(pxs, pys), nb_it, show)
-        if (np.linalg.norm(P-P_new) < convergence_threshold): convergence = True    
+        conv  = np.linalg.norm(P-P_new)/np.linalg.norm(P)
+        print (conv)
+        if (conv < convergence_threshold): convergence = True    
         
         P = P_new
         nb_it += 1
                 
-def validate(img, tooth_index, P, nb_it, show=False):
+def validate(img, tooth_index, P_before, nb_it, show=False):
     '''
     Validates the current points P for the target tooth corresponding to the given
     tooth index.
     @param img:             the image
-    @param P:               the current points for the target tooth
+    @param P_before:        the current points for the target tooth before validation
+                            in the image coordinate frame
     @param tooth_index:     the index of the the target tooth (used in MS, EWS, fs)
     @param nb_it:           the number of this iteration
     @param show:            must the intermediate results (after each iteration) be displayed
@@ -86,9 +89,9 @@ def validate(img, tooth_index, P, nb_it, show=False):
     MU = MS[tooth_index]
     E, W = EWS[tooth_index]
 
-    xm, ym = mu.get_center_of_gravity(P)
-    tx, ty, s, theta = mu.full_align_params(P, MU)
-    PY_before = mu.full_align(P, tx, ty, s, theta)
+    xm, ym = mu.get_center_of_gravity(P_before)
+    tx, ty, s, theta = mu.full_align_params(P_before, MU)
+    PY_before = mu.full_align(P_before, tx, ty, s, theta)
     
     bs = pca.project(W, PY_before, MU)
     bs = np.maximum(np.minimum(bs, tolerable_deviation*E), -tolerable_deviation*E)
@@ -98,7 +101,7 @@ def validate(img, tooth_index, P, nb_it, show=False):
     
     if (show): 
         show_validation(nb_it, PY_before, PY_after, tooth_index)
-        show_interation(np.copy(img), nb_it, P, P_after)
+        show_interation(np.copy(img), nb_it, P_before, P_after)
         cv2.waitKey(0)
         pyplot.close()
 

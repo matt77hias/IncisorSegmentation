@@ -20,7 +20,6 @@ dir_vis_landmarks = "data/Visualizations/Landmarks"
 dir_vis_pa = "data/Visualizations/PA"
 dir_vis_pca = "data/Visualizations/PCA"
 dir_vis_pre = "data/Visualizations/Preproccess"
-dir_vis_ff_gradients = "data/Visualizations/Fitting Function/Gradients"
 dir_vis_ff_landmarks = "data/Visualizations/Fitting Function/Landmarks"
 dir_vis_ff_landmarks_and_models = "data/Visualizations/Fitting Function/Landmarks and Models"
 dir_vis_ff_models = "data/Visualizations/Fitting Function/Models"
@@ -73,10 +72,7 @@ def get_dir_vis_pca():
     return get_dir_prefix() + dir_vis_pca 
 
 def get_dir_vis_pre():
-    return get_dir_prefix() + dir_vis_pre    
-    
-def get_dir_vis_ff_gradients():
-    return get_dir_prefix() + dir_vis_ff_gradients  
+    return get_dir_prefix() + dir_vis_pre     
     
 def get_dir_vis_ff_landmarks():
     return get_dir_prefix() + dir_vis_ff_landmarks  
@@ -189,20 +185,6 @@ def get_fname_vis_pre(nr_trainingSample, method=''):
     if (nr_trainingSample < 10):
         s = '/' + method + '0'
     fname = (get_dir_vis_pre() + s + str(nr_trainingSample) + '.png')
-    
-    if (not is_valid_trainingSample(nr_trainingSample)):
-        raise InvalidFileName(fname)
-    
-    return fname
-    
-def get_fname_vis_ff_gradients(nr_trainingSample, method=''):
-    if (not is_valid_trainingSample(nr_trainingSample)):
-        raise InvalidFileName
-    
-    s = '/' + method
-    if (nr_trainingSample < 10):
-        s = '/' + method + '0'
-    fname = (get_dir_vis_ff_gradients() + s + str(nr_trainingSample) + '.png')
     
     if (not is_valid_trainingSample(nr_trainingSample)):
         raise InvalidFileName(fname)
