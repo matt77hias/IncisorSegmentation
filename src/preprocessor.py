@@ -211,6 +211,11 @@ def plot_histogram_of_image(image):
     pyplot.show()
     
 def invert(image):
+    '''
+    Inverts the colors of the given image.
+    @param image:               the image
+    @return The image with the colors inverted.
+    '''
     img = np.copy(image)
     for y in range(image.shape[0]):
         for x in range(image.shape[1]):
