@@ -193,16 +193,19 @@ def create_all_profile_normals_images():
     create_profile_normals_images(method='EH')
     create_profile_normals_images(method='EHD') 
     
-def create_profile_normals_images(color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0]), color_line=np.array([255,0,0]), method=''):
+def create_profile_normals_images(k=5, color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0]), color_line=np.array([255,0,0]), color_profile_point=np.array([0,255,0]), method=''):
     '''
     Stores all the preprocessed images corresponding to the given method with the landmarks
     of the models (transformed to the image coordinate system) and the points along the profile
     normals marked.
-    @param color_init:  the BGR color for the first landmark 
-    @param color_mid:   the BGR color for all landmarks except the first and last landmark
-    @param color_end:   the BGR color for the last landmark
-    @param color_line:  the BGR color for the line between two consecutive landmarks
-    @param method:      the method used for preproccesing
+    @param k:                       the number of profile points along either side
+                                    of the profile normal and profile tangent
+    @param color_init:              the BGR color for the first landmark 
+    @param color_mid:               the BGR color for all landmarks except the first and last landmark
+    @param color_end:               the BGR color for the last landmark
+    @param color_line:              the BGR color for the line between two consecutive landmarks
+    @param color_profile_point:     the BGR color for the profile points
+    @param method:                  the method used for preproccesing
     '''
     for i in c.get_trainingSamples_range():
         fname = c.get_fname_vis_pre(i, method)
@@ -210,30 +213,30 @@ def create_profile_normals_images(color_init=np.array([0,255,255]), color_mid=np
         for j in range(c.get_nb_teeth()):
             xs, ys = mu.extract_coordinates(mu.full_align_with(MS[j], XS[j,(i-1),:]))
             
-            for k in range(c.get_nb_landmarks()):
-                x = int(xs[k] - offsetX)
-                y = int(ys[k] - offsetY)
-                if (k == c.get_nb_landmarks()-1):
+            for l in range(c.get_nb_landmarks()):
+                x = int(xs[l] - offsetX)
+                y = int(ys[l] - offsetY)
+                if (l == c.get_nb_landmarks()-1):
                     x_succ = int(xs[0] - offsetX)
                     y_succ = int(ys[0] - offsetY)
                 else:
-                    x_succ = int(xs[(k+1)] - offsetX)
-                    y_succ = int(ys[(k+1)] - offsetY)
+                    x_succ = int(xs[(l+1)] - offsetX)
+                    y_succ = int(ys[(l+1)] - offsetY)
                 cv2.line(img, (x,y), (x_succ,y_succ), color_line)
           
-            for k in range(c.get_nb_landmarks()):
-                x = int(xs[k] - offsetX)
-                y = int(ys[k] - offsetY)
-                tx, ty, nx, ny = ff.create_ricos(img, k, xs, ys)
-                for n in range(-5, 5+1):
-                    for t in range(-5, 5+1):
+            for l in range(c.get_nb_landmarks()):
+                x = int(xs[l] - offsetX)
+                y = int(ys[l] - offsetY)
+                tx, ty, nx, ny = ff.create_ricos(img, l, xs, ys)
+                for n in range(-k, k+1):
+                    for t in range(-k, k+1):
                         kx = round(x + n * nx + t * tx)
                         ky = round(y + n * ny + t * ty)
-                        img[ky, kx] = np.array([0,255,0])
+                        img[ky, kx] = color_profile_point
                 
-                if (k == 0):
+                if (l == 0):
                     img[y,x] = color_init
-                elif (k == c.get_nb_landmarks()-1):
+                elif (l == c.get_nb_landmarks()-1):
                     img[y,x] = color_end
                 else:
                     img[y,x] = color_mid

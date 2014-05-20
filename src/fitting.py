@@ -17,30 +17,35 @@ from matplotlib import pyplot
 
 MS = None                       #MS contains for each tooth, the tooth model (in the model coordinate frame)
 EWS = []                        #EWS contains for each tooth, a (sqrt(Eigenvalues), Eigenvectors) pair (in the model coordinate frame)
-fns = None                      #fitting function for each tooth, for each landmark.
-fts = None 
+fns = None                      #fitting functions for each tooth, for each landmark, for the profile normal through that landmark.
+fts = None                      #fitting functions for each tooth, for each landmark, for the profile gradient through that landmark.
 
 offsetY = 497.0                 #The landmarks refer to the non-cropped images, so we need the vertical offset (up->down)
                                 #to locate them on the cropped images.
 offsetX = 1234.0                #The landmarks refer to the non-cropped images, so we need the horizontal offset (left->right)
                                 #to locate them on the cropped images.
 
-k = 5                          #The number of pixels to sample either side for each of the model points along the profile normal
+k = 5                           #The number of pixels to sample either side for each of the model points along the profile normal
                                 #(used for creating the fitting functions)
-m = 8                          #The number of pixels to sample either side for each of the model points along the profile normal
+m = 8                           #The number of pixels to sample either side for each of the model points along the profile normal
                                 #(used while iterating)
 method='SCD'                    #The method used for preproccesing.
 
-convergence_threshold = 0.002    #The convergence threshold (used while iterating).
+convergence_threshold = 0.002   #The convergence threshold (used while iterating).
 tolerable_deviation = 3         #The number of deviations that are tolerable by the models (used for limiting the shape).
 
-def fit_tooth(img, P, tooth_index, show=False):
+def fit_tooth(img, P, tooth_index, fitting_function=0, show=False):
     '''
     Fits the tooth corresponding to the given tooth index in the given image.
-    @param img:             the image  
-    @param P:               the start points for the target tooth
-    @param tooth_index:     the index of the the target tooth (used in MS, EWS, fs)
-    @param show:            must the intermediate results (after each iteration) be displayed
+    @param img:                 the image  
+    @param P:                   the start points for the target tooth
+    @param tooth_index:         the index of the the target tooth (used in MS, EWS, fs)
+    @param fitting_function:    the fitting function used
+                                * 0: fitting function along profile normal through landmark +
+                                     fitting function along profile gradient through landmark
+                                * 1: fitting function along profile normal through landmark
+                                * 2: fitting function along profile gradient through landmark
+    @param show:                must the intermediate results (after each iteration) be displayed
     @return The fitted points for the tooth corresponding to the given tooth index
             and the number of iterations used.
     '''
@@ -58,7 +63,7 @@ def fit_tooth(img, P, tooth_index, show=False):
                     y = round(pys[i] + n * ny + t * ty)
                     fn = fns[tooth_index][i](ff.normalize_Gi(ff.create_Gi(img, k, x, y, nx, ny)))
                     ft = fts[tooth_index][i](ff.normalize_Gi(ff.create_Gi(img, k, x, y, tx, ty)))
-                    f = abs(fn) + abs(ft)
+                    f = evaluate_fitting(fn=fn, ft=ft, fitting_function=fitting_function)
                     if f < f_optimal:
                         f_optimal = f
                         cx = x
@@ -85,6 +90,27 @@ def fit_tooth(img, P, tooth_index, show=False):
         
     print('Fitting number of iterations: ' + str(nb_it))
     return P, nb_it
+    
+def evaluate_fitting(fn=0, ft=0, fitting_function=0):
+    ''''
+    Evaluates the fitting function.
+    @param fn:                  the fitting function evaluated along the profile normal
+    @param ft:                  the fitting function evaluated along the profile gradient
+    @param fitting_function:    the fitting function used
+                                * 0: fitting function along profile normal through landmark +
+                                     fitting function along profile gradient through landmark
+                                * 1: fitting function along profile normal through landmark
+                                * 2: fitting function along profile gradient through landmark
+    @return The evaluated fitting function.
+    '''
+    if (fitting_function==0):
+        return fn + ft
+    elif (fitting_function==1):
+        return fn
+    elif (fitting_function==1):
+        return ft
+    else:
+        return 0
                 
 def validate(img, tooth_index, P_before, nb_it, show=False):
     '''
