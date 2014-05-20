@@ -49,13 +49,8 @@ def get_fitting_function(tooth_index, landmark_index, GS):
         @param: gs           the new sample
         @return The Mahalanobis distance for the given sample.
         '''
-<<<<<<< HEAD
         #return np.dot(np.transpose(gs - g_mu), np.dot(np.linalg.pinv(C), (gs - g_mu)))
         return dist.mahalanobis(gs, g_mu, C)
-=======
-        #Use the Moore-Penrose pseudo-inverse because C can be singular
-        return dist.mahalanobis(gs, g_mu, np.linalg.pinv(C))
->>>>>>> 949bf36b64f2f3beec49549ce56ef785fd3ffcf6
 
     return fitting_function  
     
@@ -103,7 +98,6 @@ def create_G(img, k, xs, ys, offsetX=0, offsetY=0):
     @param offsetY:      the possible offset in y direction (used when working with cropped images and non-cropped xs & ys)
     @return The matrix G, which contains for each landmark a normalized sample.
     '''
-<<<<<<< HEAD
     GN = np.zeros((c.get_nb_landmarks(), 2*k+1))
     GT = np.zeros((c.get_nb_landmarks(), 2*k+1))
     for i in range(c.get_nb_landmarks()):
@@ -113,13 +107,6 @@ def create_G(img, k, xs, ys, offsetX=0, offsetY=0):
         GN[i,:] = normalize_Gi(create_Gi(img, k, x, y, nx, ny))
         GT[i,:] = normalize_Gi(create_Gi(img, k, x, y, tx, ty))
     return GN, GT
-=======
-    G = np.zeros((c.get_nb_landmarks(), 2*k+1))
-    for i in range(c.get_nb_landmarks()): #For all model points of a certain tooth model
-        Gi, Coords = create_Gi(img, k, i, xs, ys, offsetX, offsetY)
-        G[i,:] = normalize_Gi(Gi)
-    return G
->>>>>>> 949bf36b64f2f3beec49549ce56ef785fd3ffcf6
     
 def normalize_Gi(Gi):
     '''
@@ -197,31 +184,19 @@ def create_Gi(img, k, x, y, dx, dy):
     '''
     Gi = np.zeros((2*k+2))    
     index = 0
-<<<<<<< HEAD
     
     for i in range(k+1,0,-1):
         kx = int(x - i * dx)
         ky = int(y - i * dy)
-=======
-    for i in range(k+1,0,-1): #Downwards the normal
-        kx = int(x - i * nx)
-        ky = int(y - i * ny)
->>>>>>> 949bf36b64f2f3beec49549ce56ef785fd3ffcf6
         Gi[index] = img[ky,kx,0]
         index += 1
         
     Gi[index] = img[y,x,0] #The model point itself
     index += 1
         
-<<<<<<< HEAD
     for i in range(1,k+1):
         kx = int(x + i * dx)
         ky = int(y + i * dy)
-=======
-    for i in range(1,k+1): #Upwards the normal
-        kx = int(x + i * nx)
-        ky = int(y + i * ny)
->>>>>>> 949bf36b64f2f3beec49549ce56ef785fd3ffcf6
         Gi[index] = img[ky,kx,0]
         index += 1
        
