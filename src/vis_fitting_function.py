@@ -222,11 +222,15 @@ def create_profile_normals_images(color_init=np.array([0,255,255]), color_mid=np
                 cv2.line(img, (x,y), (x_succ,y_succ), color_line)
           
             for k in range(c.get_nb_landmarks()):
-                Gi, Coords = ff.create_Gi(img, 5, k, xs, ys, offsetX, offsetY, sx=1, sy=1)
-                draw_profile_points(img, Coords)
-                
                 x = int(xs[k] - offsetX)
                 y = int(ys[k] - offsetY)
+                tx, ty, nx, ny = ff.create_ricos(img, k, xs, ys)
+                for n in range(-5, 5+1):
+                    for t in range(-5, 5+1):
+                        kx = int(x + n * nx + t * tx)
+                        ky = int(y + n * ny + t * ty)
+                        img[ky, kx] = np.array([0,255,0])
+                
                 if (k == 0):
                     img[y,x] = color_init
                 elif (k == c.get_nb_landmarks()-1):
@@ -236,20 +240,6 @@ def create_profile_normals_images(color_init=np.array([0,255,255]), color_mid=np
                 
             fname = c.get_fname_vis_ff_profile_normals(i, method)
             cv2.imwrite(fname, img) 
-        
-def draw_profile_points(img, Coords, color=np.array([0,255,0])):
-    '''
-    Marks the points along a (single) profile normal on the given image.
-    @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
-    @param img:     the image.
-    @param Coords:  the coordinates for the points along the profile normal
-    @param color:   the BGR color for the points along the profile normal 
-    @return  The image with the points along the given profile normal marked
-    '''
-    for i in range(Coords.shape[0] / 2):
-        kx = int(Coords[(2*i)])
-        ky = int(Coords[(2*i+1)])
-        img[ky, kx] = color
             
 def preprocess():
     '''
