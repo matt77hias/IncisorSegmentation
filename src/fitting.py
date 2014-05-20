@@ -30,7 +30,7 @@ m = 10                          #The number of pixels to sample either side for 
                                 #(used while iterating)
 method='SCD'                    #The method used for preproccesing.
 
-convergence_threshold = 0.002  #The convergence threshold (used while iterating).
+convergence_threshold = 0.001   #The convergence threshold (used while iterating).
 tolerable_deviation = 3         #The number of deviations that are tolerable by the models (used for limiting the shape).
 
 def fit_all_teeth(img, PS):
@@ -50,21 +50,23 @@ def fit_tooth(img, P, tooth_index, show=False):
     @param tooth_index:     the index of the the target tooth (used in MS, EWS, fs)
     @param show:            must the intermediate results (after each iteration) be displayed
     '''
-    nb_tests = 2*(m-k)+1
+    nb_tests = 2*(m-k)+1 #Possible positions along the sample
     nb_it = 1
     convergence = False
     while (not convergence) :
         pxs, pys = mu.extract_coordinates(P)
         for i in range(c.get_nb_landmarks()):
             Gi, Coords = ff.create_Gi(img, m, i, pxs, pys)
-            f_optimal = fs[tooth_index][i](ff.normalize_Gi(Gi[0:2*k+1]))
-            c_optimal = k
+            f_optimal = fs[tooth_index][i](ff.normalize_Gi(Gi[0:2*k+1])) #Calculate the Mahalanobis distance
+            c_optimal = k #Start from k
             for t in range(1,nb_tests):
                 f = fs[tooth_index][i](ff.normalize_Gi(Gi[t:t+2*k+1]))
                 if f < f_optimal:
                     f_optimal = f
                     c_optimal = t+k
-            pxs[i] = Coords[(2*c_optimal)] 
+                    
+            #Suggested new position for the model point
+            pxs[i] = Coords[(2*c_optimal)]
             pys[i] = Coords[(2*c_optimal+1)]
         
         P_new = validate(img, tooth_index, mu.zip_coordinates(pxs, pys), nb_it, show)
@@ -85,12 +87,13 @@ def validate(img, tooth_index, P_before, nb_it, show=False):
     @param tooth_index:     the index of the the target tooth (used in MS, EWS, fs)
     @param nb_it:           the number of this iteration
     @param show:            must the intermediate results (after each iteration) be displayed
+    @return TODO
     '''
     MU = MS[tooth_index]
     E, W = EWS[tooth_index]
 
     xm, ym = mu.get_center_of_gravity(P_before)
-    tx, ty, s, theta = mu.full_align_params(P_before, MU)
+    tx, ty, s, theta = mu.full_align_params(P_before, MU) #The transformation parameters
     PY_before = mu.full_align(P_before, tx, ty, s, theta)
     
     bs = pca.project(W, PY_before, MU)
@@ -101,7 +104,7 @@ def validate(img, tooth_index, P_before, nb_it, show=False):
     
     if (show): 
         show_validation(nb_it, PY_before, PY_after, tooth_index)
-        show_interation(np.copy(img), nb_it, P_before, P_after)
+        show_iteration(np.copy(img), nb_it, P_before, P_after)
         cv2.waitKey(0)
         pyplot.close()
 
@@ -141,9 +144,9 @@ def show_validation(nb_it, PY_before, PY_after, tooth_index):
     pyplot.axis('equal')
     pyplot.show()
     
-def show_interation(img, nb_it, P_before, P_after, color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0]), color_line_before=np.array([0,0,255]), color_line_after=np.array([0,255,0])):
+def show_iteration(img, nb_it, P_before, P_after, color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0]), color_line_before=np.array([0,0,255]), color_line_after=np.array([0,255,0])):
     '''
-    Displays the current points markes on the given image.
+    Displays the current points marked on the given image.
     This method displays the movement in the image coordinate frame.
     @param img:                 the image
     @param nb_it:               the number of this iteration
@@ -220,7 +223,7 @@ def original_to_cropped(P):
     Crops the given points. Used when working with non-cropped initial target points.
     The whole fitting procdure itself doesn't work with offsets at all.
     @pre    The coordinates are stored as successive xi, yi, xj, yj, ...
-    @param  P:   the points to crop
+    @param  P:   the landmark points to crop
     @return The cropped version of P.
     '''
     for i in range(P.shape[0] / 2):
@@ -229,15 +232,15 @@ def original_to_cropped(P):
     return P
     
 if __name__ == "__main__":
-    trainingSamples = range(2, (c.get_nb_trainingSamples()+1))
+    trainingSamples = range(1, (c.get_nb_trainingSamples()))
     preprocess(trainingSamples)
     
-    fname = c.get_fname_vis_pre(1, 'SCD')
+    fname = c.get_fname_vis_pre(14, 'SCD')
     img = cv2.imread(fname)
     
     #fname = c.get_fname_fitting_manual_landmark(1, 1)
     #P = original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
-    fname = c.get_fname_original_landmark(1, 1)
+    fname = c.get_fname_original_landmark(14, 1)
     P = original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
     
     fit_tooth(img, P, 0, show=True)

@@ -48,7 +48,6 @@ def get_fitting_function(tooth_index, landmark_index, GS):
         @return The Mahalanobis distance for the given sample.
         '''
         #Use the Moore-Penrose pseudo-inverse because C can be singular
-        #return np.dot(np.transpose(gs - g_mu), np.dot(np.linalg.pinv(C), (gs - g_mu)))
         return dist.mahalanobis(gs, g_mu, np.linalg.pinv(C))
 
     return fitting_function  
@@ -71,7 +70,7 @@ def create_partial_GS(trainingSamples, XS, MS, offsetX=0, offsetY=0, k=5, method
     for j in range(c.get_nb_teeth()):
         index = 0
         for i in trainingSamples:
-            # tooth j model in model coordinate frame to image coordinate frame
+            # model of tooth j from model coordinate frame to image coordinate frame
             xs, ys = mu.extract_coordinates(mu.full_align_with(MS[j], XS[j,index,:]))
             fname = c.get_fname_vis_pre(i, method)
             img = cv2.imread(fname)
@@ -95,7 +94,7 @@ def create_G(img, k, xs, ys, offsetX=0, offsetY=0):
     @return The matrix G, which contains for each landmark a normalized sample.
     '''
     G = np.zeros((c.get_nb_landmarks(), 2*k+1))
-    for i in range(c.get_nb_landmarks()):
+    for i in range(c.get_nb_landmarks()): #For all model points of a certain tooth model
         Gi, Coords = create_Gi(img, k, i, xs, ys, offsetX, offsetY)
         G[i,:] = normalize_Gi(Gi)
     return G
@@ -181,7 +180,7 @@ def create_raw_Gi(img, k, x, y, nx, ny):
     Coords = np.zeros(2*(2*k+2))
     
     index = 0
-    for i in range(k+1,0,-1):
+    for i in range(k+1,0,-1): #Downwards the normal
         kx = int(x - i * nx)
         ky = int(y - i * ny)
         Gi[index] = img[ky,kx,0]
@@ -194,15 +193,15 @@ def create_raw_Gi(img, k, x, y, nx, ny):
     Coords[(2*index+1)] = y
     index += 1
         
-    for i in range(1,k+1):
+    for i in range(1,k+1): #Upwards the normal
         kx = int(x + i * nx)
         ky = int(y + i * ny)
         Gi[index] = img[ky,kx,0]
         Coords[(2*index)] = kx
         Coords[(2*index+1)] = ky
         index += 1
-        
-    Gi = (Gi[1:] - Gi[:-1])
+       
+    Gi = (Gi[1:] - Gi[:-1]) #All but the first sample minus all but the last sample
     
     #We explicitly don't want a normalized vector at this stage
     return Gi, Coords[2:]
