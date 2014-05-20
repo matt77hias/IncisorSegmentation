@@ -13,15 +13,16 @@ import configuration as c
 import math
 import math_utils as mu
 
-def create_fitting_functions(GS):
+def create_fitting_functions(GNS, GTS):
     '''
     Creates the fitting function for each tooth, for each landmark.
     @param GS:              the matrix GS which contains for each tooth, for each of the given training samples,
                             for each landmark, a normalized sample (along the profile normal through that landmark)
     @return The fitting function for each tooth, for each landmark.
     '''          
-    fs = [[get_fitting_function(tooth, landmark, GS) for landmark in range(c.get_nb_landmarks())] for tooth in range(c.get_nb_teeth())]        
-    return fs  
+    fns = [[get_fitting_function(tooth, landmark, GNS) for landmark in range(c.get_nb_landmarks())] for tooth in range(c.get_nb_teeth())]
+    fts = [[get_fitting_function(tooth, landmark, GTS) for landmark in range(c.get_nb_landmarks())] for tooth in range(c.get_nb_teeth())]        
+    return fns, fts  
     
 def get_fitting_function(tooth_index, landmark_index, GS):
     '''
@@ -38,7 +39,8 @@ def get_fitting_function(tooth_index, landmark_index, GS):
         G[i,:] = GS[tooth_index, i, landmark_index, :]
     
     G -= G.mean(axis=0)[None, :]
-    C = (np.dot(G.T, G) / float(G.shape[0])) #Covariance matrix
+    #Use the Moore-Penrose pseudo-inverse because C can be singular
+    C = np.linalg.pinv((np.dot(G.T, G) / float(G.shape[0])))
     g_mu = G.mean(axis=0) #Model mean
     
     def fitting_function(gs):
@@ -47,9 +49,8 @@ def get_fitting_function(tooth_index, landmark_index, GS):
         @param: gs           the new sample
         @return The Mahalanobis distance for the given sample.
         '''
-        #Use the Moore-Penrose pseudo-inverse because C can be singular
         #return np.dot(np.transpose(gs - g_mu), np.dot(np.linalg.pinv(C), (gs - g_mu)))
-        return dist.mahalanobis(gs, g_mu, np.linalg.pinv(C))
+        return dist.mahalanobis(gs, g_mu, C)
 
     return fitting_function  
     
@@ -67,7 +68,8 @@ def create_partial_GS(trainingSamples, XS, MS, offsetX=0, offsetY=0, k=5, method
     @return The matrix GS which contains for each tooth, for each of the given training samples,
             for each landmark, a normalized sample (along the profile normal through that landmark).
     '''
-    GS = np.zeros((c.get_nb_teeth(), len(trainingSamples), c.get_nb_landmarks(), 2*k+1))
+    GNS = np.zeros((c.get_nb_teeth(), len(trainingSamples), c.get_nb_landmarks(), 2*k+1))
+    GTS = np.zeros((c.get_nb_teeth(), len(trainingSamples), c.get_nb_landmarks(), 2*k+1))
     for j in range(c.get_nb_teeth()):
         index = 0
         for i in trainingSamples:
@@ -75,9 +77,11 @@ def create_partial_GS(trainingSamples, XS, MS, offsetX=0, offsetY=0, k=5, method
             xs, ys = mu.extract_coordinates(mu.full_align_with(MS[j], XS[j,index,:]))
             fname = c.get_fname_vis_pre(i, method)
             img = cv2.imread(fname)
-            GS[j,index,:] = create_G(img, k, xs, ys, offsetX, offsetY)
+            GN, GT = create_G(img, k, xs, ys, offsetX, offsetY)
+            GNS[j,index,:] = GN
+            GTS[j,index,:] = GT
             index += 1
-    return GS
+    return GNS, GTS
                  
 def create_G(img, k, xs, ys, offsetX=0, offsetY=0):
     '''
@@ -94,11 +98,15 @@ def create_G(img, k, xs, ys, offsetX=0, offsetY=0):
     @param offsetY:      the possible offset in y direction (used when working with cropped images and non-cropped xs & ys)
     @return The matrix G, which contains for each landmark a normalized sample.
     '''
-    G = np.zeros((c.get_nb_landmarks(), 2*k+1))
+    GN = np.zeros((c.get_nb_landmarks(), 2*k+1))
+    GT = np.zeros((c.get_nb_landmarks(), 2*k+1))
     for i in range(c.get_nb_landmarks()):
-        Gi, Coords = create_Gi(img, k, i, xs, ys, offsetX, offsetY)
-        G[i,:] = normalize_Gi(Gi)
-    return G
+        x = xs[i] - offsetX
+        y = ys[i] - offsetY
+        tx, ty, nx, ny = create_ricos(img, i, xs, ys, offsetX, offsetY)
+        GN[i,:] = normalize_Gi(create_Gi(img, k, x, y, nx, ny))
+        GT[i,:] = normalize_Gi(create_Gi(img, k, x, y, tx, ty))
+    return GN, GT
     
 def normalize_Gi(Gi):
     '''
@@ -114,13 +122,11 @@ def normalize_Gi(Gi):
         return Gi
     return Gi/norm
     
-def create_Gi(img, k, i, xs, ys, offsetX=0, offsetY=0, sx=1, sy=1):
+def create_ricos(img, i, xs, ys, offsetX=0, offsetY=0, sx=1, sy=1):
     '''
     Sample along the profile normal k pixels either side of the given model point (xs[i], ys[i])
     in the given image to create a (non-normalized) vector Gi.
     @param img:          the image
-    @param k:            the number of pixels to sample either side of the given model
-                         point (xs[i], ys[i]) along the profile normal
     @param i:            the index of the model point
     @param xs:           x positions of the model points in the image
     @param ys:           y positions of the model points in the image
@@ -132,8 +138,6 @@ def create_Gi(img, k, i, xs, ys, offsetX=0, offsetY=0, sx=1, sy=1):
             of all the sample points used. (First the most distant point when adding
             a positive change, last the most distant point when adding a negative change) 
     '''
-    x = xs[i] - offsetX
-    y = ys[i] - offsetY
     if (i == 0):
         x_min = xs[-1] - offsetX
         y_min = ys[-1] - offsetY
@@ -154,15 +158,16 @@ def create_Gi(img, k, i, xs, ys, offsetX=0, offsetY=0, sx=1, sy=1):
     dy = y_max - y_min
     sq = math.sqrt(dx*dx+dy*dy)
     
+    #Profile Tangent to Boundary
+    tx = (dx / sq) * sy
+    ty = (dy / sq) * sx
     #Profile Normal to Boundary
-    nx = (- dy / sq) * sx
-    ny = (dx / sq) * sy
+    nx = - ty
+    ny = tx
     
-    #We explicitly don't want a normalized vector at this stage
-    return create_raw_Gi(img, k, x, y, nx, ny)
-    
+    return tx, ty, nx, ny
         
-def create_raw_Gi(img, k, x, y, nx, ny):
+def create_Gi(img, k, x, y, dx, dy):
     '''
     Sample along the profile normal characterized by (nx, ny) k pixels either side
     of the given model point (x, y) in the given image to create a (non-normalized) vector Gi.
@@ -177,32 +182,25 @@ def create_raw_Gi(img, k, x, y, nx, ny):
             of all the sample points used. (First the most distant point when adding
             a positive change, last the most distant point when adding a negative change) 
     '''
-    Gi = np.zeros((2*k+2))
-    Coords = np.zeros(2*(2*k+2))
-    
+    Gi = np.zeros((2*k+2))    
     index = 0
+    
     for i in range(k+1,0,-1):
-        kx = int(x - i * nx)
-        ky = int(y - i * ny)
+        kx = int(x - i * dx)
+        ky = int(y - i * dy)
         Gi[index] = img[ky,kx,0]
-        Coords[(2*index)] = kx
-        Coords[(2*index+1)] = ky
         index += 1
         
     Gi[index] = img[y,x,0] #The model point itself
-    Coords[(2*index)] = x
-    Coords[(2*index+1)] = y
     index += 1
         
     for i in range(1,k+1):
-        kx = int(x + i * nx)
-        ky = int(y + i * ny)
+        kx = int(x + i * dx)
+        ky = int(y + i * dy)
         Gi[index] = img[ky,kx,0]
-        Coords[(2*index)] = kx
-        Coords[(2*index+1)] = ky
         index += 1
         
     Gi = (Gi[1:] - Gi[:-1])
     
     #We explicitly don't want a normalized vector at this stage
-    return Gi, Coords[2:]
+    return Gi

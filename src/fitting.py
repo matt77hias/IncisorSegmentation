@@ -17,20 +17,21 @@ from matplotlib import pyplot
 
 MS = None                       #MS contains for each tooth, the tooth model (in the model coordinate frame)
 EWS = []                        #EWS contains for each tooth, a (sqrt(Eigenvalues), Eigenvectors) pair (in the model coordinate frame)
-fs = None                       #fitting function for each tooth, for each landmark.
+fns = None                      #fitting function for each tooth, for each landmark.
+fts = None 
 
 offsetY = 497.0                 #The landmarks refer to the non-cropped images, so we need the vertical offset (up->down)
                                 #to locate them on the cropped images.
 offsetX = 1234.0                #The landmarks refer to the non-cropped images, so we need the horizontal offset (left->right)
                                 #to locate them on the cropped images.
 
-k = 5                           #The number of pixels to sample either side for each of the model points along the profile normal
+k = 5                          #The number of pixels to sample either side for each of the model points along the profile normal
                                 #(used for creating the fitting functions)
 m = 10                          #The number of pixels to sample either side for each of the model points along the profile normal
                                 #(used while iterating)
-method='SCD'                    #The method used for preproccesing.
+method='D'                    #The method used for preproccesing.
 
-convergence_threshold = 0.01  #The convergence threshold (used while iterating).
+convergence_threshold = 0.002    #The convergence threshold (used while iterating).
 tolerable_deviation = 3         #The number of deviations that are tolerable by the models (used for limiting the shape).
 
 def fit_tooth(img, P, tooth_index, show=False):
@@ -43,29 +44,44 @@ def fit_tooth(img, P, tooth_index, show=False):
     @return The fitted points for the tooth corresponding to the given tooth index
             and the number of iterations used.
     '''
-    nb_tests = 2*(m-k)+1
     nb_it = 0
     convergence = False
     while (not convergence) :
         nb_it += 1
         pxs, pys = mu.extract_coordinates(P)
         for i in range(c.get_nb_landmarks()):
-            Gi, Coords = ff.create_Gi(img, m, i, pxs, pys)
-            f_optimal = fs[tooth_index][i](ff.normalize_Gi(Gi[0:2*k+1]))
-            c_optimal = k
-            for t in range(1,nb_tests):
-                f = fs[tooth_index][i](ff.normalize_Gi(Gi[t:t+2*k+1]))
-                if f < f_optimal:
-                    f_optimal = f
-                    c_optimal = t+k
-            pxs[i] = Coords[(2*c_optimal)] 
-            pys[i] = Coords[(2*c_optimal+1)]
+            tx, ty, nx, ny = ff.create_ricos(img, i, pxs, pys)
+            f_optimal = float("inf")
+            for n in range(-(m-k), (m-k)+1):
+                for t in range(-(m-k), (m-k)+1):
+                    x = int(pxs[i] + n * nx + t * tx)
+                    y = int(pys[i] + n * ny + t * ty)
+                    fn = fns[tooth_index][i](ff.normalize_Gi(ff.create_Gi(img, k, x, y, nx, ny)))
+                    ft = fts[tooth_index][i](ff.normalize_Gi(ff.create_Gi(img, k, x, y, tx, ty)))
+                    f = abs(fn) + abs(ft)
+                    if f < f_optimal:
+                        f_optimal = f
+                        cx = x
+                        cy = y
+            pxs[i] = cx
+            pys[i] = cy
         
         P_new = validate(img, tooth_index, mu.zip_coordinates(pxs, pys), nb_it, show)
         conv  = np.linalg.norm(P-P_new)/np.linalg.norm(P)
-        if (conv < convergence_threshold): convergence = True 
+        #if (conv < convergence_threshold): convergence = True 
+        
+        tx_old, ty_old, s_old, theta_old = mu.full_align_params(P, MS[tooth_index])
+        tx, ty, s, theta = mu.full_align_params(P_new, MS[tooth_index])
+        xm_old, ym_old = mu.get_center_of_gravity(P)
+        xm, ym = mu.get_center_of_gravity(P_new)
+        diff_tx = abs(xm_old - xm)
+        diff_ty = abs(ym_old - ym)
+        diff_s = abs(s_old - s)
+        diff_theta = abs(theta_old - theta)
+        print(str(diff_tx) + ' # ' + str(diff_ty) + ' # ' + str(diff_s) + ' # ' + str(diff_theta))
+        
         P = P_new
-        if (nb_it > 300): convergence = True 
+        if (nb_it >= 30): convergence = True 
         
     print('Fitting number of iterations: ' + str(nb_it))
     return P, nb_it
@@ -98,7 +114,7 @@ def validate(img, tooth_index, P_before, nb_it, show=False):
         show_validation(nb_it, PY_before, PY_after, tooth_index)
         show_interation(np.copy(img), nb_it, P_before, P_after)
         cv2.waitKey(0)
-        pyplot.close()
+        pyplot.close()  
 
     return P_after
     
@@ -198,7 +214,7 @@ def preprocess(trainingSamples):
         * EWS contains for each tooth, a (sqrt(Eigenvalues), Eigenvectors) pair (in the model coordinate frame)
         * fitting function for each tooth, for each landmark.
     '''
-    global MS, EWS, fs
+    global MS, EWS, fns, fts
     XS = l.create_partial_XS(trainingSamples)
     MS = np.zeros((c.get_nb_teeth(), c.get_nb_dim()))
     
@@ -208,8 +224,8 @@ def preprocess(trainingSamples):
         E, W, MU = pca.pca_percentage(Y)
         EWS.append((np.sqrt(E), W))
 
-    GS = ff.create_partial_GS(trainingSamples, XS, MS, offsetX=offsetX, offsetY=offsetY, k=k, method=method)
-    fs = ff.create_fitting_functions(GS)
+    GNS, GTS = ff.create_partial_GS(trainingSamples, XS, MS, offsetX=offsetX, offsetY=offsetY, k=k, method=method)
+    fns, fts = ff.create_fitting_functions(GNS, GTS)
     
 def original_to_cropped(P):
     '''
@@ -230,7 +246,7 @@ def test():
         trainingSamples.remove(i)
         preprocess(trainingSamples)
         
-        fname = c.get_fname_vis_pre(i, 'SCD')
+        fname = c.get_fname_vis_pre(i, method)
         img = cv2.imread(fname)
         
         for j in range(c.get_nb_teeth()):

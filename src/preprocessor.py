@@ -228,6 +228,8 @@ def preproccess():
         #read -> crop -> convert to grey scale
         grey_image = cv2.cvtColor(crop_by_diagonal(cv2.imread(c.get_fname_radiograph(i)), ymin, ymax, xmin, xmax), cv2.COLOR_BGR2GRAY)
         grey_image_denoised = cv2.fastNlMeansDenoising(grey_image)
+        cv2.imwrite(c.get_fname_vis_pre(i, method='O'), grey_image)
+        cv2.imwrite(c.get_fname_vis_pre(i, method='D'), grey_image_denoised)
         cv2.imwrite(c.get_fname_vis_pre(i, method='EH'), cv2.equalizeHist(grey_image))
         cv2.imwrite(c.get_fname_vis_pre(i, method='EHD'), cv2.equalizeHist(grey_image_denoised))
         cv2.imwrite(c.get_fname_vis_pre(i, method='SC'), stretch_contrast(grey_image))

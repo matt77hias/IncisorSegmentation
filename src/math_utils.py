@@ -67,7 +67,7 @@ def get_center_of_gravity(v):
     @return The center of gravity of the given vector v.
     '''
     xs, ys = extract_coordinates(v)
-    n = v.shape[0] / 2
+    n = float(v.shape[0] / 2)
     return (sum(xs) / n, sum(ys) / n)
     
 def full_align_with(v, t):
