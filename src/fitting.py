@@ -266,6 +266,3 @@ if __name__ == "__main__":
     #nr_trainingSample = 1
     #fname = c.get_fname_fitting_manual_landmark(nr_trainingSample, nr_tooth)
     #SX = np.fromfile(fname, dtype=float, count=-1, sep=" ")   
-    
-    
-    
