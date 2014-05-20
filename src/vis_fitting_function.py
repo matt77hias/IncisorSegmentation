@@ -227,8 +227,8 @@ def create_profile_normals_images(color_init=np.array([0,255,255]), color_mid=np
                 tx, ty, nx, ny = ff.create_ricos(img, k, xs, ys)
                 for n in range(-5, 5+1):
                     for t in range(-5, 5+1):
-                        kx = int(x + n * nx + t * tx)
-                        ky = int(y + n * ny + t * ty)
+                        kx = round(x + n * nx + t * tx)
+                        ky = round(y + n * ny + t * ty)
                         img[ky, kx] = np.array([0,255,0])
                 
                 if (k == 0):

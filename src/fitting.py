@@ -27,9 +27,9 @@ offsetX = 1234.0                #The landmarks refer to the non-cropped images, 
 
 k = 5                          #The number of pixels to sample either side for each of the model points along the profile normal
                                 #(used for creating the fitting functions)
-m = 10                          #The number of pixels to sample either side for each of the model points along the profile normal
+m = 8                          #The number of pixels to sample either side for each of the model points along the profile normal
                                 #(used while iterating)
-method='D'                    #The method used for preproccesing.
+method='SCD'                    #The method used for preproccesing.
 
 convergence_threshold = 0.002    #The convergence threshold (used while iterating).
 tolerable_deviation = 3         #The number of deviations that are tolerable by the models (used for limiting the shape).
@@ -54,8 +54,8 @@ def fit_tooth(img, P, tooth_index, show=False):
             f_optimal = float("inf")
             for n in range(-(m-k), (m-k)+1):
                 for t in range(-(m-k), (m-k)+1):
-                    x = int(pxs[i] + n * nx + t * tx)
-                    y = int(pys[i] + n * ny + t * ty)
+                    x = round(pxs[i] + n * nx + t * tx)
+                    y = round(pys[i] + n * ny + t * ty)
                     fn = fns[tooth_index][i](ff.normalize_Gi(ff.create_Gi(img, k, x, y, nx, ny)))
                     ft = fts[tooth_index][i](ff.normalize_Gi(ff.create_Gi(img, k, x, y, tx, ty)))
                     f = abs(fn) + abs(ft)

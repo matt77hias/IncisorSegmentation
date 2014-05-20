@@ -186,8 +186,8 @@ def create_Gi(img, k, x, y, dx, dy):
     index = 0
     
     for i in range(k+1,0,-1):
-        kx = int(x - i * dx)
-        ky = int(y - i * dy)
+        kx = round(x - i * dx)
+        ky = round(y - i * dy)
         Gi[index] = img[ky,kx,0]
         index += 1
         
@@ -195,8 +195,8 @@ def create_Gi(img, k, x, y, dx, dy):
     index += 1
         
     for i in range(1,k+1):
-        kx = int(x + i * dx)
-        ky = int(y + i * dy)
+        kx = round(x + i * dx)
+        ky = round(y + i * dy)
         Gi[index] = img[ky,kx,0]
         index += 1
        

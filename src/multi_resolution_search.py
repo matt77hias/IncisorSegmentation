@@ -1,5 +1,5 @@
 '''
-Multi-Resolution Search Algorithm
+Single-Resolution Active Shape Models' fitting procedure.
 Improve the efficiency and robustness of the ASM algorithm 
 by implementing it in a multi-resolution framework.
 @author     Matthias Moulin & Milan Samyn

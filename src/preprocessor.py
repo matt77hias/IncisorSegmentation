@@ -210,6 +210,13 @@ def plot_histogram_of_image(image):
     pyplot.hist(image.ravel(),256,[0,256])
     pyplot.show()
     
+def invert(image):
+    img = np.copy(image)
+    for y in range(image.shape[0]):
+        for x in range(image.shape[1]):
+            img[y,x] = 255 - img[y,x]
+    return img
+    
 #Preproccess
     
 def preproccess():
@@ -234,6 +241,10 @@ def preproccess():
         cv2.imwrite(c.get_fname_vis_pre(i, method='EHD'), cv2.equalizeHist(grey_image_denoised))
         cv2.imwrite(c.get_fname_vis_pre(i, method='SC'), stretch_contrast(grey_image))
         cv2.imwrite(c.get_fname_vis_pre(i, method='SCD'), stretch_contrast(grey_image_denoised))
+        cv2.imwrite(c.get_fname_vis_pre(i, method='I'), invert(grey_image))
+        cv2.imwrite(c.get_fname_vis_pre(i, method='ID'), invert(grey_image_denoised))
+        cv2.imwrite(c.get_fname_vis_pre(i, method='ISC'), invert(stretch_contrast(grey_image)))
+        cv2.imwrite(c.get_fname_vis_pre(i, method='ISCD'), invert(stretch_contrast(grey_image_denoised)))
 
 if __name__ == '__main__':
     preproccess()
