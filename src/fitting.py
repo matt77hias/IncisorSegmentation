@@ -57,8 +57,18 @@ def fit_tooth(img, P, tooth_index, fitting_function=0, show=False):
         for i in range(c.get_nb_landmarks()):
             tx, ty, nx, ny = ff.create_ricos(img, i, pxs, pys)
             f_optimal = float("inf")
-            for n in range(-(m-k), (m-k)+1):
-                for t in range(-(m-k), (m-k)+1):
+            
+            if (fitting_function==0):
+                rn = rt = range(-(m-k), (m-k)+1)
+            elif (fitting_function==1):
+                rn = range(-(m-k), (m-k)+1)
+                rt = [0]
+            else:
+                rn = [0]
+                rt = range(-(m-k), (m-k)+1)
+            
+            for n in rn:
+                for t in rt:
                     x = round(pxs[i] + n * nx + t * tx)
                     y = round(pys[i] + n * ny + t * ty)
                     fn = fns[tooth_index][i](ff.normalize_Gi(ff.create_Gi(img, k, x, y, nx, ny)))
@@ -107,7 +117,7 @@ def evaluate_fitting(fn=0, ft=0, fitting_function=0):
         return fn + ft
     elif (fitting_function==1):
         return fn
-    elif (fitting_function==1):
+    elif (fitting_function==2):
         return ft
     else:
         return 0
