@@ -114,7 +114,7 @@ def create_G(img, k, xs, ys, offsetX=0, offsetY=0):
     for i in range(c.get_nb_landmarks()):
         x = xs[i] - offsetX
         y = ys[i] - offsetY
-        tx, ty, nx, ny = create_ricos(img, i, xs, ys, offsetX, offsetY)
+        tx, ty, nx, ny = create_ricos(img, i, xs, ys)
         GN[i,:] = normalize_Gi(create_Gi(img, k, x, y, nx, ny))
         GT[i,:] = normalize_Gi(create_Gi(img, k, x, y, tx, ty))
     return GN, GT

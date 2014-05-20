@@ -96,7 +96,7 @@ def fit_tooth(img, P, tooth_index, fitting_function=0, show=False):
         print(str(diff_tx) + ' # ' + str(diff_ty) + ' # ' + str(diff_s) + ' # ' + str(diff_theta))
         
         P = P_new
-        if (nb_it >= 30): convergence = True 
+        if (nb_it >= 100): convergence = True 
         
     print('Fitting number of iterations: ' + str(nb_it))
     return P, nb_it

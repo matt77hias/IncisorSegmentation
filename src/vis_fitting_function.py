@@ -213,30 +213,30 @@ def create_profile_normals_images(k=5, color_init=np.array([0,255,255]), color_m
         for j in range(c.get_nb_teeth()):
             xs, ys = mu.extract_coordinates(mu.full_align_with(MS[j], XS[j,(i-1),:]))
             
-            for l in range(c.get_nb_landmarks()):
-                x = int(xs[l] - offsetX)
-                y = int(ys[l] - offsetY)
-                if (l == c.get_nb_landmarks()-1):
+            for h in range(c.get_nb_landmarks()):
+                x = int(xs[h] - offsetX)
+                y = int(ys[h] - offsetY)
+                if (h == c.get_nb_landmarks()-1):
                     x_succ = int(xs[0] - offsetX)
                     y_succ = int(ys[0] - offsetY)
                 else:
-                    x_succ = int(xs[(l+1)] - offsetX)
-                    y_succ = int(ys[(l+1)] - offsetY)
+                    x_succ = int(xs[(h+1)] - offsetX)
+                    y_succ = int(ys[(h+1)] - offsetY)
                 cv2.line(img, (x,y), (x_succ,y_succ), color_line)
           
-            for l in range(c.get_nb_landmarks()):
-                x = int(xs[l] - offsetX)
-                y = int(ys[l] - offsetY)
-                tx, ty, nx, ny = ff.create_ricos(img, l, xs, ys)
+            for h in range(c.get_nb_landmarks()):
+                x = int(xs[h] - offsetX)
+                y = int(ys[h] - offsetY)
+                tx, ty, nx, ny = ff.create_ricos(img, h, xs, ys)
                 for n in range(-k, k+1):
                     for t in range(-k, k+1):
                         kx = round(x + n * nx + t * tx)
                         ky = round(y + n * ny + t * ty)
                         img[ky, kx] = color_profile_point
                 
-                if (l == 0):
+                if (h == 0):
                     img[y,x] = color_init
-                elif (l == c.get_nb_landmarks()-1):
+                elif (h == c.get_nb_landmarks()-1):
                     img[y,x] = color_end
                 else:
                     img[y,x] = color_mid
