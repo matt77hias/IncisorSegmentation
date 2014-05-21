@@ -10,6 +10,7 @@ Preprocess the dental radiographs by:
 
 import numpy as np
 import cv2
+import math
 import math_utils as mu
 import loader as l
 import configuration as c
@@ -210,17 +211,37 @@ def plot_histogram_of_image(image):
     pyplot.hist(image.ravel(),256,[0,256])
     pyplot.show()
     
+#experimental
+    
 def invert(image):
     '''
     Inverts the colors of the given image.
-    @param image:               the image
+    @param image:               the grey-scale image
     @return The image with the colors inverted.
     '''
     img = np.copy(image)
-    for y in range(image.shape[0]):
-        for x in range(image.shape[1]):
-            img[y,x] = 255 - img[y,x]
+    return 255 - img
+    
+def convert(image, threshold):
+    img = np.copy(image)
+    img[img < threshold] = 255
     return img
+    
+def apply_sigmoid(image):
+    hist = calculate_histogram(image)
+    hist = hist[hist > 0]
+    alpha = hist.shape[0]
+    print(alpha)
+    beta = sum(image) / float(image.shape[0] * image.shape[1])
+    return sigmoid(image, alpha, beta)
+    
+def sigmoid(image, alpha, beta):
+    '''
+    @param image:                the grey-scale image
+    @param alpha:                defines the width of the input intensity range
+    @param beta:                 defines the intensity around which the range is centered
+    '''
+    return np.uint8(255 / (1 + math.e**(-(image-beta)/float(alpha))))
     
 #Preproccess
     
@@ -246,10 +267,18 @@ def preproccess():
         cv2.imwrite(c.get_fname_vis_pre(i, method='EHD'), cv2.equalizeHist(grey_image_denoised))
         cv2.imwrite(c.get_fname_vis_pre(i, method='SC'), stretch_contrast(grey_image))
         cv2.imwrite(c.get_fname_vis_pre(i, method='SCD'), stretch_contrast(grey_image_denoised))
-        cv2.imwrite(c.get_fname_vis_pre(i, method='I'), invert(grey_image))
-        cv2.imwrite(c.get_fname_vis_pre(i, method='ID'), invert(grey_image_denoised))
-        cv2.imwrite(c.get_fname_vis_pre(i, method='ISC'), invert(stretch_contrast(grey_image)))
-        cv2.imwrite(c.get_fname_vis_pre(i, method='ISCD'), invert(stretch_contrast(grey_image_denoised)))
+        cv2.imwrite(c.get_fname_vis_pre(i, method='S'), apply_sigmoid(grey_image))
+        cv2.imwrite(c.get_fname_vis_pre(i, method='SD'), apply_sigmoid(grey_image_denoised))
+        
+        #Rubbish
+        #cv2.imwrite(c.get_fname_vis_pre(i, method='I'), invert(grey_image))
+        #cv2.imwrite(c.get_fname_vis_pre(i, method='ID'), invert(grey_image_denoised))
+        #cv2.imwrite(c.get_fname_vis_pre(i, method='ISC'), invert(stretch_contrast(grey_image)))
+        #cv2.imwrite(c.get_fname_vis_pre(i, method='ISCD'), invert(stretch_contrast(grey_image_denoised)))
+        #cong_grey_image = convert(grey_image, threshold=10)
+        #conv_grey_image_denoised = cv2.fastNlMeansDenoising(cong_grey_image)
+        #cv2.imwrite(c.get_fname_vis_pre(i, method='CSCC'), convert(stretch_contrast(cong_grey_image), threshold=10))
+        #cv2.imwrite(c.get_fname_vis_pre(i, method='CSCDC'), convert(stretch_contrast(conv_grey_image_denoised), threshold=10))
 
 if __name__ == '__main__':
     preproccess()

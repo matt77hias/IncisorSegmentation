@@ -229,10 +229,13 @@ def create_profile_normals_images(k=5, color_init=np.array([0,255,255]), color_m
                 y = int(ys[h] - offsetY)
                 tx, ty, nx, ny = ff.create_ricos(img, h, xs, ys)
                 for n in range(-k, k+1):
-                    for t in range(-k, k+1):
-                        kx = round(x + n * nx + t * tx)
-                        ky = round(y + n * ny + t * ty)
-                        img[ky, kx] = color_profile_point
+                    kx = round(x + n * nx)
+                    ky = round(y + n * ny)
+                    img[ky, kx] = color_profile_point
+                for t in range(-k, k+1):
+                    kx = round(x + t * tx)
+                    ky = round(y + t * ty)
+                    img[ky, kx] = color_profile_point
                 
                 if (h == 0):
                     img[y,x] = color_init

@@ -40,10 +40,12 @@ def get_fitting_function(tooth_index, landmark_index, GS):
     for i in range(GS.shape[1]):
         G[i,:] = GS[tooth_index, i, landmark_index, :]
     
-    G -= G.mean(axis=0)[None, :]
+    g_mu = G.mean(axis=0)
+    for i in range(G.shape[0]):
+        G[i,:] -= g_mu
+    
     #Use the Moore-Penrose pseudo-inverse because C can be singular
     C = np.linalg.pinv((np.dot(G.T, G) / float(G.shape[0])))
-    g_mu = G.mean(axis=0) #Model mean
     
     def fitting_function(gs):
         '''

@@ -25,7 +25,7 @@ offsetY = 497.0                 #The landmarks refer to the non-cropped images, 
 offsetX = 1234.0                #The landmarks refer to the non-cropped images, so we need the horizontal offset (left->right)
                                 #to locate them on the cropped images.
 
-k = 5                           #The number of pixels to sample either side for each of the model points along the profile normal
+k = 4                           #The number of pixels to sample either side for each of the model points along the profile normal
                                 #(used for creating the fitting functions)
 m = 8                           #The number of pixels to sample either side for each of the model points along the profile normal
                                 #(used while iterating)
@@ -89,11 +89,7 @@ def fit_tooth(img, P, tooth_index, fitting_function=0, show=False):
         tx, ty, s, theta = mu.full_align_params(P_new, MS[tooth_index])
         xm_old, ym_old = mu.get_center_of_gravity(P)
         xm, ym = mu.get_center_of_gravity(P_new)
-        diff_tx = abs(xm_old - xm)
-        diff_ty = abs(ym_old - ym)
-        diff_s = abs(s_old - s)
-        diff_theta = abs(theta_old - theta)
-        print(str(diff_tx) + ' # ' + str(diff_ty) + ' # ' + str(diff_s) + ' # ' + str(diff_theta))
+        print(str((xm_old - xm)) + ' # ' + str((ym_old - ym)) + ' # ' + str((s_old - s)) + ' # ' + str((theta_old - theta)))
         
         P = P_new
         if (nb_it >= 100): convergence = True 
@@ -114,7 +110,7 @@ def evaluate_fitting(fn=0, ft=0, fitting_function=0):
     @return The evaluated fitting function.
     '''
     if (fitting_function==0):
-        return fn + ft
+        return fn**2 + ft**2
     elif (fitting_function==1):
         return fn
     elif (fitting_function==2):
@@ -277,7 +273,8 @@ def original_to_cropped(P):
     return P
     
 def test():
-    for i in c.get_trainingSamples_range():
+    #for i in c.get_trainingSamples_range():
+    for i in range(7,15):
         trainingSamples = c.get_trainingSamples_range()
         trainingSamples.remove(i)
         preprocess(trainingSamples)
