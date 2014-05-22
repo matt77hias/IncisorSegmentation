@@ -57,6 +57,14 @@ def multi_resolution_search(nr_test_sample, model_points, nr_tooth):
     nb_iterations = 0
     
     
+    for i in range(80):
+        model_points[i] *= 0.6
+        if i % 2 == 0:
+            model_points[i] += 55 
+        else:
+            model_points[i] += 160
+    
+    
     #Compute model point positions in image at coarsest level
     if not lmax == 0:
         for i in range(model_points.shape[0] / 2):
@@ -65,11 +73,14 @@ def multi_resolution_search(nr_test_sample, model_points, nr_tooth):
     
     
     while (l >= 0):
+
+        show_iteration(np.copy(image), 0, model_points, model_points)
+        cv2.waitKey(0)
         
         #Search at ns points on profile either side of each current point
         x_coords, y_coords = mu.extract_coordinates(model_points)
-        nr_close_points = 0 #The number of points that are found close to the current position
-        for i in range(model_points.shape[0] / 2): #For each model point
+
+        for i in range(n): #For each model point
             otherx, othery, dx, dy = ff.create_ricos(image, i, x_coords, y_coords)
             
             best_fit = float("inf")
@@ -83,24 +94,28 @@ def multi_resolution_search(nr_test_sample, model_points, nr_tooth):
                         best_fit = fit
                         best_x_coord = x_coord
                         best_y_coord = y_coord
-                        
-                        
-            if close_to_current_position(best_x_coord, best_y_coord, x_coords[i], y_coords[i]): nr_close_points += 1
-                                    
+                                                   
             x_coords[i] = best_x_coord
             y_coords[i] = best_y_coord
             
 
         
         #Update pose and shape parameters to fit model to new points
-        model_points = update_parameters(image, nr_tooth, mu.zip_coordinates(x_coords, y_coords), nb_iterations)
+        new_model_points = update_parameters(image, nr_tooth, mu.zip_coordinates(x_coords, y_coords), nb_iterations)
+        
+        nr_close_points = 0 #The number of points that are found close to the current position
+        for i in range(n):
+            if close_to_current_position(model_points[i * 2], model_points[i * 2 + 1], new_model_points[i * 2], new_model_points[i * 2 + 1]): 
+                nr_close_points += 1
+        model_points = new_model_points
         
         #Repeat unless more than pclose of the points are found close to the current position 
         #or nmax iterations have been applied at this resolution
+        
+        print 'Level:' + str(l) + ', Iteration: ' + str(nb_iterations) + ', Ratio: ' + str(nr_close_points / float(n))
 
-        if (nr_close_points / float(model_points.shape[0]) >= pclose): 
-            converged = True
-            print 'Converged!'
+        if (nr_close_points / float(n) >= pclose): 
+            converged = False
         else: converged = False
         
         nb_iterations += 1     
@@ -113,14 +128,14 @@ def multi_resolution_search(nr_test_sample, model_points, nr_tooth):
                 for i in range(model_points.shape[0] / 2):
                     model_points[i * 2] *= 2 
                     model_points[i * 2 + 1] *=2
-            else: l = -1
+            else: l = -1 #Break
                 
     return model_points
           
           
 def close_to_current_position(found_x, found_y, current_x, current_y):
     distance = math.sqrt((current_x - found_x) ** 2 + (current_y - found_y) ** 2)
-    return distance <= (ns / 2)  
+    return distance <= 1#(ns / 2)  
                 
 def update_parameters(img, nr_tooth, model_points_before, nb_iterations):
     MU = models[nr_tooth]
@@ -291,9 +306,10 @@ if __name__ == '__main__':
         for j in range(c.get_nb_teeth()):
             fname = c.get_fname_original_landmark(i, (j+1))
             P = original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+
+            
             R = multi_resolution_search(i, copy.copy(P), j)
             
-            show_iteration(np.copy(img), 0, P, R)
-            cv2.waitKey(0)
+
             
         
