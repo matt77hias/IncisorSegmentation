@@ -26,7 +26,7 @@ Model Parameters
 '''
 n = c.get_nb_teeth()            #Number of model points
 t = None                        #Number of modes to use
-k = 5                           #Number of pixels either side of point to represent in grey-model 
+k = 3                           #Number of pixels either side of point to represent in grey-model 
 
 '''
 Search Parameters
@@ -98,7 +98,7 @@ def multi_resolution_search(nr_test_sample, model_points, nr_tooth):
         #Repeat unless more than pclose of the points are found close to the current position 
         #or nmax iterations have been applied at this resolution
 
-        if ((nr_close_points / model_points.shape[0]) >= pclose): 
+        if (nr_close_points / float(model_points.shape[0]) >= pclose): 
             converged = True
             print 'Converged!'
         else: converged = False
