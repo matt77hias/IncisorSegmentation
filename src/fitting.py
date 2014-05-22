@@ -71,8 +71,10 @@ def fit_tooth(img, P, tooth_index, fitting_function=0, show=False):
                 for t in rt:
                     x = round(pxs[i] + n * nx + t * tx)
                     y = round(pys[i] + n * ny + t * ty)
-                    fn = fns[tooth_index][i](ff.normalize_Gi(ff.create_Gi(img, k, x, y, nx, ny)))
-                    ft = fts[tooth_index][i](ff.normalize_Gi(ff.create_Gi(img, k, x, y, tx, ty)))
+                    try: 
+                        fn = fns[tooth_index][i](ff.normalize_Gi(ff.create_Gi(img, k, x, y, nx, ny)))
+                        ft = fts[tooth_index][i](ff.normalize_Gi(ff.create_Gi(img, k, x, y, tx, ty)))
+                    except (IndexError): continue
                     f = evaluate_fitting(fn=fn, ft=ft, fitting_function=fitting_function)
                     if f < f_optimal:
                         f_optimal = f
@@ -273,8 +275,7 @@ def original_to_cropped(P):
     return P
     
 def test():
-    #for i in c.get_trainingSamples_range():
-    for i in range(7,15):
+    for i in c.get_trainingSamples_range():
         trainingSamples = c.get_trainingSamples_range()
         trainingSamples.remove(i)
         preprocess(trainingSamples)
