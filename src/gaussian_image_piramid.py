@@ -9,7 +9,7 @@ Used in the multi-resolution search algorithm.
 import cv2
 import configuration as c
 
-lmax = 1                        #Coarsest level of gaussian pyramid (depends on the size of the object in the image)
+lmax = 2                        #Coarsest level of gaussian pyramid (depends on the size of the object in the image)
 method='SCD'                    #The method used for preproccesing.
 
 def form_pyramids():

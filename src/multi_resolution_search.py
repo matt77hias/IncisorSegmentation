@@ -16,6 +16,7 @@ import principal_component_analysis as pca
 import fitting_function as ff
 import gaussian_image_piramid as gip
 import scipy.spatial.distance as dist
+import copy
 
 import math
 
@@ -62,13 +63,8 @@ def multi_resolution_search(nr_test_sample, model_points, nr_tooth):
             model_points[i * 2] = round(model_points[i * 2] / np.power(2, l))
             model_points[i * 2 + 1] = round(model_points[i * 2 + 1] / np.power(2, l))
     
+    
     while (l >= 0):
-        
-        #Compute model point positions in image at level l
-        if not lmax == 0:
-            for i in range(model_points.shape[0] / 2):
-                model_points[i * 2] *= 2 
-                model_points[i * 2 + 1] *=2
         
         #Search at ns points on profile either side of each current point
         x_coords, y_coords = mu.extract_coordinates(model_points)
@@ -102,7 +98,9 @@ def multi_resolution_search(nr_test_sample, model_points, nr_tooth):
         #Repeat unless more than pclose of the points are found close to the current position 
         #or nmax iterations have been applied at this resolution
 
-        if ((nr_close_points / model_points.shape[0]) >= pclose): converged = True
+        if ((nr_close_points / model_points.shape[0]) >= pclose): 
+            converged = True
+            print 'Converged!'
         else: converged = False
         
         nb_iterations += 1     
@@ -111,6 +109,10 @@ def multi_resolution_search(nr_test_sample, model_points, nr_tooth):
                 l = l - 1
                 nb_iterations = 0
                 image = cv2.imread(c.get_fname_pyramids(nr_test_sample, l))
+                #Compute model point positions in image at level l
+                for i in range(model_points.shape[0] / 2):
+                    model_points[i * 2] *= 2 
+                    model_points[i * 2 + 1] *=2
             else: l = -1
                 
     return model_points
@@ -287,15 +289,11 @@ if __name__ == '__main__':
         img = cv2.imread(fname)
         
         for j in range(c.get_nb_teeth()):
-            print j
             fname = c.get_fname_original_landmark(i, (j+1))
             P = original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
-            R = multi_resolution_search(i, P, j)
-            
-            print R
+            R = multi_resolution_search(i, copy.copy(P), j)
             
             show_iteration(np.copy(img), 0, P, R)
             cv2.waitKey(0)
             
-        break
         
