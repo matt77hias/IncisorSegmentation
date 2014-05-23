@@ -10,8 +10,22 @@ import cv2
 import numpy as np
 import scipy.spatial.distance as dist
 import configuration as c
+import gaussian_image_piramid as gip
 import math
 import math_utils as mu
+
+def create_fitting_functions_for_multiple_levels(L_GNS, L_GTS):
+    '''
+    Creates the fitting function for each level, for each tooth, for each landmark.
+    @param GNS:              the matrix L_GNS which contains for each level, for each tooth, for each of the given training samples,
+                             for each landmark, a normalized sample (along the profile normal through that landmark)
+    @param GTS:              the matrix L_GTS which contains for each level, for each tooth, for each of the given training samples,
+                             for each landmark, a normalized sample (along the profile tangent through that landmark)
+    @return The fitting functions for each level, for each tooth, for each landmark.
+    '''          
+    l_fns = [[[get_fitting_function(tooth, landmark, L_GNS[level,:]) for landmark in range(c.get_nb_landmarks())] for tooth in range(c.get_nb_teeth())] for level in range(L_GNS.shape[0])]
+    l_fts = [[[get_fitting_function(tooth, landmark, L_GTS[level,:]) for landmark in range(c.get_nb_landmarks())] for tooth in range(c.get_nb_teeth())] for level in range(L_GTS.shape[0])]   
+    return l_fns, l_fts 
 
 def create_fitting_functions(GNS, GTS):
     '''
@@ -20,7 +34,7 @@ def create_fitting_functions(GNS, GTS):
                              for each landmark, a normalized sample (along the profile normal through that landmark)
     @param GTS:              the matrix GTS which contains for each tooth, for each of the given training samples,
                              for each landmark, a normalized sample (along the profile tangent through that landmark)
-    @return The fitting function for each tooth, for each landmark.
+    @return The fitting functions for each tooth, for each landmark.
     '''          
     fns = [[get_fitting_function(tooth, landmark, GNS) for landmark in range(c.get_nb_landmarks())] for tooth in range(c.get_nb_teeth())]
     fts = [[get_fitting_function(tooth, landmark, GTS) for landmark in range(c.get_nb_landmarks())] for tooth in range(c.get_nb_teeth())]        
@@ -56,9 +70,35 @@ def get_fitting_function(tooth_index, landmark_index, GS):
         #return np.dot(np.transpose(gs - g_mu), np.dot(np.linalg.pinv(C), (gs - g_mu)))
         return dist.mahalanobis(gs, g_mu, C)
 
-    return fitting_function  
-    
-def create_partial_GS(trainingSamples, XS, MS, offsetX=0, offsetY=0, k=5, method='', multi_resolution=False):
+    return fitting_function     
+
+def create_partial_GS_for_multiple_levels(trainingSamples, XS, MS, nb_levels=1, offsetX=0, offsetY=0, k=5, method=''):
+    '''
+    Creates the matrix L_GNS which contains for each level, for each tooth, for each of the given training samples,
+    for each landmark, a normalized sample (along the profile normal through the landmarks).
+    Creates the matrix L_GTS which contains for each tooth, for each of the given training samples,
+    for each landmark, a normalized sample (along the profile tangent through the landmarks).
+    @param trainingSamples: the number of the training samples (not the test training samples!)
+    @param XS:              contains for each tooth, for each training sample, all landmarks (in the image coordinate frame)
+    @param MS:              contains for each tooth, the tooth model (in the model coordinate frame)
+    @param offsetX:         the possible offset in x direction (used when working with cropped images and non-cropped landmarks)
+    @param offsetY:         the possible offset in y direction (used when working with cropped images and non-cropped landmarks)
+    @param k:               the number of pixels to sample either side for each of the model points along the profile normal
+    @param method:          the method used for preprocessing
+    @return The matrix L_GNS which contains for each level, for each tooth, for each of the given training samples,
+            for each landmark, a normalized sample (along the profile normal through that landmark).
+            The matrix L_GTS which contains for each level, for each tooth, for each of the given training samples,
+            for each landmark, a normalized sample (along the profile tangent through that landmark).
+    '''
+    L_GNS = np.zeros((nb_levels, c.get_nb_teeth(), len(trainingSamples), c.get_nb_landmarks(), 2*k+1))
+    L_GTS = np.zeros((nb_levels, c.get_nb_teeth(), len(trainingSamples), c.get_nb_landmarks(), 2*k+1))
+    for i in range(nb_levels):
+        GNS, GTS = create_partial_GS(trainingSamples, np.around(np.divide(XS, 2**i)), MS, i, offsetX=round(float(offsetX)/2**i), offsetY=round(float(offsetY)/2**i), k=k, method=method)
+        L_GNS[i,:] = GNS
+        L_GTS[i,:] = GTS
+    return L_GNS, L_GTS  
+
+def create_partial_GS(trainingSamples, XS, MS, level=0, offsetX=0, offsetY=0, k=5, method=''):
     '''
     Creates the matrix GNS which contains for each tooth, for each of the given training samples,
     for each landmark, a normalized sample (along the profile normal through the landmarks).
@@ -85,7 +125,8 @@ def create_partial_GS(trainingSamples, XS, MS, offsetX=0, offsetY=0, k=5, method
             xs, ys = mu.extract_coordinates(mu.full_align_with(MS[j], XS[j,index,:]))
             fname = c.get_fname_vis_pre(i, method)
             img = cv2.imread(fname)
-            GN, GT = create_G(img, k, xs, ys, offsetX, offsetY)
+            pyramid = gip.get_gaussian_pyramid_at(img, level)
+            GN, GT = create_G(pyramid, k, xs, ys, offsetX, offsetY)
             GNS[j,index,:] = GN
             GTS[j,index,:] = GT
             index += 1
@@ -193,15 +234,7 @@ def create_Gi(img, k, x, y, dx, dy):
     index = 0
     for i in range(k,-(k+2),-1):
         kx = round(x + i * dx)
-        ky = round(y + i * dy)
-        
-        if (ky >= img.shape[0]):
-            ky = img.shape[0] - 1
-        if (kx >= img.shape[1]):
-            kx = img.shape[1] - 1
-            
-            #TODO REMOVE
-            
+        ky = round(y + i * dy) 
         Gi[index] = img[ky,kx,0]
         index += 1
     
