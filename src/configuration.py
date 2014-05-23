@@ -145,8 +145,8 @@ def get_fname_fitting_manual_landmark(nr_trainingSample, nr_tooth):
 def get_fname_pyramids(nr_testSample, level):
     fname = (get_dir_pyramids() + "/pyramid" + str(nr_testSample) + '-' + str(level) + '.png')
     
-    if (not is_valid_testSample(nr_testSample)):
-        raise InvalidFileName(fname)
+    #if (not is_valid_testSample(nr_testSample)):
+        #raise InvalidFileName(fname)
     
     return fname
 

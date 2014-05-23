@@ -58,7 +58,7 @@ def get_fitting_function(tooth_index, landmark_index, GS):
 
     return fitting_function  
     
-def create_partial_GS(trainingSamples, XS, MS, offsetX=0, offsetY=0, k=5, method=''):
+def create_partial_GS(trainingSamples, XS, MS, offsetX=0, offsetY=0, k=5, method='', multi_resolution=False):
     '''
     Creates the matrix GNS which contains for each tooth, for each of the given training samples,
     for each landmark, a normalized sample (along the profile normal through the landmarks).
@@ -194,6 +194,14 @@ def create_Gi(img, k, x, y, dx, dy):
     for i in range(k,-(k+2),-1):
         kx = round(x + i * dx)
         ky = round(y + i * dy)
+        
+        if (ky >= img.shape[0]):
+            ky = img.shape[0] - 1
+        if (kx >= img.shape[1]):
+            kx = img.shape[1] - 1
+            
+            #TODO REMOVE
+            
         Gi[index] = img[ky,kx,0]
         index += 1
     
