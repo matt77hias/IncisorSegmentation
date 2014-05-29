@@ -5,9 +5,7 @@ Classification utils
 '''
 
 import cv2
-import preprocessor as pre
 import math_utils as mu
-import numpy as np
 import loader as l
 import configuration as c
 
@@ -106,5 +104,5 @@ def classify_positives(method=''):
             info_file_lower.close()
 
 if __name__ == '__main__':
-    create_negatives(method='SCD')
+    #create_negatives(method='SCD')
     classify_positives(method='SCD')

@@ -82,12 +82,7 @@ def single_resolution_search(img, P, tooth_index, fitting_function=0, show=True)
         P_new = validate(img, tooth_index, mu.zip_coordinates(pxs, pys), nb_it, show)
         #conv  = np.linalg.norm(P-P_new)/np.linalg.norm(P)
         #if (conv < convergence_threshold): convergence = True 
-        
-        tx_old, ty_old, s_old, theta_old = mu.full_align_params(P, MS[tooth_index])
-        tx, ty, s, theta = mu.full_align_params(P_new, MS[tooth_index])
-        xm_old, ym_old = mu.get_center_of_gravity(P)
-        xm, ym = mu.get_center_of_gravity(P_new)
-        print(str((xm_old - xm)) + ' # ' + str((ym_old - ym)) + ' # ' + str((s_old - s)) + ' # ' + str((theta_old - theta)))
+        fu.show_feedback(MS[tooth_index], P, P_new)
         
         P = P_new
         if (nb_it >= 100): convergence = True 

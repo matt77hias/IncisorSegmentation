@@ -50,6 +50,21 @@ def original_to_cropped(P):
         P[(2*i+1)] -= offsetY
     return P
     
+def show_feedback(M, P_before, P_after):
+    '''
+    Shows feedback between iterations
+    @param M:               the model for the tooth
+    @param P_before:            the current points for the target tooth before validation
+                                in the image coordinate frame
+    @param P_after:             the current points for the target tooth after validation
+                                in the image coordinate frame
+    '''
+    tx_old, ty_old, s_old, theta_old = mu.full_align_params(P_before, M)
+    tx, ty, s, theta = mu.full_align_params(P_after, M)
+    xm_old, ym_old = mu.get_center_of_gravity(P_before)
+    xm, ym = mu.get_center_of_gravity(P_after)
+    print(str((xm_old - xm)) + ' # ' + str((ym_old - ym)) + ' # ' + str((s_old - s)) + ' # ' + str((theta_old - theta)))
+
 def show_validation(M, nb_it, PY_before, PY_after):
     '''
     Plots the landmarks corresponding to the mean shape in the model coordinate frame
