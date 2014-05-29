@@ -24,6 +24,7 @@ dir_vis_ff_landmarks = "data/Visualizations/Fitting Function/Landmarks"
 dir_vis_ff_landmarks_and_models = "data/Visualizations/Fitting Function/Landmarks and Models"
 dir_vis_ff_models = "data/Visualizations/Fitting Function/Models"
 dir_vis_ff_profile_normals = "data/Visualizations/Fitting Function/Profile Normals"
+dir_vis_class_samples = "data/Visualizations/Classified Samples"
 
 dir_vis_pyramids = "data/Visualizations/Pyramids"
 
@@ -85,6 +86,9 @@ def get_dir_vis_ff_models():
     
 def get_dir_vis_ff_profile_normals():
     return get_dir_prefix() + dir_vis_ff_profile_normals 
+
+def get_dir_vis_class_samples():
+    return get_dir_prefix() + dir_vis_class_samples
 
 #File names
   
@@ -241,6 +245,19 @@ def get_fname_vis_ff_profile_normals(nr_trainingSample, method=''):
     if (nr_trainingSample < 10):
         s = '/' + method + '0'
     fname = (get_dir_vis_ff_profile_normals() + s + str(nr_trainingSample) + '.png')
+    
+    if (not is_valid_trainingSample(nr_trainingSample)):
+        raise InvalidFileName(fname)
+    
+    return fname
+
+def get_fname_vis_class_samples(nr_trainingSample, direction, method=''):
+    if (not is_valid_trainingSample(nr_trainingSample)):
+        raise InvalidFileName
+    
+    s = '/' + method
+
+    fname = (get_dir_vis_class_samples() + s + str(nr_trainingSample) + '-' + direction + '.png')
     
     if (not is_valid_trainingSample(nr_trainingSample)):
         raise InvalidFileName(fname)
