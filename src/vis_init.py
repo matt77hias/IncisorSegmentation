@@ -35,8 +35,7 @@ def preprocess(trainingSamples):
         mty /= n
         ms /= n
         mtheta /= n
-        IS[j,:] = mu.full_align(M, mtx, mty, ms, mtheta)  
-    
+        IS[j,:] = mu.full_align(M, mtx, mty, ms, mtheta)      
     
 def test():
     for i in c.get_trainingSamples_range():

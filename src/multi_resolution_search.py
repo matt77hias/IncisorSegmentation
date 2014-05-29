@@ -170,21 +170,39 @@ def preprocess(trainingSamples):
     global MS, EWS, fns, fts
     XS = l.create_partial_XS(trainingSamples)
     MS = np.zeros((c.get_nb_teeth(), c.get_nb_dim()))
+    IP = np.zeros((c.get_nb_teeth(), c.get_nb_dim()))
     
     for j in range(c.get_nb_teeth()):
-        M, Y = pa.PA(XS[j,:,:])
+        S = XS[j,:,:]
+        M, Y = pa.PA(S)
         MS[j,:] = M
         E, W, MU = pca.pca_percentage(Y)
         EWS.append((np.sqrt(E), W))
+        
+        mtx = mty = ms = mtheta = 0
+        n = S.shape[0]
+        for i in range(n):
+            tx, ty, s, theta = mu.full_align_params(M, fu.original_to_cropped(S[i,:]))
+            mtx += tx
+            mty += ty
+            ms += s
+            mtheta += theta
+        n = float(n)
+        mtx /= n
+        mty /= n
+        ms /= n
+        mtheta /= n
+        IP[j,:] = mu.full_align(M, mtx, mty, ms, mtheta) 
 
     GNS, GTS = ff.create_partial_GS_for_multiple_levels(trainingSamples, XS, MS, (max_level+1), offsetX=fu.offsetX, offsetY=fu.offsetY, k=k, method=method)
     fns, fts = ff.create_fitting_functions_for_multiple_levels(GNS, GTS)
+    return IP
     
 def test():
     for i in c.get_trainingSamples_range():
         trainingSamples = c.get_trainingSamples_range()
         trainingSamples.remove(i)
-        preprocess(trainingSamples)
+        IP = preprocess(trainingSamples)
         
         fname = c.get_fname_vis_pre(i, method)
         img = cv2.imread(fname)
@@ -192,9 +210,11 @@ def test():
         for j in range(c.get_nb_teeth()):
             fname = c.get_fname_original_landmark(i, (j+1))
             P = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+            
+            P = IP[j,:]
             R = multi_resolution_search(img, P, j)
             fname = str(i) + '-' + str((j+1)) + '.png'
             cv2.imwrite(fname, fu.show_iteration(np.copy(img), 10000, P, R))
-    
+
 if __name__ == "__main__":
     test()      

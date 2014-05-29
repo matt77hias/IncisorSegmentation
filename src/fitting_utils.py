@@ -45,10 +45,11 @@ def original_to_cropped(P):
     @param  P:   the points to crop
     @return The cropped version of P.
     '''
+    v = np.copy(P)
     for i in range(P.shape[0] / 2):
-        P[(2*i)] -= offsetX
-        P[(2*i+1)] -= offsetY
-    return P
+        v[(2*i)] -= offsetX
+        v[(2*i+1)] -= offsetY
+    return v
     
 def show_feedback(M, P_before, P_after):
     '''
