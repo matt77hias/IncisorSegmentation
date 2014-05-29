@@ -81,6 +81,7 @@ def create_partial_GS_for_multiple_levels(trainingSamples, XS, MS, nb_levels=1, 
     @param trainingSamples: the number of the training samples (not the test training samples!)
     @param XS:              contains for each tooth, for each training sample, all landmarks (in the image coordinate frame)
     @param MS:              contains for each tooth, the tooth model (in the model coordinate frame)
+    @param nb_levels:           the number of levels
     @param offsetX:         the possible offset in x direction (used when working with cropped images and non-cropped landmarks)
     @param offsetY:         the possible offset in y direction (used when working with cropped images and non-cropped landmarks)
     @param k:               the number of pixels to sample either side for each of the model points along the profile normal
@@ -107,6 +108,7 @@ def create_partial_GS(trainingSamples, XS, MS, level=0, offsetX=0, offsetY=0, k=
     @param trainingSamples: the number of the training samples (not the test training samples!)
     @param XS:              contains for each tooth, for each training sample, all landmarks (in the image coordinate frame)
     @param MS:              contains for each tooth, the tooth model (in the model coordinate frame)
+    @param level:           the current level
     @param offsetX:         the possible offset in x direction (used when working with cropped images and non-cropped landmarks)
     @param offsetY:         the possible offset in y direction (used when working with cropped images and non-cropped landmarks)
     @param k:               the number of pixels to sample either side for each of the model points along the profile normal
