@@ -83,7 +83,7 @@ def classify_positives(method=''):
                         if y_coords[k] < min_y: min_y = y_coords[k]
                         if y_coords[k] > max_y: max_y = y_coords[k]
                 
-                line = 'rawdata/' + method + img_name + ' 1 ' + str(int(min_x - offsetX)) + ' ' + str(int(min_y - offsetY)) + ' ' + str(int(max_x - min_y)) + ' ' + str(int(max_y - min_y)) + '\n' 
+                line = 'rawdata/' + method + img_name + ' 1 ' + str(int(min_x - offsetX)) + ' ' + str(int(min_y - offsetY)) + ' ' + str(int(max_x - min_x)) + ' ' + str(int(max_y - min_y)) + '\n' 
                 info_file_upper.write(line)
                 
                 min_y = min_x = float("inf")
@@ -97,7 +97,7 @@ def classify_positives(method=''):
                         if y_coords[k] < min_y: min_y = y_coords[k]
                         if y_coords[k] > max_y: max_y = y_coords[k] 
                 
-                line = 'rawdata/' + method + img_name + ' 1 ' + str(int(min_x - offsetX)) + ' ' + str(int(min_y - offsetY)) + ' ' + str(int(max_x - min_y)) + ' ' + str(int(max_y - min_y)) + '\n' 
+                line = 'rawdata/' + method + img_name + ' 1 ' + str(int(min_x - offsetX)) + ' ' + str(int(min_y - offsetY)) + ' ' + str(int(max_x - min_x)) + ' ' + str(int(max_y - min_y)) + '\n' 
                 info_file_lower.write(line) 
 
         finally:
