@@ -34,7 +34,7 @@ def create_negatives(method=''):
                 if y_coords[k] < min_y: min_y = y_coords[k]
                 if y_coords[k] > max_y: max_y = y_coords[k]
         
-        fname = '../data/Visualizations/Classified Samples/' + method + str(s) + str(i) + '-l' + '.png'    
+        fname = c.get_dir_prefix() + 'data/Visualizations/Classified Samples/' + method + str(s) + str(i) + '-l' + '.png'    
         cv2.imwrite(fname, img[max_y-offsetY+1:,:])
         
         min_y = min_x = float("inf")
@@ -48,7 +48,7 @@ def create_negatives(method=''):
                 if y_coords[k] < min_y: min_y = y_coords[k]
                 if y_coords[k] > max_y: max_y = y_coords[k] 
         
-        fname = '../data/Visualizations/Classified Samples/' + method + str(s) + str(i) + '-u' + '.png'    
+        fname = c.get_dir_prefix() + 'data/Visualizations/Classified Samples/' + method + str(s) + str(i) + '-u' + '.png'    
         cv2.imwrite(fname, img[:min_y-offsetY,:])
     
     
@@ -59,8 +59,9 @@ def classify_positives(method=''):
         trainingSamples = c.get_trainingSamples_range()
         trainingSamples.remove(s)
         try:
-            info_name_upper = 'CV/data/Visualizations/Classified Samples/info' + method + str(s) + '-u' + '.txt' 
-            info_name_lower = 'CV/data/Visualizations/Classified Samples/info' + method + str(s) + '-l' + '.txt' 
+            info_name_upper = c.get_dir_prefix() + 'data/Visualizations/Classified Samples/info ' + method + str(s) + '-u' + '.txt' 
+            info_name_lower = c.get_dir_prefix() + 'data/Visualizations/Classified Samples/info ' + method + str(s) + '-l' + '.txt' 
+
             info_file_upper = open(info_name_upper, "w")
             info_file_lower = open(info_name_lower, "w")
             
