@@ -59,8 +59,8 @@ def classify_positives(method=''):
         trainingSamples = c.get_trainingSamples_range()
         trainingSamples.remove(s)
         try:
-            info_name_upper = c.get_dir_prefix() + 'data/Visualizations/Classified Samples/info ' + method + str(s) + '-u' + '.txt' 
-            info_name_lower = c.get_dir_prefix() + 'data/Visualizations/Classified Samples/info ' + method + str(s) + '-l' + '.txt' 
+            info_name_upper = c.get_dir_prefix() + 'data/Visualizations/Classified Samples/info' + method + str(s) + '-u' + '.txt' 
+            info_name_lower = c.get_dir_prefix() + 'data/Visualizations/Classified Samples/info' + method + str(s) + '-l' + '.txt' 
 
             info_file_upper = open(info_name_upper, "w")
             info_file_lower = open(info_name_lower, "w")
