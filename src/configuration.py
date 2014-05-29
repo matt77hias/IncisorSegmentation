@@ -13,7 +13,6 @@ dir_training_radiographs = "data/Radiographs/Training"
 dir_test_radiographs = "data/Radiographs/Test"
 dir_mirrored = "data/Landmarks/mirrored"
 dir_original = "data/Landmarks/original"
-dir_fitting_manual = "data/Fitting/Manual"
 
 #Own visualizations
 dir_vis_landmarks = "data/Visualizations/Landmarks"
@@ -25,8 +24,6 @@ dir_vis_ff_landmarks_and_models = "data/Visualizations/Fitting Function/Landmark
 dir_vis_ff_models = "data/Visualizations/Fitting Function/Models"
 dir_vis_ff_profile_normals = "data/Visualizations/Fitting Function/Profile Normals"
 dir_vis_class_samples = "data/Visualizations/Classified Samples"
-
-dir_vis_pyramids = "data/Visualizations/Pyramids"
 
 nb_trainingSamples = 14     #from 1 to 14
 nb_testSamples = 16         #from 15 to 30
@@ -56,12 +53,6 @@ def get_dir_mirrored_landmarks():
 
 def get_dir_original_landmarks():
     return get_dir_prefix() + dir_original
-    
-def get_dir_fitting_manual():
-    return get_dir_prefix() + dir_fitting_manual
-
-def get_dir_pyramids():
-    return get_dir_prefix() + dir_vis_pyramids
     
 def get_dir_vis_landmarks():
     return get_dir_prefix() + dir_vis_landmarks
@@ -135,22 +126,6 @@ def get_fname_original_landmark(nr_trainingSample, nr_tooth):
     
     if (not is_valid_trainingSample(nr_trainingSample) or not is_valid_tooth(nr_tooth)):
         raise InvalidFileName(fname)
-    
-    return fname
-    
-def get_fname_fitting_manual_landmark(nr_trainingSample, nr_tooth):
-    fname = (get_dir_fitting_manual() + "/landmarks" + str(nr_trainingSample) + '-' + str(nr_tooth) + '.txt')
-    
-    if (not is_valid_trainingSample(nr_trainingSample) or not is_valid_tooth(nr_tooth)):
-        raise InvalidFileName(fname)
-    
-    return fname
-    
-def get_fname_pyramids(nr_testSample, level):
-    fname = (get_dir_pyramids() + "/pyramid" + str(nr_testSample) + '-' + str(level) + '.png')
-    
-    #if (not is_valid_testSample(nr_testSample)):
-        #raise InvalidFileName(fname)
     
     return fname
 
