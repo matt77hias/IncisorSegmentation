@@ -59,8 +59,8 @@ def classify_positives(method=''):
         trainingSamples = c.get_trainingSamples_range()
         trainingSamples.remove(s)
         try:
-            info_name_upper = '../data/Visualizations/Classified Samples/info ' + method + str(s) + '-u' + '.txt' 
-            info_name_lower = '../data/Visualizations/Classified Samples/info ' + method + str(s) + '-l' + '.txt' 
+            info_name_upper = 'CV/data/Visualizations/Classified Samples/info' + method + str(s) + '-u' + '.txt' 
+            info_name_lower = 'CV/data/Visualizations/Classified Samples/info' + method + str(s) + '-l' + '.txt' 
             info_file_upper = open(info_name_upper, "w")
             info_file_lower = open(info_name_lower, "w")
             
@@ -82,7 +82,7 @@ def classify_positives(method=''):
                         if y_coords[k] < min_y: min_y = y_coords[k]
                         if y_coords[k] > max_y: max_y = y_coords[k]
                 
-                line = 'rawdata/' + method + img_name + ' 1 ' + str(min_x - offsetX) + ' ' + str(min_y - offsetY) + ' ' + str(max_x - min_y) + ' ' + str(max_y - min_y) + '\n' 
+                line = 'rawdata/' + method + img_name + ' 1 ' + str(int(min_x - offsetX)) + ' ' + str(int(min_y - offsetY)) + ' ' + str(int(max_x - min_y)) + ' ' + str(int(max_y - min_y)) + '\n' 
                 info_file_upper.write(line)
                 
                 min_y = min_x = float("inf")
@@ -96,7 +96,7 @@ def classify_positives(method=''):
                         if y_coords[k] < min_y: min_y = y_coords[k]
                         if y_coords[k] > max_y: max_y = y_coords[k] 
                 
-                line = 'rawdata/' + method + img_name + ' 1 ' + str(min_x - offsetX) + ' ' + str(min_y - offsetY) + ' ' + str(max_x - min_y) + ' ' + str(max_y - min_y) + '\n' 
+                line = 'rawdata/' + method + img_name + ' 1 ' + str(int(min_x - offsetX)) + ' ' + str(int(min_y - offsetY)) + ' ' + str(int(max_x - min_y)) + ' ' + str(int(max_y - min_y)) + '\n' 
                 info_file_lower.write(line) 
 
         finally:
