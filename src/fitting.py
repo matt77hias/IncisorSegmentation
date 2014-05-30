@@ -156,7 +156,7 @@ def test():
             P = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
             R, nb_it = single_resolution_search(img, P, j)
             fname = str(i) + '-' + str((j+1)) + '#' + str(nb_it) + '.png'
-            cv2.imwrite(fname, fu.show_interation(np.copy(img), nb_it, P, R))
+            cv2.imwrite(fname, fu.show_iteration(np.copy(img), nb_it, P, R))
     
 if __name__ == "__main__":
     test() 
