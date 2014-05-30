@@ -3,7 +3,6 @@ import numpy as np
 import loader as l
 import configuration as c
 import procrustes_analysis as pa
-import principal_component_analysis as pca
 import fitting_utils as fu
 import math_utils as mu
 

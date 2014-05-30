@@ -15,6 +15,7 @@ import principal_component_analysis as pca
 import fitting_function as ff
 import fitting_utils as fu
 import gaussian_image_piramid as gip
+import classification_utils as cu
 
 from matplotlib import pyplot
 
@@ -170,7 +171,6 @@ def preprocess(trainingSamples):
     global MS, EWS, fns, fts
     XS = l.create_partial_XS(trainingSamples)
     MS = np.zeros((c.get_nb_teeth(), c.get_nb_dim()))
-    IP = np.zeros((c.get_nb_teeth(), c.get_nb_dim()))
     
     for j in range(c.get_nb_teeth()):
         S = XS[j,:,:]
@@ -178,40 +178,66 @@ def preprocess(trainingSamples):
         MS[j,:] = M
         E, W, MU = pca.pca_percentage(Y)
         EWS.append((np.sqrt(E), W))
-        
-        mtx = mty = ms = mtheta = 0
-        n = S.shape[0]
-        for i in range(n):
-            tx, ty, s, theta = mu.full_align_params(M, fu.original_to_cropped(S[i,:]))
-            mtx += tx
-            mty += ty
-            ms += s
-            mtheta += theta
-        n = float(n)
-        mtx /= n
-        mty /= n
-        ms /= n
-        mtheta /= n
-        IP[j,:] = mu.full_align(M, mtx, mty, ms, mtheta) 
 
     GNS, GTS = ff.create_partial_GS_for_multiple_levels(trainingSamples, XS, MS, (max_level+1), offsetX=fu.offsetX, offsetY=fu.offsetY, k=k, method=method)
     fns, fts = ff.create_fitting_functions_for_multiple_levels(GNS, GTS)
-    return IP
     
 def test():
+    BS = cu.create_bboxes(method)
+    Avg = cu.get_average_size(method)
+                 
     for i in c.get_trainingSamples_range():
         trainingSamples = c.get_trainingSamples_range()
         trainingSamples.remove(i)
-        IP = preprocess(trainingSamples)
+        preprocess(trainingSamples)
         
         fname = c.get_fname_vis_pre(i, method)
         img = cv2.imread(fname)
         
-        for j in range(c.get_nb_teeth()):
-            fname = c.get_fname_original_landmark(i, (j+1))
-            P = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+        Params = cu.get_average_params(trainingSamples, method)
+        
+        x_min = BS[i,0]
+        x_max = BS[i,1]
+        y_min = BS[i,2]
+        y_max = BS[i,3]
+        ty = y_max-y_min
+        for j in range(c.get_nb_teeth()/2):
+            if j==0: tx = x_min + Avg[0, 0] / 2.0
+            if j==1: tx = x_min + Avg[0, 0] + Avg[1, 0] / 2.0
+            if j==2: tx = x_max - Avg[3, 0] - Avg[2, 0] / 2.0
+            if j==3: tx = x_max - Avg[3, 0] / 2.0
             
-            P = IP[j,:]
+            tx = x_min + (j+0.5) * (x_max - x_min) / 4.0
+            
+            s = Params[j,2]
+            theta = Params[j,3]
+            P = mu.full_align(MS[j,:], tx, ty, s, theta)
+            
+            #fname = c.get_fname_original_landmark(i, (j+1))
+            #P = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+            R = multi_resolution_search(img, P, j)
+            fname = str(i) + '-' + str((j+1)) + '.png'
+            cv2.imwrite(fname, fu.show_iteration(np.copy(img), 10000, P, R))
+            
+        x_min = BS[i,4]
+        x_max = BS[i,5]
+        y_min = BS[i,6]
+        y_max = BS[i,7]
+        ty = y_max-y_min
+        for j in range(c.get_nb_teeth()/2, c.get_nb_teeth()):
+            if j==4: tx = x_min + Avg[4, 0] / 2.0
+            if j==5: tx = x_min + Avg[4, 0] + Avg[5, 0] / 2.0
+            if j==6: tx = x_max - Avg[7, 0] - Avg[6, 0] / 2.0
+            if j==7: tx = x_max - Avg[7, 0] / 2.0
+            
+            tx = x_min + (j+0.5) * (x_max - x_min) / 4.0
+            
+            s = Params[j,2]
+            theta = Params[j,3]
+            P = mu.full_align(MS[j,:], tx, ty, s, theta)
+            
+            #fname = c.get_fname_original_landmark(i, (j+1))
+            #P = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
             R = multi_resolution_search(img, P, j)
             fname = str(i) + '-' + str((j+1)) + '.png'
             cv2.imwrite(fname, fu.show_iteration(np.copy(img), 10000, P, R))
