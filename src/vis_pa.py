@@ -5,10 +5,10 @@ of the Procrustes Analysis
 @version    1.0
 '''
 
-import math_utils as mu
-import loader as l
-import procrustes_analysis as pa
 import configuration as c
+import loader as l
+import math_utils as mu
+import procrustes_analysis as pa
 
 from matplotlib import pyplot
 

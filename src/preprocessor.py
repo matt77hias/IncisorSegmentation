@@ -8,12 +8,13 @@ Preprocess the dental radiographs by:
 @version    1.0
 '''
 
-import numpy as np
 import cv2
 import math
-import math_utils as mu
-import loader as l
+import numpy as np
+
 import configuration as c
+import loader as l
+import math_utils as mu
 
 from matplotlib import pyplot
 

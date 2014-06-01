@@ -9,17 +9,52 @@ with the given data (landmarks).
 import cv2
 import numpy as np
 
-import preprocessor as pre
-import math_utils as mu
-import loader as l
 import configuration as c
+import loader as l
+import math_utils as mu
+import preprocessor as pre
 
 from matplotlib import pyplot
+
+def store_plotted_landmarks_single_plot(closed_curve=False):
+    '''
+    Stores the plots of the landmarks corresponding to all the
+    training samples and all the teeth in the image coordinate frame
+    in seperate plots for each training sample.
+    The scale and limits of the axes are the same for each plot.
+    @param closed_curve:        must the curve be closed
+    '''
+    XS = l.create_full_XS()
+    (ymin, ymax, xmin, xmax) = pre.learn_offsets_safe(XS)
+    
+    for i in range(XS.shape[1]):
+        pyplot.figure()
+        pyplot.title('Training sample nr: ' + str((i+1)))
+        for j in range(XS.shape[0]):
+        
+            xCoords, yCoords = mu.extract_coordinates(XS[j,i,:])
+            if (closed_curve):
+                xCoords = mu.make_circular(xCoords)
+                yCoords = mu.make_circular(yCoords)
+    
+            # x coordinates , y coordinates
+            pyplot.plot(xCoords, yCoords, '-+r')
+        pyplot.axis([xmin, xmax, ymin, ymax])
+        pyplot.gca().set_aspect('equal', adjustable='box')
+        pyplot.xlabel('x')
+        pyplot.ylabel('y')
+        pyplot.gca().invert_yaxis()
+        fname = c.get_fname_vis_landmarks((i+1))
+        pyplot.savefig(fname, bbox_inches='tight')
+        #You get a runtime warning if you open more than 20 figures
+        #Closing comes with a performance penalty
+        pyplot.close()
 
 def store_plotted_landmarks(closed_curve=False):
     '''
     Stores the plots of the landmarks corresponding to all the
-    training samples and all the teeth in the image coordinate frame.
+    training samples and all the teeth in the image coordinate frame
+    in seperate plots for each training sample, for each tooth.
     The scale and limits of the axes are the same for each plot.
     @param closed_curve:        must the curve be closed
     '''
@@ -94,5 +129,6 @@ def display_landmarks(X, nr_trainingSample=1, color=np.array([0, 0, 255])):
 if __name__ == '__main__':
     X = l.create_full_X(nr_tooth=1)
     #display_landmarks(X, nr_trainingSample=1)
-    plot_landmarks(X, nr_trainingSample=1)
-    #store_plotted_landmarks(closed_curve=True)
+    #plot_landmarks(X, nr_trainingSample=1)
+    store_plotted_landmarks(closed_curve=True)
+    store_plotted_landmarks_single_plot(closed_curve=True)

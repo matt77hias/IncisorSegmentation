@@ -129,6 +129,14 @@ def get_fname_original_landmark(nr_trainingSample, nr_tooth):
     
     return fname
 
+def get_fname_vis_landmarks(nr_trainingSample):
+    fname = (get_dir_vis_landmarks() + "/landmarks" + str(nr_trainingSample))
+    
+    if (not is_valid_trainingSample(nr_trainingSample)):
+        raise InvalidFileName(fname)
+    
+    return fname
+
 def get_fname_vis_landmark(nr_trainingSample, nr_tooth):
     fname = (get_dir_vis_landmarks() + "/landmarks" + str(nr_trainingSample) + '-' + str(nr_tooth) + '.png')
     

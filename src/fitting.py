@@ -1,18 +1,21 @@
 '''
-Single-Resolution Active Shape Models' fitting procedure.
+Single & Multi-Resolution Active Shape Models' fitting procedure.
 @author     Matthias Moulin & Milan Samyn
 @version    1.0
 '''
-
-import configuration as c
-import loader as l
-import numpy as np
 import cv2
-import math_utils as mu
-import procrustes_analysis as pa
-import principal_component_analysis as pca
+import numpy as np
+import math
+
+import classification_utils as cu
+import configuration as c
 import fitting_function as ff
 import fitting_utils as fu
+import gaussian_image_piramid as gip
+import loader as l
+import math_utils as mu
+import principal_component_analysis as pca
+import procrustes_analysis as pa
 
 from matplotlib import pyplot
 
@@ -20,6 +23,11 @@ MS = None                       #MS contains for each tooth, the tooth model (in
 EWS = []                        #EWS contains for each tooth, a (sqrt(Eigenvalues), Eigenvectors) pair (in the model coordinate frame)
 fns = None                      #fitting functions for each tooth, for each landmark, for the profile normal through that landmark.
 fts = None                      #fitting functions for each tooth, for each landmark, for the profile gradient through that landmark.
+
+offsetY = 497.0                 #The landmarks refer to the non-cropped images, so we need the vertical offset (up->down)
+                                #to locate them on the cropped images.
+offsetX = 1234.0                #The landmarks refer to the non-cropped images, so we need the horizontal offset (left->right)
+                                #to locate them on the cropped images.
 
 k = 4                           #The number of pixels to sample either side for each of the model points along the profile normal
                                 #(used for creating the fitting functions)
@@ -30,7 +38,12 @@ method='SCD'                    #The method used for preproccesing.
 convergence_threshold = 0.002   #The convergence threshold (used while iterating).
 tolerable_deviation = 3         #The number of deviations that are tolerable by the models (used for limiting the shape).
 
-def single_resolution_search(img, P, tooth_index, fitting_function=0, show=True):
+
+max_level = 2                   #Coarsest level of gaussian pyramid (depends on the size of the object in the image)
+max_it = 10                      #Maximum number of iterations allowed at each level
+pclose = 0.9                    #Desired proportion of points found within m/2 of current position
+
+def multi_resolution_search(img, P, tooth_index, fitting_function=0, show=False):
     '''
     Fits the tooth corresponding to the given tooth index in the given image.
     @param img:                 the image  
@@ -44,14 +57,20 @@ def single_resolution_search(img, P, tooth_index, fitting_function=0, show=True)
     @param show:                must the intermediate results (after each iteration) be displayed
     @return The fitted points for the tooth corresponding to the given tooth index
             and the number of iterations used.
-    '''
+    '''    
     nb_it = 0
-    convergence = False
-    while (not convergence) :
+    level = max_level
+    pyramids = gip.get_gaussian_pyramids(img, level)
+    
+    
+    #Compute model point positions in image at coarsest level
+    P = np.around(np.divide(P, 2**level))
+    
+    while (level >= 0):
         nb_it += 1
         pxs, pys = mu.extract_coordinates(P)
         for i in range(c.get_nb_landmarks()):
-            tx, ty, nx, ny = ff.create_ricos(img, i, pxs, pys)
+            tx, ty, nx, ny = ff.create_ricos(pyramids[level], i, pxs, pys)
             f_optimal = float("inf")
             
             if (fitting_function==0):
@@ -67,9 +86,9 @@ def single_resolution_search(img, P, tooth_index, fitting_function=0, show=True)
                 for t in rt:
                     x = round(pxs[i] + n * nx + t * tx)
                     y = round(pys[i] + n * ny + t * ty)
-                    try: 
-                        fn = fns[tooth_index][i](ff.normalize_Gi(ff.create_Gi(img, k, x, y, nx, ny)))
-                        ft = fts[tooth_index][i](ff.normalize_Gi(ff.create_Gi(img, k, x, y, tx, ty)))
+                    try:    
+                        fn = fns[level][tooth_index][i](ff.normalize_Gi(ff.create_Gi(pyramids[level], k, x, y, nx, ny)))
+                        ft = fts[level][tooth_index][i](ff.normalize_Gi(ff.create_Gi(pyramids[level], k, x, y, tx, ty)))
                     except (IndexError): continue
                     f = fu.evaluate_fitting(fn=fn, ft=ft, fitting_function=fitting_function)
                     if f < f_optimal:
@@ -78,17 +97,37 @@ def single_resolution_search(img, P, tooth_index, fitting_function=0, show=True)
                         cy = y
             pxs[i] = cx
             pys[i] = cy
-        
-        P_new = validate(img, tooth_index, mu.zip_coordinates(pxs, pys), nb_it, show)
-        #conv  = np.linalg.norm(P-P_new)/np.linalg.norm(P)
-        #if (conv < convergence_threshold): convergence = True 
-        fu.show_feedback(MS[tooth_index], P, P_new)
-        
+            
+        P_new = validate(pyramids[level], tooth_index, mu.zip_coordinates(pxs, pys), nb_it, show)
+        nb_close_points = nb_closest_points(P, P_new)
         P = P_new
-        if (nb_it >= 100): convergence = True 
         
-    print('Fitting number of iterations: ' + str(nb_it))
-    return P, nb_it
+        #Repeat unless more than pclose of the points are found close to the current position 
+        #or nmax iterations have been applied at this resolution
+        print 'Level:' + str(level) + ', Iteration: ' + str(nb_it) + ', Ratio: ' + str((2 * nb_close_points / float(P.shape[0])))
+
+        converged = (2 * nb_close_points / float(P.shape[0]) >= pclose)    
+        if (converged or nb_it >= max_it):
+            if (level > 0): 
+                level -= 1
+                nb_it = 0
+                P = P * 2
+            else:
+                break
+                
+    return P
+          
+ 
+def nb_closest_points(P, P_new):
+    nb_close_points = 0
+    for i in range(P.shape[0] / 2):
+        if close_to_current_position(P[(i*2)], P[(i*2+1)], P_new[(i*2)], P_new[(i*2+1)]): 
+            nb_close_points += 1
+    return nb_close_points
+                     
+def close_to_current_position(found_x, found_y, current_x, current_y):
+    distance = math.sqrt((current_x - found_x) ** 2 + (current_y - found_y) ** 2)
+    return distance <= 1.5#(ns / 2)  
                 
 def validate(img, tooth_index, P_before, nb_it, show=False):
     '''
@@ -120,8 +159,8 @@ def validate(img, tooth_index, P_before, nb_it, show=False):
         cv2.waitKey(0)
         pyplot.close()  
 
-    return P_after
-
+    return P_after 
+    
 def preprocess(trainingSamples):
     '''
     Creates MS, EWS and fs, used by the fitting procedure
@@ -134,15 +173,19 @@ def preprocess(trainingSamples):
     MS = np.zeros((c.get_nb_teeth(), c.get_nb_dim()))
     
     for j in range(c.get_nb_teeth()):
-        M, Y = pa.PA(XS[j,:,:])
+        S = XS[j,:,:]
+        M, Y = pa.PA(S)
         MS[j,:] = M
         E, W, MU = pca.pca_percentage(Y)
         EWS.append((np.sqrt(E), W))
 
-    GNS, GTS = ff.create_partial_GS(trainingSamples, XS, MS, offsetX=fu.offsetX, offsetY=fu.offsetY, k=k, method=method)
-    fns, fts = ff.create_fitting_functions(GNS, GTS)
+    GNS, GTS = ff.create_partial_GS_for_multiple_levels(trainingSamples, XS, MS, (max_level+1), offsetX=fu.offsetX, offsetY=fu.offsetY, k=k, method=method)
+    fns, fts = ff.create_fitting_functions_for_multiple_levels(GNS, GTS)
     
 def test():
+    BS = cu.create_bboxes(method)
+    Avg = cu.get_average_size(method)
+                 
     for i in c.get_trainingSamples_range():
         trainingSamples = c.get_trainingSamples_range()
         trainingSamples.remove(i)
@@ -151,12 +194,53 @@ def test():
         fname = c.get_fname_vis_pre(i, method)
         img = cv2.imread(fname)
         
-        for j in range(c.get_nb_teeth()):
-            fname = c.get_fname_original_landmark(i, (j+1))
-            P = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
-            R, nb_it = single_resolution_search(img, P, j)
-            fname = str(i) + '-' + str((j+1)) + '#' + str(nb_it) + '.png'
-            cv2.imwrite(fname, fu.show_iteration(np.copy(img), nb_it, P, R))
-    
+        Params = cu.get_average_params(trainingSamples, method)
+        
+        x_min = BS[i,0]
+        x_max = BS[i,1]
+        y_min = BS[i,2]
+        y_max = BS[i,3]
+        ty = y_max-y_min
+        for j in range(c.get_nb_teeth()/2):
+            if j==0: tx = x_min + Avg[0, 0] / 2.0
+            if j==1: tx = x_min + Avg[0, 0] + Avg[1, 0] / 2.0
+            if j==2: tx = x_max - Avg[3, 0] - Avg[2, 0] / 2.0
+            if j==3: tx = x_max - Avg[3, 0] / 2.0
+            
+            tx = x_min + (j+0.5) * (x_max - x_min) / 4.0
+            
+            s = Params[j,2]
+            theta = Params[j,3]
+            P = mu.full_align(MS[j,:], tx, ty, s, theta)
+            
+            #fname = c.get_fname_original_landmark(i, (j+1))
+            #P = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+            R = multi_resolution_search(img, P, j)
+            fname = str(i) + '-' + str((j+1)) + '.png'
+            cv2.imwrite(fname, fu.show_iteration(np.copy(img), 10000, P, R))
+            
+        x_min = BS[i,4]
+        x_max = BS[i,5]
+        y_min = BS[i,6]
+        y_max = BS[i,7]
+        ty = y_max-y_min
+        for j in range(c.get_nb_teeth()/2, c.get_nb_teeth()):
+            if j==4: tx = x_min + Avg[4, 0] / 2.0
+            if j==5: tx = x_min + Avg[4, 0] + Avg[5, 0] / 2.0
+            if j==6: tx = x_max - Avg[7, 0] - Avg[6, 0] / 2.0
+            if j==7: tx = x_max - Avg[7, 0] / 2.0
+            
+            tx = x_min + (j+0.5) * (x_max - x_min) / 4.0
+            
+            s = Params[j,2]
+            theta = Params[j,3]
+            P = mu.full_align(MS[j,:], tx, ty, s, theta)
+            
+            #fname = c.get_fname_original_landmark(i, (j+1))
+            #P = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+            R = multi_resolution_search(img, P, j)
+            fname = str(i) + '-' + str((j+1)) + '.png'
+            cv2.imwrite(fname, fu.show_iteration(np.copy(img), 10000, P, R))
+
 if __name__ == "__main__":
-    test() 
+    test()      

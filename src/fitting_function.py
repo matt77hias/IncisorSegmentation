@@ -7,19 +7,20 @@ training set and building a statistical model of the grey-level structure.
 '''
 
 import cv2
+import math
 import numpy as np
 import scipy.spatial.distance as dist
+
 import configuration as c
 import gaussian_image_piramid as gip
-import math
 import math_utils as mu
 
 def create_fitting_functions_for_multiple_levels(L_GNS, L_GTS):
     '''
     Creates the fitting function for each level, for each tooth, for each landmark.
-    @param GNS:              the matrix L_GNS which contains for each level, for each tooth, for each of the given training samples,
+    @param L_GNS:            the matrix L_GNS which contains for each level, for each tooth, for each of the given training samples,
                              for each landmark, a normalized sample (along the profile normal through that landmark)
-    @param GTS:              the matrix L_GTS which contains for each level, for each tooth, for each of the given training samples,
+    @param L_GTS:            the matrix L_GTS which contains for each level, for each tooth, for each of the given training samples,
                              for each landmark, a normalized sample (along the profile tangent through that landmark)
     @return The fitting functions for each level, for each tooth, for each landmark.
     '''          

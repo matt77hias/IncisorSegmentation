@@ -5,14 +5,15 @@ of the Principal Component Analysis
 @version    1.0
 '''
 
-import numpy as np
 import math
-import math_utils as mu
-import loader as l
+import numpy as np
+
 import configuration as c
+import loader as l
+import math_utils as mu
 import preprocessor as pre
-import procrustes_analysis as pa
 import principal_component_analysis as pca
+import procrustes_analysis as pa
 
 from matplotlib import pyplot
 
