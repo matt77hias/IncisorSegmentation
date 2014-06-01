@@ -40,7 +40,7 @@ tolerable_deviation = 3         #The number of deviations that are tolerable by 
 
 
 max_level = 2                   #Coarsest level of gaussian pyramid (depends on the size of the object in the image)
-max_it = 10                      #Maximum number of iterations allowed at each level
+max_it = 10                     #Maximum number of iterations allowed at each level
 pclose = 0.9                    #Desired proportion of points found within m/2 of current position
 
 def multi_resolution_search(img, P, tooth_index, fitting_function=0, show=False):
@@ -181,8 +181,82 @@ def preprocess(trainingSamples):
 
     GNS, GTS = ff.create_partial_GS_for_multiple_levels(trainingSamples, XS, MS, (max_level+1), offsetX=fu.offsetX, offsetY=fu.offsetY, k=k, method=method)
     fns, fts = ff.create_fitting_functions_for_multiple_levels(GNS, GTS)
-    
-def test():
+
+def test1():   
+    for i in c.get_trainingSamples_range():
+        trainingSamples = c.get_trainingSamples_range()
+        trainingSamples.remove(i)
+        preprocess(trainingSamples)
+        
+        fname = c.get_fname_vis_pre(i, method)
+        img = cv2.imread(fname)
+        
+        for j in range(c.get_nb_teeth()):
+            fname = c.get_fname_original_landmark(i, (j+1))
+            P = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+            R = multi_resolution_search(img, P, j)
+            fname = str(i) + '-' + str((j+1)) + '.png'
+            cv2.imwrite(fname, fu.mark_results(np.copy(img), np.array([P, R])))  
+
+def test1_combined():
+    Results = np.zeros((c.get_nb_trainingSamples(), 2*c.get_nb_teeth(), c.get_nb_dim()))
+    color_lines = np.array([np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0])])  
+    for i in c.get_trainingSamples_range():
+        trainingSamples = c.get_trainingSamples_range()
+        trainingSamples.remove(i)
+        preprocess(trainingSamples)
+        
+        fname = c.get_fname_vis_pre(i, method)
+        img = cv2.imread(fname)
+        
+        for j in range(c.get_nb_teeth()):
+            fname = c.get_fname_original_landmark(i, (j+1))
+            P = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+            Results[(i-1), (2*j), :] = P
+            Results[(i-1), (2*j+1), :] = multi_resolution_search(img, P, j)
+        
+        fname = str(i) + '.png'
+        cv2.imwrite(fname, fu.mark_results(np.copy(img), Results[(i-1),:], color_lines))  
+          
+def test2():     
+    for i in c.get_trainingSamples_range():
+        trainingSamples = c.get_trainingSamples_range()
+        trainingSamples.remove(i)
+        preprocess(trainingSamples)
+        
+        fname = c.get_fname_vis_pre(i, method)
+        img = cv2.imread(fname)
+        
+        for f in range(2):
+            for j in range(c.get_nb_teeth()):
+                fname = c.get_fname_original_landmark(i, (j+1))
+                P = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+                R = multi_resolution_search(img, P, j, fitting_function=f)
+                fname = str(i) + '-' + str((j+1)) + '-f' + str(f) + '.png'
+                cv2.imwrite(fname, fu.mark_results(np.copy(img), np.array([P, R])))     
+
+def test2_combined():
+    Results = np.zeros((c.get_nb_trainingSamples(), 3*c.get_nb_teeth(), c.get_nb_dim()))
+    color_lines = np.array([np.array([0,0,255]), np.array([0,0,255]), np.array([0,0,255]), np.array([0,0,255]), np.array([0,0,255]), np.array([0,0,255]), np.array([0,0,255]), np.array([0,0,255]), np.array([0,255,0]),np.array([0,255,0]),np.array([0,255,0]),np.array([0,255,0]),np.array([0,255,0]),np.array([0,255,0]),np.array([0,255,0]),np.array([0,255,0]),np.array([255, 0, 0]),np.array([255, 0, 0]),np.array([255, 0, 0]),np.array([255, 0, 0]),np.array([255, 0, 0]),np.array([255, 0, 0]),np.array([255, 0, 0]),np.array([255, 0, 0]),])        
+    for i in c.get_trainingSamples_range():
+        trainingSamples = c.get_trainingSamples_range()
+        trainingSamples.remove(i)
+        preprocess(trainingSamples)
+        
+        fname = c.get_fname_vis_pre(i, method)
+        img = cv2.imread(fname)
+        
+        for f in range(2):
+            for j in range(c.get_nb_teeth()):
+                fname = c.get_fname_original_landmark(i, (j+1))
+                P = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+                if f==0: Results[(i-1), j, :] = P
+                Results[(i-1), (f+1)*c.get_nb_teeth()+j, :] = multi_resolution_search(img, P, j, fitting_function=f)
+        
+        fname = str(i) + 'm.png'
+        cv2.imwrite(fname, fu.mark_results(np.copy(img), Results[(i-1),:], color_lines))
+
+def test3():
     BS = cu.create_bboxes(method)
     Avg = cu.get_average_size(method)
                  
@@ -212,12 +286,9 @@ def test():
             s = Params[j,2]
             theta = Params[j,3]
             P = mu.full_align(MS[j,:], tx, ty, s, theta)
-            
-            #fname = c.get_fname_original_landmark(i, (j+1))
-            #P = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
             R = multi_resolution_search(img, P, j)
             fname = str(i) + '-' + str((j+1)) + '.png'
-            cv2.imwrite(fname, fu.show_iteration(np.copy(img), 10000, P, R))
+            cv2.imwrite(fname, fu.mark_results(np.copy(img), np.array([P, R])))
             
         x_min = BS[i,4]
         x_max = BS[i,5]
@@ -235,12 +306,10 @@ def test():
             s = Params[j,2]
             theta = Params[j,3]
             P = mu.full_align(MS[j,:], tx, ty, s, theta)
-            
-            #fname = c.get_fname_original_landmark(i, (j+1))
-            #P = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
             R = multi_resolution_search(img, P, j)
             fname = str(i) + '-' + str((j+1)) + '.png'
-            cv2.imwrite(fname, fu.show_iteration(np.copy(img), 10000, P, R))
+            cv2.imwrite(fname, fu.mark_results(np.copy(img), np.array([P, R])))
 
 if __name__ == "__main__":
-    test()      
+    #test1_combined()
+    test2_combined()   

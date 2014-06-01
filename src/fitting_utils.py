@@ -116,41 +116,34 @@ def show_iteration(img, nb_it, P_before, P_after, color_init=np.array([0,255,255
     @param color_line_before:   the BGR color for the line between two consecutive landmarks
     @param color_line_after:    the BGR color for the line between two consecutive landmarks
     '''
-    rxs, rys = mu.extract_coordinates(P_before)
-    gxs, gys = mu.extract_coordinates(P_after)
-    for k in range(c.get_nb_landmarks()):
-        rx = int(rxs[k])
-        ry = int(rys[k])
-        gx = int(gxs[k])
-        gy = int(gys[k])
-        if (k == c.get_nb_landmarks()-1):
-            rx_succ = int(rxs[0])
-            ry_succ = int(rys[0])
-            gx_succ = int(gxs[0])
-            gy_succ = int(gys[0])
-        else:
-            rx_succ = int(rxs[(k+1)])
-            ry_succ = int(rys[(k+1)])
-            gx_succ = int(gxs[(k+1)])
-            gy_succ = int(gys[(k+1)])
-        cv2.line(img, (rx,ry), (rx_succ,ry_succ), color_line_before)
-        cv2.line(img, (gx,gy), (gx_succ,gy_succ), color_line_after)
     
-    for k in range(c.get_nb_landmarks()):
-        rx = int(rxs[k])
-        ry = int(rys[k])
-        gx = int(gxs[k])
-        gy = int(gys[k])
-        if (k == 0):
-            img[ry,rx] = color_init
-            img[gy,gx] = color_init
-        elif (k == c.get_nb_landmarks()-1):
-            img[ry,rx] = color_end
-            img[gy,gx] = color_end
-        else:
-            img[ry,rx] = color_mid
-            img[gy,gx] = color_mid
-    
+    img = mark_results(img, np.array([P_before, P_after]), np.array([color_line_before, color_line_after]), color_init=color_init, color_mid=color_mid, color_end=color_end)
     txt = 'Image Coordinate Frame - Iteration: ' + str(nb_it)
-    #cv2.imshow(txt, img)
+    cv2.imshow(txt, img)
+    
+def mark_results(img, PS, color_lines=np.array([np.array([0,0,255]), np.array([0,255,0])]), color_init=np.array([0,255,255]), color_mid=np.array([255,0,255]), color_end=np.array([255,255,0])):
+    for p in range(PS.shape[0]):
+        pxs, pys = mu.extract_coordinates(PS[p,:])
+        for k in range(c.get_nb_landmarks()):
+            px = int(pxs[k])
+            py = int(pys[k])
+            if (k == c.get_nb_landmarks()-1):
+                px_succ = int(pxs[0])
+                py_succ = int(pys[0])
+            else:
+                px_succ = int(pxs[(k+1)])
+                py_succ = int(pys[(k+1)])
+            cv2.line(img, (px,py), (px_succ,py_succ), color_lines[p])
+     
+    for p in range(PS.shape[0]):
+        pxs, pys = mu.extract_coordinates(PS[p,:])   
+        for k in range(c.get_nb_landmarks()):
+            px = int(pxs[k])
+            py = int(pys[k])
+            if (k == 0):
+                img[py,px] = color_init
+            elif (k == c.get_nb_landmarks()-1):
+                img[py,px] = color_end
+            else:
+                img[py,px] = color_mid
     return img
