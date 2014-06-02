@@ -29,7 +29,7 @@ def evaluate_fitting(fn=0, ft=0, fitting_function=0):
     @return The evaluated fitting function.
     '''
     if (fitting_function==0):
-        return fn**2 + ft**2
+        return fn + ft
     elif (fitting_function==1):
         return fn
     elif (fitting_function==2):

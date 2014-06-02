@@ -40,7 +40,7 @@ tolerable_deviation = 3         #The number of deviations that are tolerable by 
 
 
 max_level = 2                   #Coarsest level of gaussian pyramid (depends on the size of the object in the image)
-max_it = 10                     #Maximum number of iterations allowed at each level
+max_it = 20                     #Maximum number of iterations allowed at each level
 pclose = 0.9                    #Desired proportion of points found within m/2 of current position
 
 def multi_resolution_search(img, P, tooth_index, fitting_function=0, show=False):
