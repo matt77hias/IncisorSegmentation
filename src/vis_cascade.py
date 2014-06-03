@@ -8,7 +8,7 @@ def whaha():
             cascade = cv2.CascadeClassifier("CV/data/Training/training/cascadesSCD" + str(i) + '-' + m + "/cascade.xml")
             fname = c.get_fname_vis_pre(i, 'SCD')
             img = cv2.imread(fname)
-            rects = cascade.detectMultiScale(img, scaleFactor=1.3, minNeighbors=1, minSize=(300, 150))
+            rects = cascade.detectMultiScale(img, scaleFactor=1.3, minNeighbors=1, minSize=(100, 100))
             #result is an array of x coordinate, y coordinate, weight, height for each rectangle
             rects[:,2:] += rects[:,:2]
             #result is an array of x coordinate, y coordinate, x + weight, y + height for each rectangle (opposite corners)

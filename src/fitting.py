@@ -281,7 +281,7 @@ def test3():
             if j==2: tx = x_max - Avg[3, 0] - Avg[2, 0] / 2.0
             if j==3: tx = x_max - Avg[3, 0] / 2.0
             
-            tx = x_min + (j+0.5) * (x_max - x_min) / 4.0
+            #tx = x_min + (j+0.5) * (x_max - x_min) / 4.0
             
             s = Params[j,2]
             theta = Params[j,3]
@@ -301,15 +301,74 @@ def test3():
             if j==6: tx = x_max - Avg[7, 0] - Avg[6, 0] / 2.0
             if j==7: tx = x_max - Avg[7, 0] / 2.0
             
-            tx = x_min + (j+0.5) * (x_max - x_min) / 4.0
+            #tx = x_min + (j+0.5) * (x_max - x_min) / 4.0
+            
+            s = Params[j,2]
+            theta = Params[j,3]
+            P = mu.full_align(MS[j,:], tx, img.shape[0]-ty, s, theta)
+            R = multi_resolution_search(img, P, j)
+            fname = str(i) + '-' + str((j+1)) + '.png'
+            cv2.imwrite(fname, fu.mark_results(np.copy(img), np.array([P, R])))
+            
+def test3_combined():
+    BS = cu.create_bboxes(method)
+    Avg = cu.get_average_size(method)
+    
+    Results = np.zeros((c.get_nb_trainingSamples(), 2*c.get_nb_teeth(), c.get_nb_dim()))
+    color_lines = np.array([np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0])])            
+                                       
+    for i in c.get_trainingSamples_range():
+        trainingSamples = c.get_trainingSamples_range()
+        trainingSamples.remove(i)
+        preprocess(trainingSamples)
+        
+        fname = c.get_fname_vis_pre(i, method)
+        img = cv2.imread(fname)
+        
+        Params = cu.get_average_params(trainingSamples, method)
+        
+        x_min = BS[i,0]
+        x_max = BS[i,1]
+        y_min = BS[i,2]
+        y_max = BS[i,3]
+        ty = y_max-y_min
+        for j in range(c.get_nb_teeth()/2):
+            if j==0: tx = x_min + Avg[0, 0] / 2.0
+            if j==1: tx = x_min + Avg[0, 0] + Avg[1, 0] / 2.0
+            if j==2: tx = x_max - Avg[3, 0] - Avg[2, 0] / 2.0
+            if j==3: tx = x_max - Avg[3, 0] / 2.0
+            
+            #tx = x_min + (j+0.5) * (x_max - x_min) / 4.0
             
             s = Params[j,2]
             theta = Params[j,3]
             P = mu.full_align(MS[j,:], tx, ty, s, theta)
-            R = multi_resolution_search(img, P, j)
-            fname = str(i) + '-' + str((j+1)) + '.png'
-            cv2.imwrite(fname, fu.mark_results(np.copy(img), np.array([P, R])))
+            Results[(i-1), (2*j), :] = P
+            Results[(i-1), (2*j+1), :] = multi_resolution_search(img, P, j)
+            
+        x_min = BS[i,4]
+        x_max = BS[i,5]
+        y_min = BS[i,6]
+        y_max = BS[i,7]
+        ty = y_max-y_min
+        for j in range(c.get_nb_teeth()/2, c.get_nb_teeth()):
+            if j==4: tx = x_min + Avg[4, 0] / 2.0
+            if j==5: tx = x_min + Avg[4, 0] + Avg[5, 0] / 2.0
+            if j==6: tx = x_max - Avg[7, 0] - Avg[6, 0] / 2.0
+            if j==7: tx = x_max - Avg[7, 0] / 2.0
+            
+            #tx = x_min + (j+0.5) * (x_max - x_min) / 4.0
+            
+            s = Params[j,2]
+            theta = Params[j,3]
+            P = mu.full_align(MS[j,:], tx, img.shape[0]-ty, s, theta)
+            Results[(i-1), (2*j), :] = P
+            Results[(i-1), (2*j+1), :] = multi_resolution_search(img, P, j)
+        
+        fname = str(i) + 'c.png'
+        cv2.imwrite(fname, fu.mark_results(np.copy(img), Results[(i-1),:], color_lines))  
 
 if __name__ == "__main__":
     #test1_combined()
-    test2_combined()   
+    #test2_combined()  
+    test3() 
