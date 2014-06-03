@@ -263,9 +263,9 @@ def test3_combined():
     BS = cu.create_bboxes(method)
     Avg = cu.get_average_size(method)
     
-    Results = np.zeros((c.get_nb_trainingSamples(), 2*c.get_nb_teeth(), c.get_nb_dim()))
-    color_lines = np.array([np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0]), np.array([0,0,255]), np.array([0,255,0])])            
-                                       
+    Results = np.zeros((c.get_nb_trainingSamples(), 3*c.get_nb_teeth(), c.get_nb_dim()))
+    color_lines = np.array([np.array([0,0,255]), np.array([0,0,255]), np.array([0,0,255]), np.array([0,0,255]), np.array([0,0,255]), np.array([0,0,255]), np.array([0,0,255]), np.array([0,0,255]), np.array([0,255,0]),np.array([0,255,0]),np.array([0,255,0]),np.array([0,255,0]),np.array([0,255,0]),np.array([0,255,0]),np.array([0,255,0]),np.array([0,255,0]),np.array([255, 0, 0]),np.array([255, 0, 0]),np.array([255, 0, 0]),np.array([255, 0, 0]),np.array([255, 0, 0]),np.array([255, 0, 0]),np.array([255, 0, 0]),np.array([255, 0, 0]),])        
+                                     
     for i in c.get_trainingSamples_range():
         trainingSamples = c.get_trainingSamples_range()
         trainingSamples.remove(i)
@@ -297,8 +297,11 @@ def test3_combined():
             pxs[pxs >= img.shape[1]] = img.shape[1]-1
             P = mu.zip_coordinates(pxs, pys)
             
-            Results[(i-1), (2*j), :] = P
-            Results[(i-1), (2*j+1), :] = multi_resolution_search(img, P, j)
+            fname = c.get_fname_original_landmark(i, (j+1))
+            I = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+            Results[(i-1), j, :] = I
+            Results[(i-1), c.get_nb_teeth()+j, :] = multi_resolution_search(img, P, j)
+            Results[(i-1), 2*c.get_nb_teeth()+j, :] = P
             
         x_min = BS[(i-1),4]
         x_max = BS[(i-1),5]
@@ -321,8 +324,11 @@ def test3_combined():
             pxs[pxs >= img.shape[1]] = img.shape[1]-1
             P = mu.zip_coordinates(pxs, pys)
             
-            Results[(i-1), (2*j), :] = P
-            Results[(i-1), (2*j+1), :] = multi_resolution_search(img, P, j)
+            fname = c.get_fname_original_landmark(i, (j+1))
+            I = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
+            Results[(i-1), j, :] = I
+            Results[(i-1), c.get_nb_teeth()+j, :] = multi_resolution_search(img, P, j)
+            Results[(i-1), 2*c.get_nb_teeth()+j, :] = P
         
         fname = str(i) + 'c.png'
         cv2.imwrite(fname, fu.mark_results(np.copy(img), Results[(i-1),:], color_lines))
