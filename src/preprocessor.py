@@ -268,8 +268,8 @@ def preproccess():
         cv2.imwrite(c.get_fname_vis_pre(i, method='EHD'), cv2.equalizeHist(grey_image_denoised))
         cv2.imwrite(c.get_fname_vis_pre(i, method='SC'), stretch_contrast(grey_image))
         cv2.imwrite(c.get_fname_vis_pre(i, method='SCD'), stretch_contrast(grey_image_denoised))
-        cv2.imwrite(c.get_fname_vis_pre(i, method='S'), apply_sigmoid(grey_image))
-        cv2.imwrite(c.get_fname_vis_pre(i, method='SD'), apply_sigmoid(grey_image_denoised))
+        #cv2.imwrite(c.get_fname_vis_pre(i, method='S'), apply_sigmoid(grey_image))
+        #cv2.imwrite(c.get_fname_vis_pre(i, method='SD'), apply_sigmoid(grey_image_denoised))
         
         #Rubbish
         #cv2.imwrite(c.get_fname_vis_pre(i, method='I'), invert(grey_image))
