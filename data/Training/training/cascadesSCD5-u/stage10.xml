@@ -6,7 +6,8 @@
   <weakClassifiers>
     <_>
       <internalNodes>
-        0 -1 22 268435602 65536 2 0 2 0 -2147475456 129</internalNodes>
+        0 -1 1024 -805208064 285212672 0 1077936128 -2130706432 0
+        1073741824 -1862238200</internalNodes>
       <leafValues>
         -1. 1.</leafValues></_></weakClassifiers></stage10>
 </opencv_storage>
