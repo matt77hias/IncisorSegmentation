@@ -287,20 +287,12 @@ def test3_combined():
             if j==2: tx = x_max - Avg[3, 0] - Avg[2, 0] / 2.0
             if j==3: tx = x_max - Avg[3, 0] / 2.0
     
-            s = Params[j,2]
-            theta = Params[j,3]
-            P = mu.full_align(MS[j,:], tx, ty, s, theta)
-            pxs, pys = mu.extract_coordinates(P)
-            pys[pys < 0] = 0
-            pys[pys >= img.shape[0]] = img.shape[0]-1
-            pxs[pxs < 0] = 0
-            pxs[pxs >= img.shape[1]] = img.shape[1]-1
-            P = mu.zip_coordinates(pxs, pys)
+            P = limit(img, mu.full_align(MS[j,:], tx, ty, Params[j,2], Params[j,3]))
             
             fname = c.get_fname_original_landmark(i, (j+1))
             I = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
             Results[(i-1), j, :] = I
-            Results[(i-1), c.get_nb_teeth()+j, :] = multi_resolution_search(img, P, j)
+            Results[(i-1), c.get_nb_teeth()+j, :] = limit(img, multi_resolution_search(img, P, j)) #only limit for i=9: gigantic fail
             Results[(i-1), 2*c.get_nb_teeth()+j, :] = P
             
         x_min = BS[(i-1),4]
@@ -314,26 +306,25 @@ def test3_combined():
             if j==6: tx = x_max - Avg[7, 0] - Avg[6, 0] / 2.0
             if j==7: tx = x_max - Avg[7, 0] / 2.0
             
-            s = Params[j,2]
-            theta = Params[j,3]
-            P = mu.full_align(MS[j,:], tx, ty, s, theta)
-            pxs, pys = mu.extract_coordinates(P)
-            pys[pys < 0] = 0
-            pys[pys >= img.shape[0]] = img.shape[0]-1
-            pxs[pxs < 0] = 0
-            pxs[pxs >= img.shape[1]] = img.shape[1]-1
-            P = mu.zip_coordinates(pxs, pys)
+            P = limit(img, mu.full_align(MS[j,:], tx, ty, Params[j,2], Params[j,3]))
             
             fname = c.get_fname_original_landmark(i, (j+1))
             I = fu.original_to_cropped(np.fromfile(fname, dtype=float, count=-1, sep=' '))
             Results[(i-1), j, :] = I
-            Results[(i-1), c.get_nb_teeth()+j, :] = multi_resolution_search(img, P, j)
+            Results[(i-1), c.get_nb_teeth()+j, :] = limit(img, multi_resolution_search(img, P, j)) #only limit for i=9: gigantic fail
             Results[(i-1), 2*c.get_nb_teeth()+j, :] = P
         
         fname = str(i) + 'c.png'
         cv2.imwrite(fname, fu.mark_results(np.copy(img), Results[(i-1),:], color_lines))
         
-   
+def limit(img, P):
+    pxs, pys = mu.extract_coordinates(P)
+    pys[pys < 0] = 0
+    pys[pys >= img.shape[0]] = img.shape[0]-1
+    pxs[pxs < 0] = 0
+    pxs[pxs >= img.shape[1]] = img.shape[1]-1
+    P = mu.zip_coordinates(pxs, pys)
+    return P
 
 if __name__ == "__main__":
     #test1_combined()
