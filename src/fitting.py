@@ -43,7 +43,7 @@ max_level = 2                   #Coarsest level of gaussian pyramid (depends on 
 max_it = 20                     #Maximum number of iterations allowed at each level
 pclose = 0.9                    #Desired proportion of points found within m/2 of current position
 
-def multi_resolution_search(img, P, tooth_index, fitting_function=0, show=False):
+def multi_resolution_search(img, P, tooth_index, fitting_function=1, show=False):
     '''
     Fits the tooth corresponding to the given tooth index in the given image.
     @param img:                 the image  
@@ -182,6 +182,9 @@ def preprocess(trainingSamples):
     GNS, GTS = ff.create_partial_GS_for_multiple_levels(trainingSamples, XS, MS, (max_level+1), offsetX=fu.offsetX, offsetY=fu.offsetY, k=k, method=method)
     fns, fts = ff.create_fitting_functions_for_multiple_levels(GNS, GTS)
 
+################################################################################
+# TESTS
+################################################################################
 def test1():   
     for i in c.get_trainingSamples_range():
         trainingSamples = c.get_trainingSamples_range()
@@ -270,10 +273,10 @@ def test3():
         
         Params = cu.get_average_params(trainingSamples, method)
         
-        x_min = BS[i,0]
-        x_max = BS[i,1]
-        y_min = BS[i,2]
-        y_max = BS[i,3]
+        x_min = BS[(i-1),0]
+        x_max = BS[(i-1),1]
+        y_min = BS[(i-1),2]
+        y_max = BS[(i-1),3]
         ty = y_max-y_min
         for j in range(c.get_nb_teeth()/2):
             if j==0: tx = x_min + Avg[0, 0] / 2.0
@@ -290,10 +293,10 @@ def test3():
             fname = str(i) + '-' + str((j+1)) + '.png'
             cv2.imwrite(fname, fu.mark_results(np.copy(img), np.array([P, R])))
             
-        x_min = BS[i,4]
-        x_max = BS[i,5]
-        y_min = BS[i,6]
-        y_max = BS[i,7]
+        x_min = BS[(i-1),4]
+        x_max = BS[(i-1),5]
+        y_min = BS[(i-1),6]
+        y_max = BS[(i-1),7]
         ty = y_max-y_min
         for j in range(c.get_nb_teeth()/2, c.get_nb_teeth()):
             if j==4: tx = x_min + Avg[4, 0] / 2.0
@@ -327,17 +330,16 @@ def test3_combined():
         
         Params = cu.get_average_params(trainingSamples, method)
         
-        x_min = BS[i,0]
-        x_max = BS[i,1]
-        y_min = BS[i,2]
-        y_max = BS[i,3]
-        ty = y_max-y_min
+        x_min = BS[(i-1),0]
+        x_max = BS[(i-1),1]
+        y_min = BS[(i-1),2]
+        y_max = BS[(i-1),3]
+        ty = y_min + (y_max-y_min) / 2
         for j in range(c.get_nb_teeth()/2):
             if j==0: tx = x_min + Avg[0, 0] / 2.0
             if j==1: tx = x_min + Avg[0, 0] + Avg[1, 0] / 2.0
             if j==2: tx = x_max - Avg[3, 0] - Avg[2, 0] / 2.0
             if j==3: tx = x_max - Avg[3, 0] / 2.0
-            
             #tx = x_min + (j+0.5) * (x_max - x_min) / 4.0
             
             s = Params[j,2]
@@ -346,11 +348,11 @@ def test3_combined():
             Results[(i-1), (2*j), :] = P
             Results[(i-1), (2*j+1), :] = multi_resolution_search(img, P, j)
             
-        x_min = BS[i,4]
-        x_max = BS[i,5]
-        y_min = BS[i,6]
-        y_max = BS[i,7]
-        ty = y_max-y_min
+        x_min = BS[(i-1),4]
+        x_max = BS[(i-1),5]
+        y_min = BS[(i-1),6]
+        y_max = BS[(i-1),7]
+        ty = y_min + (y_max-y_min) / 2
         for j in range(c.get_nb_teeth()/2, c.get_nb_teeth()):
             if j==4: tx = x_min + Avg[4, 0] / 2.0
             if j==5: tx = x_min + Avg[4, 0] + Avg[5, 0] / 2.0
@@ -358,10 +360,9 @@ def test3_combined():
             if j==7: tx = x_max - Avg[7, 0] / 2.0
             
             #tx = x_min + (j+0.5) * (x_max - x_min) / 4.0
-            
             s = Params[j,2]
             theta = Params[j,3]
-            P = mu.full_align(MS[j,:], tx, img.shape[0]-ty, s, theta)
+            P = mu.full_align(MS[j,:], tx, ty, s, theta)
             Results[(i-1), (2*j), :] = P
             Results[(i-1), (2*j+1), :] = multi_resolution_search(img, P, j)
         
@@ -371,4 +372,4 @@ def test3_combined():
 if __name__ == "__main__":
     #test1_combined()
     #test2_combined()  
-    test3() 
+    test3_combined() 
