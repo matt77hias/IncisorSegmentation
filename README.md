@@ -61,10 +61,12 @@ Course Computer Vision: a model-based procedure capable of segmenting the inciso
 1. Original Greyscale
 2. Denoising
 3. Histogram Equalization
-4. Histogram Equalization + Denoising
-5. Contrast Stretching
-6. Contrast Stretching + Denoising
+4. Denoising -> Histogram Equalization
+5. Linear Contrast Stretching
+6. Denoising -> Linear Contrast Stretching
 7. Sigmoid
-8. Sigmoid + Denoising 
+8. Denoising -> Sigmoid
 
 ### Fitting functions
+
+### Multi-Resolution
