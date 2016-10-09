@@ -58,4 +58,4 @@ Course Computer Vision: a model-based procedure capable of segmenting the inciso
 ### Pre-processing
 <p align="center"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/D01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/EH01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/EHD01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/SC01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/SCD01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/S01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/SD01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/O01.png" width="107"></p>
 
-### Fitting function
+### Fitting functions
