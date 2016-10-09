@@ -56,6 +56,15 @@ Course Computer Vision: a model-based procedure capable of segmenting the inciso
 <p align="left"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/PCA/eig8-7.png" width="286"></p>
 
 ### Pre-processing
-<p align="center"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/D01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/EH01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/EHD01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/SC01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/SCD01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/S01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/SD01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/O01.png" width="107"></p>
+<p align="center"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/O01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/D01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/EH01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/EHD01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/SC01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/SCD01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/S01.png" width="107"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Preproccess/SD01.png" width="107"></p>
+
+1. Original Greyscale
+2. Denoising
+3. Histogram Equalization
+4. Histogram Equalization + Denoising
+5. Contrast Stretching
+6. Contrast Stretching + Denoising
+7. Sigmoid
+8. Sigmoid + Denoising 
 
 ### Fitting functions
