@@ -9,12 +9,19 @@ Course Computer Vision: a model-based procedure capable of segmenting the inciso
 **Academic Year**: 2014-2015 (2nd semester - 2nd Master of Science in Engineering: Computer Science)
 
 ## About
+The purpose of the final project for the course Computer Vision is the development of a model based procedure for segmenting the upper and lower incisor tooths in dental radiographs. To achieve this, we construct an Active Shape Model (ASM) for each of the eight incisors.
 
 ### Input Landmarks
 #### Image space
 <p align="left"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Landmarks/landmarks1.png" width="215"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Landmarks/landmarks2.png" width="215"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Landmarks/landmarks3.png" width="215"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Landmarks/landmarks4.png" width="215"></p>
 
 ### Procrustes Analysis (PA)
+Before generating an Active Shape Model, each tooth shape (described by its landmarks) of the set of training samples belonging to same tooth needs to be aligned in the same coordinate system. First, we remove the translation component by centering each tooth shape's center of gravity at the origin. Second, we use a Procrustes Analys to align (scalar and rotation component) each tooth shape of the set training samples belonging to same tooth in such a way that the sum of the distances between the aligned tooth shape and the mean aligned tooth shape is minimized. [Cootes92], [Cootes00]
+
+This is an iterative process. In each iteration step the mean aligned tooth shape is recalculated until the difference between two consecutive mean aligned tooth shapes in each dimension is smaller than a threshold value of 10^-5. Initially, we used a larger value but since convergence was reached after one or two iteration steps, we prefer a smaller value (more precision). With a threshold value of 10^-5, convergence is reached after three iteration steps on average.
+
+The resulting tooth models and tooth model landmarks are visualized below for each of the eight incisors together with the landmarks of 14 training samples in the same model (coordinate) space (x', y'). Note that the reference shape for aligning can be choosen arbitrarily with regard to the scaling and rotation component. We have choosen to align with each of the eight tooth shapes of training sample 1.
+
 <p align="left"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/PA/mean1-s.png" width="215"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/PA/mean2-s.png" width="215"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/PA/mean3-s.png" width="215"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/PA/mean4-s.png" width="215"></p>
 <p align="left"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/PA/mean5-s.png" width="215"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/PA/mean6-s.png" width="215"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/PA/mean7-s.png" width="215"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/PA/mean8-s.png" width="215"></p>
 
