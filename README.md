@@ -9,13 +9,24 @@ Course Computer Vision: a model-based procedure capable of segmenting the inciso
 **Academic Year**: 2014-2015 (2nd semester - 2nd Master of Science in Engineering: Computer Science)
 
 ## About
-The purpose of the final project for the course Computer Vision is the development of a model based procedure for segmenting the upper and lower incisor teeth in dental radiographs. To achieve this, we construct an Active Shape Model (ASM) for each of the eight incisors.
+The purpose of the final project for the course Computer Vision is the development of a model based procedure for segmenting the upper and lower incisor teeth in panoramic dental radiographs. To achieve this, we construct an Active Shape Model (ASM) for each of the eight incisors. An Active Shape Model is a statistical model with the shape of a certain object that will be deformed during an iterative process to fit an instance of such an object in a different image.
 
 ### Input Landmarks
 #### Image space
 <p align="left"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Landmarks/landmarks1.png" width="215"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Landmarks/landmarks2.png" width="215"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Landmarks/landmarks3.png" width="215"><img src="https://github.com/matt77hias/IncisorSegmentation/blob/master/data/Visualizations/Landmarks/landmarks4.png" width="215"></p>
 
 ### Active Shape Model construction
+We construct an Active Shape Model (ASM) for each of the eight incisors. Possible alternatives are:
+* One model for modelling each of the eight incisors. Based on the landmarks, we do not prefer this approach due to the clear differences between the shape of the upper and lower teeth and between the side and foreteeth.
+* Multiple models for modelling one or more incisors.
+* One model for modelling all eight incisors as a whole. Based on the landmarks, we do not prefer this approach due to the clear differences in distances between the upper and lower teeth.
+* Multiple models for modelling one or more incisors as a whole. By constructing models for multiple incisors as a whole, possible correlations can be taken into account and exploited (e.g. neighbouring teeth influencing each other's position). This can be beneficiary during the fitting procedure. 
+* Combinations of the aforementioned alternatives.
+
+We chose to model each of the eight incisors separately because this is the most general approach. The difficulty with this approach is deciding on the initial solution for the iterative fitting process. Given 'well chosen' initial solutions, the fitting process should not encounter any problems due to this approach.
+
+The first subsection describes the normalization of all the tooth shapes (described by the given landmarks) of the training samples for the same incisor tooth via a Procrustes Analysis. Next, the shape variance is studied via a Principal Component Analysis. Note that the models, constructed in the following subsections, only describe the shape variance and not the appearance variance. The appearance will be taken into account during the construction of the fitting functions and the iterative fitting procedure.
+
 #### Procrustes Analysis
 Before generating an Active Shape Model, each tooth shape (described by its landmarks) of the set of training samples belonging to same tooth needs to be aligned in the same coordinate system. First, we remove the translation component by centering each tooth shape's center of gravity at the origin. Second, we use a Procrustes Analys to align (scalar and rotation component) each tooth shape of the set training samples belonging to same tooth in such a way that the sum of the distances between the aligned tooth shape and the mean aligned tooth shape is minimized. [Cootes92], [Cootes00]
 
@@ -94,6 +105,7 @@ Some of the pre-processing techniques are illustrated below. In the remainder, w
 6. Cropping -> Denoising -> Linear Contrast Stretching
 
 ### Fitting
+This section describes the selection and construction of the fitting functions which will be used in the fitting procedures. The next sections explain the iterative single- and multi-resolution ASM fitting procedures and procedures for the manual and automatic generation of an initial input solution for the fitting procedures.
 
 #### Construction of the fitting functions
 #### Single-resolution Active Shape Model’s fitting procedure
