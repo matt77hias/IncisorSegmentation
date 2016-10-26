@@ -6,7 +6,7 @@ Course Computer Vision: a model-based procedure capable of segmenting the inciso
 * [Matthias Moulin](https://github.com/matt77hias) (Computer Science)
 * [Milan Samyn](https://github.com/MilanSamyn) (Computer Science)
 
-**Academic Year**: 2014-2015 (2nd semester - 2nd Master of Science in Engineering: Computer Science)
+**Academic Year**: 2013-2014 (2nd semester - 2nd Master of Science in Engineering: Computer Science)
 
 ## About
 The purpose of the final project for the course Computer Vision is the development of a model based procedure for segmenting the upper and lower incisor teeth in panoramic dental radiographs. To achieve this, we construct an Active Shape Model (ASM) for each of the eight incisors. An Active Shape Model is a statistical model with the shape of a certain object that will be deformed during an iterative process to fit an instance of such an object in a different image.
