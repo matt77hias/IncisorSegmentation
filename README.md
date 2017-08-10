@@ -62,58 +62,58 @@ Based on the results for the Principal Component Analysis, it suffices to use fo
 By varying the form factors, we can vary the shape of the tooth. We need to determine upper and lower bounds for these variations in order to obtain plausible teeth. We allow +-3 standard deviations (*+-3 sqrt(lambda_i)*) from the mean model tooth. the effect of *-3 sqrt(lambda_i), -2 sqrt(lambda_i), -1 sqrt(lambda_i), 0, +1 sqrt(lambda_i), +2 sqrt(lambda_i), +3 sqrt(lambda_i)* deviations on each form factor as opposed to the mean tooth model for each of the eight incisors in model space *(x', y')* is visualized below.
 
 ##### (reduced) model space tooth 1
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig1-1.png" width="286">
 <img src="data/Visualizations/PCA/eig1-2.png" width="286">
 <img src="data/Visualizations/PCA/eig1-3.png" width="286">
 </p>
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig1-4.png" width="286">
 <img src="data/Visualizations/PCA/eig1-5.png" width="286">
 <img src="data/Visualizations/PCA/eig1-6.png" width="286">
 </p>
 
 ##### (reduced) model space tooth 2
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig2-1.png" width="286">
 <img src="data/Visualizations/PCA/eig2-2.png" width="286">
 <img src="data/Visualizations/PCA/eig2-3.png" width="286">
 </p>
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig2-4.png" width="286">
 <img src="data/Visualizations/PCA/eig2-5.png" width="286">
 <img src="data/Visualizations/PCA/eig2-6.png" width="286">
 </p>
 
 ##### (reduced) model space tooth 3
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig3-1.png" width="286">
 <img src="data/Visualizations/PCA/eig3-2.png" width="286">
 <img src="data/Visualizations/PCA/eig3-3.png" width="286">
 </p>
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig3-4.png" width="286">
 <img src="data/Visualizations/PCA/eig3-5.png" width="286">
 </p>
 
 ##### (reduced) model space tooth 4
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig4-1.png" width="286">
 <img src="data/Visualizations/PCA/eig4-2.png" width="286">
 <img src="data/Visualizations/PCA/eig4-3.png" width="286">
 </p>
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig4-4.png" width="286">
 <img src="data/Visualizations/PCA/eig4-5.png" width="286">
 </p>
 
 ##### (reduced) model space tooth 5
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig5-1.png" width="286">
 <img src="data/Visualizations/PCA/eig5-2.png" width="286">
 <img src="data/Visualizations/PCA/eig5-3.png" width="286">
 </p>
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig5-4.png" width="286">
 <img src="data/Visualizations/PCA/eig5-5.png" width="286">
 <img src="data/Visualizations/PCA/eig5-6.png" width="286">
@@ -123,47 +123,47 @@ By varying the form factors, we can vary the shape of the tooth. We need to dete
 </p>
 
 ##### (reduced) model space tooth 6
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig6-1.png" width="286">
 <img src="data/Visualizations/PCA/eig6-2.png" width="286">
 <img src="data/Visualizations/PCA/eig6-3.png" width="286">
 </p>
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig6-4.png" width="286">
 <img src="data/Visualizations/PCA/eig6-5.png" width="286">
 <img src="data/Visualizations/PCA/eig6-6.png" width="286">
 </p>
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig6-7.png" width="286">
 </p>
 
 ##### (reduced) model space tooth 7
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig7-1.png" width="286">
 <img src="data/Visualizations/PCA/eig7-2.png" width="286">
 <img src="data/Visualizations/PCA/eig7-3.png" width="286">
 </p>
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig7-4.png" width="286">
 <img src="data/Visualizations/PCA/eig7-5.png" width="286">
 <img src="data/Visualizations/PCA/eig7-6.png" width="286">
 </p>
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig7-7.png" width="286">
 </p>
 
 ##### (reduced) model space tooth 8
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig8-1.png" width="286">
 <img src="data/Visualizations/PCA/eig8-2.png" width="286">
 <img src="data/Visualizations/PCA/eig8-3.png" width="286">
 </p>
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig8-4.png" width="286">
 <img src="data/Visualizations/PCA/eig8-5.png" width="286">
 <img src="data/Visualizations/PCA/eig8-6.png" width="286">
 </p>
-<p align="center">
+<p align="left">
 <img src="data/Visualizations/PCA/eig8-7.png" width="286">
 </p>
 
