@@ -57,9 +57,9 @@ After the Procrustes Analysis, we have one model tooth for each of the eight inc
 
 We can for example use a basis for the *2n* dimensional space to represent each vector in this space as a *2n* dimensional coefficient vector (*2n* form factors). By applying a Principal Component Analysis (PCA), we can try to reduce the dimensionality by computing the principal axes (of which the magnitude is determined by the largest eigenvalues of the covariance matrix) of the distribution in order to express vectors approximately in this *2n* dimensional space with less form factors.
 
-Based on the results for the Principal Component Analysis, it suffices to use for each of the eight incisors only 5, 6 or 7 form factors (versus *2n* = 40) to describe at least 98% of the variance of the landmark positions in the training set with regard to the corresponding mean model tooth. Alternatively, one can choose the form factors in such a way that each training sample can be represented with a certain accuracy.
+Based on the results of the Principal Component Analysis, it suffices to use for each of the eight incisors only 5, 6 or 7 form factors (versus *2n* = 40) to describe at least 98% of the variance of the landmark positions in the training set with regard to the corresponding mean model tooth. Alternatively, one can choose the form factors in such a way that each training sample can be represented with a certain accuracy.
 
-By varying the form factors, we can vary the shape of the tooth. We need to determine upper and lower bounds for these variations in order to obtain plausible teeth. We allow +-3 standard deviations (*+-3 sqrt(lambda_i)*) from the mean model tooth. the effect of *-3 sqrt(lambda_i), -2 sqrt(lambda_i), -1 sqrt(lambda_i), 0, +1 sqrt(lambda_i), +2 sqrt(lambda_i), +3 sqrt(lambda_i)* deviations on each form factor as opposed to the mean tooth model for each of the eight incisors in model space *(x', y')* is visualized below.
+By varying the form factors, we can vary the shape of the tooth. We need to determine upper and lower bounds for these variations in order to obtain plausible teeth. We allow +-3 standard deviations (*+-3 sqrt(lambda_i)*) from the mean model tooth. The effect of *-3 sqrt(lambda_i), -2 sqrt(lambda_i), -1 sqrt(lambda_i), 0, +1 sqrt(lambda_i), +2 sqrt(lambda_i), +3 sqrt(lambda_i)* deviations on each form factor as opposed to the mean tooth model for each of the eight incisors in model space *(x', y')*, is visualized below.
 
 ##### (reduced) model space tooth 1
 <p align="left">
@@ -168,11 +168,11 @@ By varying the form factors, we can vary the shape of the tooth. We need to dete
 </p>
 
 ### Pre-process
-The region of the dental radiographs containing the eight incisor teeth is relatively small compared to the full dental radiographs. Therefore, we first crop the dental radiographs based on the minimal and maximal landmark coordinates (and an extra safety border) of all the landmarks of the training samples. This approach is justified since the appliances for generating dental radiographs center the foreteeth and these appliances itself are approximately standardized.
+The region of the dental radiographs containing the eight incisor teeth is relatively small compared to the full dental radiographs. Therefore, we first crop the dental radiographs based on the minimal and maximal landmark coordinates (and an extra safety border) of all the landmarks of the training samples. This approach is justified since the appliances for generating dental radiographs center the foreteeth, and since the appliances themselves are approximately standardized.
 
 The given dental radiographs are inherently noisy data. We use `OpenCV`’s `fastNlMeansDenoising` function to remove Gaussian white noise from the (greyscale) images.
 
-Furthermore, the intensity differences can be sometimes rather small which can have a negative effect on the fitting functions operating on the intensity differences. We exploit the contrast to increase the intensity differences by using two different approaches: histogram equalization and (linear) contrast stretching.
+Furthermore, the intensity differences can be sometimes rather small, which can have a negative effect on the fitting functions operating on the intensity differences. We exploit the contrast to increase the intensity differences by using two different approaches: histogram equalization and (linear) contrast stretching.
 
 Equalization maps a distribution with histogram *H(x)* on another distribution with a larger and more uniform distribution of intensity values. The mapping is done with the cumulative distribution function *H'(x)* of the histogram *H(x)*. [Fisher00] , [OpenCV11]
 
@@ -197,7 +197,7 @@ Some of the pre-processing techniques are illustrated below. In the remainder, w
 6. Cropping -> Denoising -> Linear Contrast Stretching
 
 ### Fitting
-This section describes the selection and construction of the fitting functions which will be used in the fitting procedures. The next sections explain the iterative single- and multi-resolution ASM fitting procedures and procedures for the manual and automatic generation of an initial input solution for the fitting procedures.
+The first subsection describes the selection and construction of the fitting functions which will be used in the fitting procedures. The following subsections explain the iterative single- and multi-resolution ASM fitting procedures, and the procedures for the manual and automatic generation of an initial input solution for these fitting procedures.
 
 #### Construction of the fitting functions
 #### Single-resolution Active Shape Model’s fitting procedure
