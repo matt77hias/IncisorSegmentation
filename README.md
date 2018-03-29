@@ -202,6 +202,6 @@ The first subsection describes the selection and construction of the fitting fun
 #### Construction of the fitting functions
 #### Single-resolution Active Shape Model’s fitting procedure
 #### Multi-resolution Active Shape Model’s fitting procedure
-#### initialisation
+#### Initialisation
 ##### Manuel initialization
 ##### Automatic initialization
