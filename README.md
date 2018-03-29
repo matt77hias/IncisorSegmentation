@@ -37,7 +37,7 @@ Before generating an Active Shape Model, each tooth shape (described by its land
 
 This is an iterative process. In each iteration step the mean aligned tooth shape is recalculated until the difference between two consecutive mean aligned tooth shapes in each dimension is smaller than a threshold value of 10<sup>-5</sup>. Initially, we used a larger value, but since convergence was reached after one or two iteration steps, we prefer a smaller value (more precision). With a threshold value of 10<sup>-5</sup>, convergence is reached after three iteration steps on average.
 
-The resulting tooth models and tooth model landmarks are visualized below for each of the eight incisors together with the landmarks of 14 training samples in the same model (coordinate) space (x', y'). Note that the reference shape for aligning can be chosen arbitrarily with regard to the scaling and rotation component. We have chosen to align with each of the eight tooth shapes of training sample 1.
+The resulting tooth models and tooth model landmarks are visualized below for each of the eight incisors together with the landmarks of 14 training samples in the same model (coordinate) space *(x', y')*. Note that the reference shape for aligning can be chosen arbitrarily with regard to the scaling and rotation component. We have chosen to align with each of the eight tooth shapes of training sample 1.
 
 <p align="center">
 <img src="data/Visualizations/PA/mean1-s.png" width="214">
