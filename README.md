@@ -22,7 +22,7 @@ The goal of the final project for the course Computer Vision is the development 
 
 ### Active Shape Model construction
 We construct an [Active Shape Model](https://en.wikipedia.org/wiki/Active_shape_model) (ASM) for each of the eight incisors. Possible alternatives are:
-* One model for modelling each of the eight incisors. Based on the landmarks, we do not prefer this approach due to the clear differences between the shape of the upper and lower teeth and between the side and foreteeth.
+* One model for modelling each of the eight incisors. Based on the landmarks, we do not prefer this approach due to the clear differences between the shape of the upper and lower teeth and between the side and fore teeth.
 * Multiple models for modelling one or more incisors.
 * One model for modelling all eight incisors as a whole. Based on the landmarks, we do not prefer this approach due to the clear differences in distances between the upper and lower teeth.
 * Multiple models for modelling one or more incisors as a whole. By constructing models for multiple incisors as a whole, possible correlations can be taken into account and exploited (e.g. neighbouring teeth influencing each other's position). This can be beneficiary during the fitting procedure. 
@@ -33,7 +33,7 @@ We chose to model each of the eight incisors separately because this is the most
 The first subsection describes the normalization of all the tooth shapes (described by the given landmarks) of the training samples for the same incisor tooth via a [Procrustes Analysis](https://en.wikipedia.org/wiki/Procrustes_analysis). Next, the shape variance is analysed via a [Principal Component Analysis](https://en.wikipedia.org/wiki/Principal_component_analysis). Note that the models, constructed in the following subsections, only describe the shape variance and not the appearance variance. The appearance will be taken into account during the construction of the fitting functions and the iterative fitting procedure.
 
 #### Procrustes Analysis
-Before generating an Active Shape Model, each tooth shape (described by its landmarks) of the set of training samples belonging to the same tooth needs to be aligned in a common coordinate system. First, we remove the translation component by centering each tooth shape's center of gravity at the origin. Second, we use a Procrustes Analys to align (scalar and rotation component) each tooth shape of the set of training samples belonging to same tooth, in such a way that the sum of the distances between the aligned tooth shape and the mean aligned tooth shape is minimized. [Cootes92], [Cootes00]
+Before generating an Active Shape Model, each tooth shape (described by its landmarks) of the set of training samples belonging to the same tooth needs to be aligned in a common coordinate system. First, we remove the translation component by centring each tooth shape's centre of gravity at the origin. Second, we use a Procrustes Analysis to align (scalar and rotation component) each tooth shape of the set of training samples belonging to same tooth, in such a way that the sum of the distances between the aligned tooth shape and the mean aligned tooth shape is minimized. [Cootes92], [Cootes00]
 
 This is an iterative process. In each iteration step the mean aligned tooth shape is recalculated until the difference between two consecutive mean aligned tooth shapes in each dimension is smaller than a threshold value of 10<sup>-5</sup>. Initially, we used a larger value, but since convergence was reached after one or two iteration steps, we prefer a smaller value (more precision). With a threshold value of 10<sup>-5</sup>, convergence is reached after three iteration steps on average.
 
@@ -168,7 +168,7 @@ By varying the form factors, we can vary the shape of the tooth. We need to dete
 </p>
 
 ### Pre-process
-The region of the dental radiographs containing the eight incisor teeth is relatively small compared to the full dental radiographs. Therefore, we first crop the dental radiographs based on the minimal and maximal landmark coordinates (and an extra safety border) of all the landmarks of the training samples. This approach is justified since the appliances for generating dental radiographs center the foreteeth, and since the appliances themselves are approximately standardized.
+The region of the dental radiographs containing the eight incisor teeth is relatively small compared to the full dental radiographs. Therefore, we first crop the dental radiographs based on the minimal and maximal landmark coordinates (and an extra safety border) of all the landmarks of the training samples. This approach is justified since the appliances for generating dental radiographs centre the fore teeth, and since the appliances themselves are approximately standardized.
 
 The given dental radiographs are inherently noisy data. We use `OpenCV`’s `fastNlMeansDenoising` function to remove Gaussian white noise from the (greyscale) images.
 
@@ -178,7 +178,7 @@ Equalization maps a distribution with histogram *H(x)* on another distribution w
 
 Contrast stretching aims to improve the contrast of an image by stretching the range of intensity values *[c, d]* (linearly) over a target range of intensity values *[a, b]=[0, 255]*. Outliers in the original range can have a negative impact on *[c, d]* resulting in a not representative scale. Therefore, we set *[c, d]* to the 5th and 95th percentile of the histogram, respectively. [Fisher00]
 
-Some of the pre-processing techniques are illustrated below. In the remainder, we always use the 14 training samples after cropping, denoising and (linear) contrast stretching because these images give better results and convergence behavior. We have not investigated this further.
+Some of the pre-processing techniques are illustrated below. In the remainder, we always use the 14 training samples after cropping, denoising and (linear) contrast stretching because these images give better results and convergence behaviour. We have not investigated this further.
 
 <p align="center">
 <img src="data/Visualizations/Preproccess/O01.png" width="107">
