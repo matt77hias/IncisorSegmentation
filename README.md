@@ -221,6 +221,18 @@ The procedure is similar to a single-resolution search. Each time convergence or
 This section describes the process of finding an initial solution for the incisor before applying the fitting procedure (*single- or multi-resolution search*). In a first subsection a manual initialization procedure is described. A second subsection describes possible automatic initialization procedures.
 
 ##### Manuel initialization
-
+By manually proposing an initial solution, the fitting algorithm can be tested independent of the initialization procedure. A user manually positions the forty landmarks around the chosen tooth using the mouse cursor. It is important that the manually positioned landmarks follow the same mapping as the training samples (i.e. starting at the top in counter clockwise direction). Furthermore, the positioned landmarks should be distributed as equidistantly separated as possible.
 
 ##### Automatic initialization
+The purpose of the project is to design an algorithm for automatically segmenting the eight incisors. Therefore, a procedure needs to be designed for automatically determining an initial solution close to the tooth to search for.
+
+A first, possibly naïve, approach consists of using the mean aligned model tooth in the image coordinate space. This shape is obtained by computing the mean transformation parameters to  align the model tooth with all training samples in the image coordinate space. This method is very sensitive for the scale and translation parameters of the training samples in the image coordinate space and thus does not always result in the desired results.
+
+A second approach consists of computing the bounding boxes around the four upper and four lower incisors using *Haar cascade classifiers*. To train the classifiers, both positive and negative samples are required from the training set. More concretely, we use 13 variable positive and 30 fixed negative images. Furthermore, we use the tool `opencv_createsamples` for converting the positive images (i.e. text files containing the coordinates of the bounding boxes) to a compiled C++ VEC file. The negative samples are just the negative images themselves. These samples can be used to train our classifier using `opencv_haartraining` (only Haar features) and `opencv_traincascade` (Haar features and Local Binary Patterns features). The latter is an improved version of the former, supporting besides the Haar features:
+* Local Binary Patterns (LBP) features for faster training and detecting depending on the training set at the possible expense of a less accurate detection;
+* Multi-threading.
+
+Since `opencv_haartraining` can takes up to multiple days, we opted for `opencv_traincascade`. The output consists of an XML file containing our classifier for detecting the bounding boxes around the upper and lower incisors. The obtained results are mostly rubbish due to the small set of positive and negative training samples used.
+
+After the bounding box around the upper and lower incisors is detected, assuming an accurate positioning, the model tooth can be positioned in the centre of the corresponding quarter inside the bounding box and the fitting procedure can be started.
+
