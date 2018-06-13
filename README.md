@@ -234,5 +234,6 @@ A second approach consists of computing the bounding boxes around the four upper
 
 Since `opencv_haartraining` can takes up to multiple days, we opted for `opencv_traincascade`. The output consists of an XML file containing our classifier for detecting the bounding boxes around the upper and lower incisors. The obtained results are mostly rubbish due to the small set of positive and negative training samples used.
 
-After the bounding box around the upper and lower incisors is detected, assuming an accurate positioning, the model tooth can be positioned in the centre of the corresponding quarter inside the bounding box and the fitting procedure can be started.
-
+After the bounding box around the upper and lower incisors is detected, assuming an accurate positioning, the model tooth can be positioned in the centre of the corresponding quarter inside the bounding box and the fitting procedure can be started. Starting from the perfect bounding boxes, we notice some accurate to very accurate fits, but we also notice:
+* Instead of centring the model tooth in the centre of the corresponding quarter inside the bounding box, it could be better to compute and use the average centring of the training samples with regard to the corresponding quarter inside the bounding box. This is not investigated further.
+* Instead of scaling the model tooth using the average scaling of the models after transformation to the image coordinate space, it could be better to scale the model using the size of the corresponding quarter of the bounding box. This is not investigated further.
