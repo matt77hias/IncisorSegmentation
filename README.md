@@ -22,7 +22,7 @@ The goal of the final project for the course Computer Vision is the development 
 
 ### Active Shape Model construction
 We construct an [Active Shape Model](https://en.wikipedia.org/wiki/Active_shape_model) (ASM) for each of the eight incisors. Possible alternatives are:
-* One model for modelling each of the eight incisors. Based on the landmarks, we do not prefer this approach due to the clear differences between the shape of the upper and lower teeth and between the side and fore teeth.
+* One model for modelling each of the eight incisors separately. Based on the landmarks, we do not prefer this approach due to the clear differences between the shape of the upper and lower teeth and between the side and fore teeth.
 * Multiple models for modelling one or more incisors.
 * One model for modelling all eight incisors as a whole. Based on the landmarks, we do not prefer this approach due to the clear differences in distances between the upper and lower teeth.
 * Multiple models for modelling one or more incisors as a whole. By constructing models for multiple incisors as a whole, possible correlations can be taken into account and exploited (e.g. neighbouring teeth influencing each other's position). This can be beneficiary during the fitting procedure. 
