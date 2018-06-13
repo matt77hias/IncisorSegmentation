@@ -12,7 +12,7 @@ Course Computer Vision: a model-based procedure capable of segmenting the inciso
 The goal of the final project for the course Computer Vision is the development of a model-based procedure capable of segmenting the upper and lower incisor teeth in panoramic dental radiographs. To achieve this, an [Active Shape Model](https://en.wikipedia.org/wiki/Active_shape_model) (ASM) is constructed for each of the eight incisors. An Active Shape Model is a statistical model with the shape of a certain object that will be deformed during an iterative process to fit an instance of such an object in a different image.
 
 ### Input Landmarks
-#### Image space
+#### Image coordinate space
 <p align="left">
 <img src="data/Visualizations/Landmarks/landmarks1.png" width="215">
 <img src="data/Visualizations/Landmarks/landmarks2.png" width="215">
