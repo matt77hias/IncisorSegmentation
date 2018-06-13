@@ -59,7 +59,7 @@ We can for example use a basis for the *2n* dimensional space to represent each 
 
 Based on the results of the Principal Component Analysis, it suffices to use for each of the eight incisors only 5, 6 or 7 form factors (versus *2n* = 40) to describe at least 98% of the variance of the landmark positions in the training set with regard to the corresponding mean model tooth. Alternatively, one can choose the form factors in such a way that each training sample can be represented with a certain accuracy.
 
-By varying the form factors, we can vary the shape of the tooth. We need to determine upper and lower bounds for these variations in order to obtain plausible teeth. We allow +-3 standard deviations (*+-3 sqrt(lambda_i)*) from the mean model tooth. The effect of *-3 sqrt(lambda_i), -2 sqrt(lambda_i), -1 sqrt(lambda_i), 0, +1 sqrt(lambda_i), +2 sqrt(lambda_i), +3 sqrt(lambda_i)* deviations on each form factor as opposed to the mean tooth model for each of the eight incisors in model space *(x', y')*, is visualized below.
+By varying the form factors, we can vary the shape of the tooth. We need to determine upper and lower bounds for these variations in order to obtain plausible teeth. We allow +-3 standard deviations (*+-3 sqrt(γ<sub>i</sub>)*) from the mean model tooth. The effect of *-3 sqrt(γ<sub>i</sub>), -2 sqrt(γ<sub>i</sub>), -1 sqrt(γ<sub>i</sub>), 0, +1 sqrt(γ<sub>i</sub>), +2 sqrt(γ<sub>i</sub>), +3 sqrt(γ<sub>i</sub>)* deviations on each form factor as opposed to the mean tooth model for each of the eight incisors in model space *(x', y')*, is visualized below.
 
 ##### (reduced) model space tooth 1
 <p align="left">
@@ -170,7 +170,7 @@ By varying the form factors, we can vary the shape of the tooth. We need to dete
 ### Pre-process
 The region of the dental radiographs containing the eight incisor teeth is relatively small compared to the full dental radiographs. Therefore, we first crop the dental radiographs based on the minimal and maximal landmark coordinates (and an extra safety border) of all the landmarks of the training samples. This approach is justified since the appliances for generating dental radiographs centre the fore teeth, and since the appliances themselves are approximately standardized.
 
-The given dental radiographs are inherently noisy data. We use `OpenCV`’s `fastNlMeansDenoising` function to remove Gaussian white noise from the (greyscale) images.
+The given dental radiographs are inherently noisy data. We use `OpenCV`’s [`fastNlMeansDenoising`](https://docs.opencv.org/3.0-beta/modules/photo/doc/denoising.html) function to remove Gaussian white noise from the (greyscale) images.
 
 Furthermore, the intensity differences can be sometimes rather small, which can have a negative effect on the fitting functions operating on the intensity differences. We exploit the contrast to increase the intensity differences by using two different approaches: histogram equalization and (linear) contrast stretching.
 
