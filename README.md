@@ -174,9 +174,9 @@ The given dental radiographs are inherently noisy data. We use `OpenCV`’s [`fa
 
 Furthermore, the intensity differences can be sometimes rather small, which can have a negative impact on the fitting functions operating on the intensity differences. We exploit the contrast to increase the intensity differences by using two different approaches: histogram equalization and (linear) contrast stretching.
 
-Equalization [Fisher00, OpenCV11] maps a distribution with histogram *H(x)* on another distribution with a larger and more uniform distribution of intensity values. The mapping is done with the cumulative distribution function *H'(x)* of the histogram *H(x)*.
+Equalization [[Fisher00](https://github.com/matt77hias/IncisorSegmentation/tree/master/meta/Extra%20Literature/Contrast%20Enhancement), OpenCV11] maps a distribution with histogram *H(x)* on another distribution with a larger and more uniform distribution of intensity values. The mapping is done with the cumulative distribution function *H'(x)* of the histogram *H(x)*.
 
-Contrast stretching [Fisher00] aims to improve the contrast of an image by stretching the range of intensity values *[c, d]* (linearly) over a target range of intensity values *[a, b]=[0, 255]*. Outliers in the original range can have a negative impact on *[c, d]* resulting in a not representative extent. Therefore, we set *[c, d]* to the 5th and 95th percentile of the histogram, respectively.
+Contrast stretching [Fisher00](https://github.com/matt77hias/IncisorSegmentation/tree/master/meta/Extra%20Literature/Contrast%20Enhancement) aims to improve the contrast of an image by stretching the range of intensity values *[c, d]* (linearly) over a target range of intensity values *[a, b]=[0, 255]*. Outliers in the original range can have a negative impact on *[c, d]* resulting in a not representative extent. Therefore, we set *[c, d]* to the 5th and 95th percentile of the histogram, respectively.
 
 Some of our used pre-processing techniques are illustrated below. In the remainder, we always use the 14 training samples after cropping, denoising and (linear) contrast stretching, because these images give better results and convergence behaviour. We have not investigated this further.
 
