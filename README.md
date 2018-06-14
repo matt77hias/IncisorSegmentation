@@ -207,6 +207,7 @@ If the landmarks are positioned on strong edges, we can search for the strongest
 We also considered fitting functions taking both the profile normal and tangent with regard to the model edge into account (*2D Profile ASM*). Altogether, 320 (= 2 times 8 tooth models times 20 landmarks/tooth model) fitting functions are constructed. Though, the results obtained with 2D Profile ASM are inferior to those obtained with 1D Profile ASM for our use case. Another alternative consists of sampling complete 2D texture patches around the model landmarks [[Pei10](https://github.com/matt77hias/IncisorSegmentation/blob/master/meta/Extra%20Literature/J.%20Pei_2D%20Statistical%20Models.pdf)].
 
 <p align="center"><img src="data/Visualizations/Fitting Function/Profile Normals/SCD01.png" width="300"></p>
+<p align="center">Blue = model edge, Green = profile normal and tangent</p>
 
 #### Single-resolution Active Shape Model’s fitting procedure
 Given an initial solution of an instance of a tooth model, we can iteratively fit this instance using the algorithm described by [[Cootes00](https://github.com/matt77hias/IncisorSegmentation/blob/master/meta/Literature/T.%20Cootes_An%20Introduction%20to%20Active%20Shape%20Models.pdf)]. In a fixed region around each landmark, *(X<sub>i</sub>, Y<sub>i</sub>)*, we search for the best landmark, *(X’<sub>i</sub>, Y’<sub>i</sub>)*, according to our fitting function(s). *m* points (derivatives) on both sides of each model landmark (and the model landmark itself) are sampled in the image coordinate space in the direction of the profile normal with regard to the model edge. For each of the *2(m-k)+1* possible vectors, *g<sub>s</sub>*, of *2k+1* points (derivatives), we determine the quality by evaluating our preconstructed fitting functions, *f*. The point, *(X’<sub>i</sub>, Y’<sub>i</sub>)*, matching the middle component of the vector *g<sub>s</sub>*, that results in the lowest value of *f(g<sub>s</sub>)*, is considered as the new *i*<sup>th</sup> landmark.
@@ -217,6 +218,61 @@ After updating all landmarks, we determine the transformation parameters (2D tra
 In [[Cootes00](https://github.com/matt77hias/IncisorSegmentation/blob/master/meta/Literature/T.%20Cootes_An%20Introduction%20to%20Active%20Shape%20Models.pdf)] a new algorithm is introduced to increase the efficiency and robustness of the current algorithm using *multi-resolution search*. An instance is searched in multiple down-sampled versions of the original image by using the converged solution of the previous level as the initial solution of the current level.  By increasing the resolution, more fine details are introduced and taken into account into the fitting functions. For each image of the training set, a *Gaussian pyramid* (i.e. mip-map pyramid after applying a Gaussian filter) is constructed. The lowest level of this pyramid consists of the original image and each subsequent layer above consists of a smoothed and down-sampled image of the one below (containing a quarter of the texels). The Gaussian pyramids are constructed using `OpenCV`’s [`pyrDown`]( https://docs.opencv.org/2.4/doc/tutorials/imgproc/pyramids/pyramids.html).
 
 The procedure is similar to a single-resolution search. Each time convergence or a fixed number of iterations is reached, the current solution is used as the initial solution on the next lower level of the Gaussian pyramid. For each level of the Gaussian pyramid, a separate set of fitting functions needs to be constructed. The higher the level, the larger the image regions that will be taken into account by the fitting functions. The values of *m* and *k* remain the same for all levels. During the search, it is possible to use larger and coarser (lower and more detailed) steps with regard to the current landmarks per iteration step at the higher (lower) levels. This multi-resolution search converges faster to a good solution (even in case of a bad initial solution) and is less likely to get stuck at a wrong structure (e.g. another neighbour tooth) in the image due to a combination of coarse and more-detailed steps.
+
+##### Fitting iterations for level 2 of the Gaussian pyramid
+<p align="center">
+<img src="data/Visualizations/Fitting Procedure/L2_M1.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L2_M2.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L2_M3.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L2_M4.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L2_M5.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L2_M6.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L2_M7.png" width="107">
+</p>
+<p align="center">
+<img src="data/Visualizations/Fitting Procedure/L2_I1.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L2_I2.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L2_I3.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L2_I4.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L2_I5.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L2_I6.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L2_I7.png" width="107">
+</p>
+<p align="center">Blue = mean model tooth, Red = solution after (appearance) fitting, Green = solution after (shape) correction</p>
+
+##### Fitting iterations for level 1 of the Gaussian pyramid
+<p align="center">
+<img src="data/Visualizations/Fitting Procedure/L1_M1.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L1_M2.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L1_M3.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L1_M4.png" width="107">
+</p>
+<p align="center">
+<img src="data/Visualizations/Fitting Procedure/L1_I1.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L1_I2.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L1_I3.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L1_I4.png" width="107">
+</p>
+<p align="center">Blue = mean model tooth, Red = solution after (appearance) fitting, Green = solution after (shape) correction</p>
+
+##### Fitting iterations for level 0 of the Gaussian pyramid
+<p align="center">
+<img src="data/Visualizations/Fitting Procedure/L0_M1.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L0_M2.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L0_M3.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L0_M4.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L0_M5.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L0_M6.png" width="107">
+</p>
+<p align="center">
+<img src="data/Visualizations/Fitting Procedure/L0_I1.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L0_I2.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L0_I3.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L0_I4.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L0_I5.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L0_I6.png" width="107">
+</p>
+<p align="center">Blue = mean model tooth, Red = solution after (appearance) fitting, Green = solution after (shape) correction</p>
 
 #### Initialisation
 This section describes the process of finding an initial solution for the incisor before applying the fitting procedure (*single- or multi-resolution search*). In a first subsection a manual initialization procedure is described. A second subsection describes possible automatic initialization procedures.
