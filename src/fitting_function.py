@@ -51,7 +51,7 @@ def get_fitting_function(tooth_index, landmark_index, GS):
     @return The fitting function for the given tooth index, for the given landmark index.
     '''
     G = np.zeros((GS.shape[1], GS.shape[3]))
-    #Iterate all the training samples
+    # Iterate all the training samples
     for i in range(GS.shape[1]):
         G[i,:] = GS[tooth_index, i, landmark_index, :]
     
@@ -59,7 +59,7 @@ def get_fitting_function(tooth_index, landmark_index, GS):
     for i in range(G.shape[0]):
         G[i,:] -= g_mu
     
-    #Use the Moore-Penrose pseudo-inverse because C can be singular
+    # Use the Moore-Penrose pseudo-inverse because C can be singular
     C = np.linalg.pinv((np.dot(G.T, G) / float(G.shape[0])))
     
     def fitting_function(gs):
@@ -210,10 +210,10 @@ def create_ricos(img, i, xs, ys):
     dy = y_max - y_min
     sq = math.sqrt(dx*dx+dy*dy)
     
-    #Profile Tangent to Boundary
+    # Profile Tangent to Boundary
     tx = (dx / sq)
     ty = (dy / sq)
-    #Profile Normal to Boundary
+    # Profile Normal to Boundary
     nx = - ty
     ny = tx
     
@@ -243,5 +243,5 @@ def create_Gi(img, k, x, y, dx, dy):
     
     Gi = (Gi[1:] - Gi[:-1])
     
-    #We explicitly don't want a normalized vector at this stage
+    # We explicitly don't want a normalized vector at this stage
     return Gi
