@@ -174,7 +174,7 @@ def align_params(v, t):
     a = np.dot(v, t) / n
     b = 0
     for i in range(v.shape[0] / 2):
-        #landmark coordinates stored as successive xi, yi, xj, yj
+        # landmark coordinates stored as successive xi, yi, xj, yj
         b += v[(2*i)]*t[(2*i+1)] - v[(2*i+1)]*t[(2*i)]
     b /= n
     
@@ -196,7 +196,7 @@ def align(v, s=1, theta=0):
     ss = s*math.sin(theta)
     r = np.zeros(v.shape)
     for i in range(v.shape[0] / 2):
-        #landmark coordinates stored as successive xi, yi, xj, yj
+        # landmark coordinates stored as successive xi, yi, xj, yj
         x = v[(2*i)]
         y = v[(2*i+1)]
         r[(2*i)] = sc*x-ss*y
