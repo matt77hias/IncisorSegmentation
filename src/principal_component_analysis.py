@@ -46,7 +46,7 @@ def pca_nb(X, nb_components=0):
 
     print("PCA number of components: " + str(nb_components))
 
-    #The nb_components largest eigenvalues and eigenvectors of the covariance matrix
+    # The nb_components largest eigenvalues and eigenvectors of the covariance matrix
     eigenvalues = eigenvalues[0:nb_components]
     eigenvectors = eigenvectors[:,0:nb_components]
 
@@ -79,7 +79,7 @@ def pca_percentage(X, percentage=0.98):
     
     print("PCA number of components: " + str(nb_components)) 
 
-    #The nb_components largest eigenvalues and eigenvectors of the covariance matrix
+    # The nb_components largest eigenvalues and eigenvectors of the covariance matrix
     eigenvalues = eigenvalues[0:nb_components]
     eigenvectors = eigenvectors[:,0:nb_components]
 
@@ -94,10 +94,10 @@ def pca_raw(X):
     '''
     n = X.shape[0]
     
-    #Turn a set of possibly correlated variables into a smaller set of uncorrelated variables.
-    #The idea is, that a high-dimensional dataset is often described by correlated variables and
-    #therefore only a few meaningful dimensions account for most of the information.
-    #The PCA method finds the directions with the greatest variance in the data, called principal components.
+    # Turn a set of possibly correlated variables into a smaller set of uncorrelated variables.
+    # The idea is, that a high-dimensional dataset is often described by correlated variables and
+    # therefore only a few meaningful dimensions account for most of the information.
+    # The PCA method finds the directions with the greatest variance in the data, called principal components.
     
     MU = X.mean(axis=0)
     for i in range(n):
@@ -106,15 +106,15 @@ def pca_raw(X):
     S = (np.dot(X, X.T) / float(n))
     eigenvalues, eigenvectors = np.linalg.eig(S)
     
-    #About the negative eigenvalues, it is just a matter of eig(h).
-    #As eigenvalues show the variance in a direction, we care about absolute
-    #value but if we change a sign, we also have to change the "direction" (eigenvector).
-    #You can make this multiplying negative eigenvalues and their corresponding eigenvectors with -1.0
+    # About the negative eigenvalues, it is just a matter of eig(h).
+    # As eigenvalues show the variance in a direction, we care about absolute
+    # value but if we change a sign, we also have to change the "direction" (eigenvector).
+    # You can make this multiplying negative eigenvalues and their corresponding eigenvectors with -1.0
     s = np.where(eigenvalues < 0)
     eigenvalues[s] = eigenvalues[s] * -1.0
     eigenvectors[:,s] = eigenvectors[:,s] * -1.0
 
-    #All the eigenvalues and eigenvectors of the covariance matrix
+    # All the eigenvalues and eigenvectors of the covariance matrix
     indexes = np.argsort(eigenvalues)[::-1]
     eigenvalues = eigenvalues[indexes]
     eigenvectors = eigenvectors[:,indexes]
