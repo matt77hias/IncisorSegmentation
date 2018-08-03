@@ -36,8 +36,8 @@ def store_plotted_means(closed_curve=False):
         pyplot.axis('equal')
         fname = c.get_fname_vis_pa((j+1), samples_included=False)
         pyplot.savefig(fname, bbox_inches='tight')
-        #You get a runtime warning if you open more than 20 figures
-        #Closing comes with a performance penalty
+        # You get a runtime warning if you open more than 20 figures
+        # Closing comes with a performance penalty
         #pyplot.close()
         
         pyplot.figure()
