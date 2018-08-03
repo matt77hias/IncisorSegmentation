@@ -156,27 +156,27 @@ def get_values_from_histogram(image, low_percentile=0.05, high_percentile=0.95):
     '''
     c = d = -1
     
-    #The simplest sort of normalization scans the image to find the lowest and
-    #highest pixel values currently present in the image. Call these c and d.
+    # The simplest sort of normalization scans the image to find the lowest and
+    # highest pixel values currently present in the image. Call these c and d.
     
-    #The problem with this is that a single outlying pixel with either a very high
-    #or very low value can severely affect the value of c or d and this could lead
-    #to very unrepresentative scaling. 
+    # The problem with this is that a single outlying pixel with either a very high
+    # or very low value can severely affect the value of c or d and this could lead
+    # to very unrepresentative scaling. 
     
-    #Therefore a more robust approach is to first take a histogram of the image, and
-    #then select c and d at, say, the 5th and 95th percentile in the histogram (that
-    #is, 5% of the pixel in the histogram will have values lower than c, and 5% of
-    #the pixels will have values higher than d).This prevents outliers affecting the
-    #scaling so much.
+    # Therefore a more robust approach is to first take a histogram of the image, and
+    # then select c and d at, say, the 5th and 95th percentile in the histogram (that
+    # is, 5% of the pixel in the histogram will have values lower than c, and 5% of
+    # the pixels will have values higher than d).This prevents outliers affecting the
+    # scaling so much.
     
     total_pixels = image.shape[0] * image.shape[1]
-    #low_percentile = % of the pixels in the histogram will have values lower than c
+    # low_percentile = % of the pixels in the histogram will have values lower than c
     lp_pixels = total_pixels * low_percentile
-    #high_percentile = % of the pixels in the histogram will have values lower than d
+    # high_percentile = % of the pixels in the histogram will have values lower than d
     up_pixels = total_pixels * high_percentile
 
-    #hist = cv2.calcHist(images=[image], channels=[0], mask=None, histSize=[256], ranges=[0, 256])
-    hist = calculate_histogram(image) #just for speed up the bottleneck
+    # hist = cv2.calcHist(images=[image], channels=[0], mask=None, histSize=[256], ranges=[0, 256])
+    hist = calculate_histogram(image) # just for speed up the bottleneck
     
     pixels = 0
     for i in range(hist.shape[0]):
@@ -259,7 +259,7 @@ def preproccess():
     print(" * xmax: " + str(xmax)) #xmax: 1773.0
     
     for i in c.get_trainingSamples_range():
-        #read -> crop -> convert to grey scale
+        # read -> crop -> convert to grey scale
         grey_image = cv2.cvtColor(crop_by_diagonal(cv2.imread(c.get_fname_radiograph(i)), ymin, ymax, xmin, xmax), cv2.COLOR_BGR2GRAY)
         grey_image_denoised = cv2.fastNlMeansDenoising(grey_image)
         cv2.imwrite(c.get_fname_vis_pre(i, method='O'), grey_image)
@@ -271,7 +271,7 @@ def preproccess():
         #cv2.imwrite(c.get_fname_vis_pre(i, method='S'), apply_sigmoid(grey_image))
         #cv2.imwrite(c.get_fname_vis_pre(i, method='SD'), apply_sigmoid(grey_image_denoised))
         
-        #Rubbish
+        # Rubbish
         #cv2.imwrite(c.get_fname_vis_pre(i, method='I'), invert(grey_image))
         #cv2.imwrite(c.get_fname_vis_pre(i, method='ID'), invert(grey_image_denoised))
         #cv2.imwrite(c.get_fname_vis_pre(i, method='ISC'), invert(stretch_contrast(grey_image)))
