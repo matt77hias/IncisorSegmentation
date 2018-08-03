@@ -20,25 +20,25 @@ def PA(X):
                              shape = (nb samples, nb dimensions of each sample)
     @return The mean shape and training samples in the model coordinate frame.
     '''
-    #Translation
+    # Translation
     XT = translate(X)
-    #Initial estimate of mean shape, rescale
+    # Initial estimate of mean shape, rescale
     X0 = M = mu.normalize_vector(XT[0,:])
     
-    #Align all the shapes with the current estimate of the mean shape
+    # Align all the shapes with the current estimate of the mean shape
     Y0 = np.zeros(XT.shape)
     Y0[0,:] = M
     for i in range(1, XT.shape[0]):
         Y0[i,:] = mu.align_with(XT[i,:], X0)
           
-    #Re-estimate the mean from aligned shapes
+    # Re-estimate the mean from aligned shapes
     MN = Y0.mean(axis=0)
-    #Apply constraints on scale and orientation to the current estimate
-    #of the mean by aligning it with X0 and scaling so that |M|=1
+    # Apply constraints on scale and orientation to the current estimate
+    # of the mean by aligning it with X0 and scaling so that |M|=1
     MN = mu.align_with(MN, X0)
     MN = mu.normalize_vector(MN)
     
-    #Iterative approach
+    # Iterative approach
     it = 1
     Y = np.zeros(XT.shape)
     while (not is_converged(M, MN)):
