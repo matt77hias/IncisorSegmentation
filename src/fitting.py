@@ -19,29 +19,29 @@ import procrustes_analysis as pa
 
 from matplotlib import pyplot
 
-MS = None                       #MS contains for each tooth, the tooth model (in the model coordinate frame)
-EWS = []                        #EWS contains for each tooth, a (sqrt(Eigenvalues), Eigenvectors) pair (in the model coordinate frame)
-fns = None                      #fitting functions for each tooth, for each landmark, for the profile normal through that landmark.
-fts = None                      #fitting functions for each tooth, for each landmark, for the profile gradient through that landmark.
+MS = None                       # MS contains for each tooth, the tooth model (in the model coordinate frame)
+EWS = []                        # EWS contains for each tooth, a (sqrt(Eigenvalues), Eigenvectors) pair (in the model coordinate frame)
+fns = None                      # fitting functions for each tooth, for each landmark, for the profile normal through that landmark.
+fts = None                      # fitting functions for each tooth, for each landmark, for the profile gradient through that landmark.
 
-offsetY = 497.0                 #The landmarks refer to the non-cropped images, so we need the vertical offset (up->down)
-                                #to locate them on the cropped images.
-offsetX = 1234.0                #The landmarks refer to the non-cropped images, so we need the horizontal offset (left->right)
-                                #to locate them on the cropped images.
+offsetY = 497.0                 # The landmarks refer to the non-cropped images, so we need the vertical offset (up->down)
+                                # to locate them on the cropped images.
+offsetX = 1234.0                # The landmarks refer to the non-cropped images, so we need the horizontal offset (left->right)
+                                # to locate them on the cropped images.
 
-k = 4                           #The number of pixels to sample either side for each of the model points along the profile normal
-                                #(used for creating the fitting functions)
-m = 8                           #The number of pixels to sample either side for each of the model points along the profile normal
-                                #(used while iterating)
-method='SCD'                    #The method used for preproccesing.
+k = 4                           # The number of pixels to sample either side for each of the model points along the profile normal
+                                # (used for creating the fitting functions)
+m = 8                           # The number of pixels to sample either side for each of the model points along the profile normal
+                                # (used while iterating)
+method='SCD'                    # The method used for preproccesing.
 
-convergence_threshold = 0.002   #The convergence threshold (used while iterating).
-tolerable_deviation = 3         #The number of deviations that are tolerable by the models (used for limiting the shape).
+convergence_threshold = 0.002   # The convergence threshold (used while iterating).
+tolerable_deviation = 3         # The number of deviations that are tolerable by the models (used for limiting the shape).
 
 
-max_level = 2                   #Coarsest level of gaussian pyramid (depends on the size of the object in the image)
-max_it = 20                     #Maximum number of iterations allowed at each level
-pclose = 0.9                    #Desired proportion of points found within m/2 of current position
+max_level = 2                   # Coarsest level of gaussian pyramid (depends on the size of the object in the image)
+max_it = 20                     # Maximum number of iterations allowed at each level
+pclose = 0.9                    # Desired proportion of points found within m/2 of current position
 
 def multi_resolution_search(img, P, tooth_index, fitting_function=1, show=False):
     '''
@@ -63,7 +63,7 @@ def multi_resolution_search(img, P, tooth_index, fitting_function=1, show=False)
     pyramids = gip.get_gaussian_pyramids(img, level)
     
     
-    #Compute model point positions in image at coarsest level
+    # Compute model point positions in image at coarsest level
     P = np.around(np.divide(P, 2**level))
     
     while (level >= 0):
@@ -102,8 +102,8 @@ def multi_resolution_search(img, P, tooth_index, fitting_function=1, show=False)
         nb_close_points = nb_closest_points(P, P_new)
         P = P_new
         
-        #Repeat unless more than pclose of the points are found close to the current position 
-        #or nmax iterations have been applied at this resolution
+        # Repeat unless more than pclose of the points are found close to the current position 
+        # or nmax iterations have been applied at this resolution
         print 'Level:' + str(level) + ', Iteration: ' + str(nb_it) + ', Ratio: ' + str((2 * nb_close_points / float(P.shape[0])))
 
         converged = (2 * nb_close_points / float(P.shape[0]) >= pclose)    
