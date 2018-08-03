@@ -61,7 +61,7 @@ def store_plotted_vary_mode_param(closed_curve=False):
                     pyplot.title('Tooth nr: ' + str(t) + ' | ' + 'Eigenvalue: ' + str(E[e]))
                     pyplot.xlabel('x\'')
                 frame = pyplot.gca()
-                if j%2 == 0: 
+                if j % 2 == 0: 
                     frame.axes.get_xaxis().set_ticks([])
                 else: 
                     frame.axes.get_xaxis().set_ticks([xmin, xmax])
@@ -115,7 +115,7 @@ def plot_vary_mode_param(nr_tooth=1, closed_curve=False):
                 pyplot.title('Tooth nr: ' + str(nr_tooth) + ' | ' + 'Eigenvalue: ' + str(E[e]))
                 pyplot.xlabel('x\'')
             frame = pyplot.gca()
-            if j%2 == 0: 
+            if j % 2 == 0: 
                 frame.axes.get_xaxis().set_ticks([])
             else: 
                 frame.axes.get_xaxis().set_ticks([xmin, xmax])
