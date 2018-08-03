@@ -11,10 +11,10 @@ import math_utils as mu
 
 from matplotlib import pyplot
 
-offsetY = 497.0                 #The landmarks refer to the non-cropped images, so we need the vertical offset (up->down)
-                                #to locate them on the cropped images.
-offsetX = 1234.0                #The landmarks refer to the non-cropped images, so we need the horizontal offset (left->right)
-                                #to locate them on the cropped images.
+offsetY = 497.0                 # The landmarks refer to the non-cropped images, so we need the vertical offset (up->down)
+                                # to locate them on the cropped images.
+offsetX = 1234.0                # The landmarks refer to the non-cropped images, so we need the horizontal offset (left->right)
+                                # to locate them on the cropped images.
 
 def evaluate_fitting(fn=0, ft=0, fitting_function=0):
     ''''
