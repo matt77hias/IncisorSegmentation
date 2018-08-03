@@ -243,5 +243,5 @@ def create_Gi(img, k, x, y, dx, dy):
     
     Gi = (Gi[1:] - Gi[:-1])
     
-    # We explicitly don't want a normalized vector at this stage
+    # We explicitly do not want a normalized vector at this stage.
     return Gi
