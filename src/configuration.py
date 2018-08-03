@@ -28,7 +28,9 @@ dir_vis_class_samples = "data/Visualizations/Classified Samples"
 nb_trainingSamples = 14     #from 1 to 14
 nb_testSamples = 16         #from 15 to 30
 
-#TODO: nagaan hoeveel training samples we in feite nodig hebben (door te testen hoe goed het model generaliseerd (zie pag 10 ASM)
+'''
+TODO: nagaan hoeveel training samples we in feite nodig hebben (door te testen hoe goed het model generaliseerd (zie pag 10 ASM)
+'''
 
 nb_teeth = 8                #from 1 to 8
 nb_landmarks = 40           #from 1 to 40 (points representing an example)
@@ -275,7 +277,7 @@ def get_nb_landmarks():
 def get_nb_dim():
     return nb_dim
  
-#Validation
+# Validation
 
 def is_valid_trainingSample(nr_trainingSample):
     return (nr_trainingSample in get_trainingSamples_range())
