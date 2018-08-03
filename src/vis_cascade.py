@@ -1,7 +1,7 @@
 import cv2
 import configuration as c
 
-def whaha():
+def vis():
     
     for m in ['l', 'u']:
         for i in c.get_trainingSamples_range():
@@ -19,4 +19,4 @@ def whaha():
             cv2.imwrite(fname, img)
     
 if __name__ == '__main__':
-    whaha()
+    vis()
