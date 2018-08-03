@@ -123,7 +123,7 @@ def display_landmarks(X, nr_trainingSample=1, color=np.array([0, 0, 255])):
         #y coordinate , x coordinate
         img[yCoords[i], xCoords[i], :] = color
     #cv2.imshow("test", img)
-    #writing instead of showing, because the displayed image is too large
+    # writing instead of showing, because the displayed image is too large
     cv2.imwrite("test.tif", img)
       
 if __name__ == '__main__':
