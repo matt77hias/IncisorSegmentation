@@ -13,10 +13,10 @@ import math_utils as mu
 import procrustes_analysis as pa
 import fitting_function as ff
 
-XS = None           #XS contains for each tooth, for each training sample, all landmarks (in the image coordinate frame)
-MS = None           #MS contains for each tooth, the tooth model (in the model coordinate frame)
-offsetY = 497.0     #The landmarks refer to the non-cropped images, so we need the vertical offset (up->down) to locate them on the cropped images.
-offsetX = 1234.0    #The landmarks refer to the non-cropped images, so we need the horizontal offset (left->right) to locate them on the cropped images.
+XS = None           # XS contains for each tooth, for each training sample, all landmarks (in the image coordinate frame)
+MS = None           # MS contains for each tooth, the tooth model (in the model coordinate frame)
+offsetY = 497.0     # The landmarks refer to the non-cropped images, so we need the vertical offset (up->down) to locate them on the cropped images.
+offsetX = 1234.0    # The landmarks refer to the non-cropped images, so we need the horizontal offset (left->right) to locate them on the cropped images.
     
 def create_all_landmarks_images():
     '''
@@ -277,7 +277,7 @@ def create_all():
     create_all_profile_normals_images()
 
 if __name__ == '__main__':
-    #preprocess for visualizations
+    # preprocess for visualizations
     preprocess()
-    #store all visualizations
+    # store all visualizations
     create_all()
