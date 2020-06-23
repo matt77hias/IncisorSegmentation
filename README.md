@@ -19,10 +19,10 @@ The goal of the final project for the course Computer Vision is the development 
 ### Input Landmarks
 #### Image coordinate space
 <p align="left">
-<img src="data/Visualizations/Landmarks/landmarks1.png" width="215">
-<img src="data/Visualizations/Landmarks/landmarks2.png" width="215">
-<img src="data/Visualizations/Landmarks/landmarks3.png" width="215">
-<img src="data/Visualizations/Landmarks/landmarks4.png" width="215">
+<img src="data/Visualizations/Landmarks/landmarks1.png" width="214">
+<img src="data/Visualizations/Landmarks/landmarks2.png" width="214">
+<img src="data/Visualizations/Landmarks/landmarks3.png" width="214">
+<img src="data/Visualizations/Landmarks/landmarks4.png" width="214">
 </p>
 
 ### Active Shape Model construction
@@ -45,16 +45,16 @@ This is an iterative process. In each iteration step the mean aligned tooth shap
 The resulting tooth models and tooth model landmarks are visualized below for each of the eight incisors, together with the landmarks of 14 training samples, in the same model coordinate space *(x', y')*. Note that the reference shape for aligning with regard to the scaling and rotation component, can be chosen arbitrarily. We chose to align with each of the eight tooth shapes of training sample 1.
 
 <p align="center">
-<img src="data/Visualizations/PA/mean1-s.png" width="214">
-<img src="data/Visualizations/PA/mean2-s.png" width="214">
-<img src="data/Visualizations/PA/mean3-s.png" width="214">
-<img src="data/Visualizations/PA/mean4-s.png" width="214">
+<img src="data/Visualizations/PA/mean1-s.png" width="213">
+<img src="data/Visualizations/PA/mean2-s.png" width="213">
+<img src="data/Visualizations/PA/mean3-s.png" width="213">
+<img src="data/Visualizations/PA/mean4-s.png" width="213">
 </p>
 <p align="center">
-<img src="data/Visualizations/PA/mean5-s.png" width="214">
-<img src="data/Visualizations/PA/mean6-s.png" width="214">
-<img src="data/Visualizations/PA/mean7-s.png" width="214">
-<img src="data/Visualizations/PA/mean8-s.png" width="214">
+<img src="data/Visualizations/PA/mean5-s.png" width="213">
+<img src="data/Visualizations/PA/mean6-s.png" width="213">
+<img src="data/Visualizations/PA/mean7-s.png" width="213">
+<img src="data/Visualizations/PA/mean8-s.png" width="213">
 </p>
 
 #### Principal Component Analysis
@@ -68,108 +68,108 @@ By varying the form factors, we can vary the shape of the tooth. We need to dete
 
 ##### (reduced) model coordinate space tooth 1
 <p align="left">
-<img src="data/Visualizations/PCA/eig1-1.png" width="286">
-<img src="data/Visualizations/PCA/eig1-2.png" width="286">
-<img src="data/Visualizations/PCA/eig1-3.png" width="286">
+<img src="data/Visualizations/PCA/eig1-1.png" width="285">
+<img src="data/Visualizations/PCA/eig1-2.png" width="285">
+<img src="data/Visualizations/PCA/eig1-3.png" width="285">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig1-4.png" width="286">
-<img src="data/Visualizations/PCA/eig1-5.png" width="286">
-<img src="data/Visualizations/PCA/eig1-6.png" width="286">
+<img src="data/Visualizations/PCA/eig1-4.png" width="285">
+<img src="data/Visualizations/PCA/eig1-5.png" width="285">
+<img src="data/Visualizations/PCA/eig1-6.png" width="285">
 </p>
 
 ##### (reduced) model coordinate space tooth 2
 <p align="left">
-<img src="data/Visualizations/PCA/eig2-1.png" width="286">
-<img src="data/Visualizations/PCA/eig2-2.png" width="286">
-<img src="data/Visualizations/PCA/eig2-3.png" width="286">
+<img src="data/Visualizations/PCA/eig2-1.png" width="285">
+<img src="data/Visualizations/PCA/eig2-2.png" width="285">
+<img src="data/Visualizations/PCA/eig2-3.png" width="285">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig2-4.png" width="286">
-<img src="data/Visualizations/PCA/eig2-5.png" width="286">
-<img src="data/Visualizations/PCA/eig2-6.png" width="286">
+<img src="data/Visualizations/PCA/eig2-4.png" width="285">
+<img src="data/Visualizations/PCA/eig2-5.png" width="285">
+<img src="data/Visualizations/PCA/eig2-6.png" width="285">
 </p>
 
 ##### (reduced) model coordinate space tooth 3
 <p align="left">
-<img src="data/Visualizations/PCA/eig3-1.png" width="286">
-<img src="data/Visualizations/PCA/eig3-2.png" width="286">
-<img src="data/Visualizations/PCA/eig3-3.png" width="286">
+<img src="data/Visualizations/PCA/eig3-1.png" width="285">
+<img src="data/Visualizations/PCA/eig3-2.png" width="285">
+<img src="data/Visualizations/PCA/eig3-3.png" width="285">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig3-4.png" width="286">
-<img src="data/Visualizations/PCA/eig3-5.png" width="286">
+<img src="data/Visualizations/PCA/eig3-4.png" width="285">
+<img src="data/Visualizations/PCA/eig3-5.png" width="285">
 </p>
 
 ##### (reduced) model coordinate space tooth 4
 <p align="left">
-<img src="data/Visualizations/PCA/eig4-1.png" width="286">
-<img src="data/Visualizations/PCA/eig4-2.png" width="286">
-<img src="data/Visualizations/PCA/eig4-3.png" width="286">
+<img src="data/Visualizations/PCA/eig4-1.png" width="285">
+<img src="data/Visualizations/PCA/eig4-2.png" width="285">
+<img src="data/Visualizations/PCA/eig4-3.png" width="285">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig4-4.png" width="286">
-<img src="data/Visualizations/PCA/eig4-5.png" width="286">
+<img src="data/Visualizations/PCA/eig4-4.png" width="285">
+<img src="data/Visualizations/PCA/eig4-5.png" width="285">
 </p>
 
 ##### (reduced) model coordinate space tooth 5
 <p align="left">
-<img src="data/Visualizations/PCA/eig5-1.png" width="286">
-<img src="data/Visualizations/PCA/eig5-2.png" width="286">
-<img src="data/Visualizations/PCA/eig5-3.png" width="286">
+<img src="data/Visualizations/PCA/eig5-1.png" width="285">
+<img src="data/Visualizations/PCA/eig5-2.png" width="285">
+<img src="data/Visualizations/PCA/eig5-3.png" width="285">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig5-4.png" width="286">
-<img src="data/Visualizations/PCA/eig5-5.png" width="286">
-<img src="data/Visualizations/PCA/eig5-6.png" width="286">
+<img src="data/Visualizations/PCA/eig5-4.png" width="285">
+<img src="data/Visualizations/PCA/eig5-5.png" width="285">
+<img src="data/Visualizations/PCA/eig5-6.png" width="285">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig5-7.png" width="286">
+<img src="data/Visualizations/PCA/eig5-7.png" width="285">
 </p>
 
 ##### (reduced) model coordinate space tooth 6
 <p align="left">
-<img src="data/Visualizations/PCA/eig6-1.png" width="286">
-<img src="data/Visualizations/PCA/eig6-2.png" width="286">
-<img src="data/Visualizations/PCA/eig6-3.png" width="286">
+<img src="data/Visualizations/PCA/eig6-1.png" width="285">
+<img src="data/Visualizations/PCA/eig6-2.png" width="285">
+<img src="data/Visualizations/PCA/eig6-3.png" width="285">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig6-4.png" width="286">
-<img src="data/Visualizations/PCA/eig6-5.png" width="286">
-<img src="data/Visualizations/PCA/eig6-6.png" width="286">
+<img src="data/Visualizations/PCA/eig6-4.png" width="285">
+<img src="data/Visualizations/PCA/eig6-5.png" width="285">
+<img src="data/Visualizations/PCA/eig6-6.png" width="285">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig6-7.png" width="286">
+<img src="data/Visualizations/PCA/eig6-7.png" width="285">
 </p>
 
 ##### (reduced) model coordinate space tooth 7
 <p align="left">
-<img src="data/Visualizations/PCA/eig7-1.png" width="286">
-<img src="data/Visualizations/PCA/eig7-2.png" width="286">
-<img src="data/Visualizations/PCA/eig7-3.png" width="286">
+<img src="data/Visualizations/PCA/eig7-1.png" width="285">
+<img src="data/Visualizations/PCA/eig7-2.png" width="285">
+<img src="data/Visualizations/PCA/eig7-3.png" width="285">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig7-4.png" width="286">
-<img src="data/Visualizations/PCA/eig7-5.png" width="286">
-<img src="data/Visualizations/PCA/eig7-6.png" width="286">
+<img src="data/Visualizations/PCA/eig7-4.png" width="285">
+<img src="data/Visualizations/PCA/eig7-5.png" width="285">
+<img src="data/Visualizations/PCA/eig7-6.png" width="285">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig7-7.png" width="286">
+<img src="data/Visualizations/PCA/eig7-7.png" width="285">
 </p>
 
 ##### (reduced) model coordinate space tooth 8
 <p align="left">
-<img src="data/Visualizations/PCA/eig8-1.png" width="286">
-<img src="data/Visualizations/PCA/eig8-2.png" width="286">
-<img src="data/Visualizations/PCA/eig8-3.png" width="286">
+<img src="data/Visualizations/PCA/eig8-1.png" width="285">
+<img src="data/Visualizations/PCA/eig8-2.png" width="285">
+<img src="data/Visualizations/PCA/eig8-3.png" width="285">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig8-4.png" width="286">
-<img src="data/Visualizations/PCA/eig8-5.png" width="286">
-<img src="data/Visualizations/PCA/eig8-6.png" width="286">
+<img src="data/Visualizations/PCA/eig8-4.png" width="285">
+<img src="data/Visualizations/PCA/eig8-5.png" width="285">
+<img src="data/Visualizations/PCA/eig8-6.png" width="285">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig8-7.png" width="286">
+<img src="data/Visualizations/PCA/eig8-7.png" width="285">
 </p>
 
 ### Pre-process
@@ -186,12 +186,12 @@ Contrast stretching [[Fisher00](https://github.com/matt77hias/IncisorSegmentatio
 Some of our used pre-processing techniques are illustrated below. In the remainder, we always use the 14 training samples after cropping, denoising and (linear) contrast stretching, because these images give better results and convergence behaviour. We have not investigated this further.
 
 <p align="center">
-<img src="data/Visualizations/Preproccess/O01.png" width="107">
-<img src="data/Visualizations/Preproccess/D01.png" width="107">
-<img src="data/Visualizations/Preproccess/EH01.png" width="107">
-<img src="data/Visualizations/Preproccess/EHD01.png" width="107">
-<img src="data/Visualizations/Preproccess/SC01.png" width="107">
-<img src="data/Visualizations/Preproccess/SCD01.png" width="107">
+<img src="data/Visualizations/Preproccess/O01.png" width="106">
+<img src="data/Visualizations/Preproccess/D01.png" width="106">
+<img src="data/Visualizations/Preproccess/EH01.png" width="106">
+<img src="data/Visualizations/Preproccess/EHD01.png" width="106">
+<img src="data/Visualizations/Preproccess/SC01.png" width="106">
+<img src="data/Visualizations/Preproccess/SCD01.png" width="106">
 </p>
 
 1. Cropping (Original Greyscale)
@@ -226,56 +226,56 @@ The procedure is similar to a single-resolution search. Each time convergence or
 
 ##### Fitting iterations for level 2 of the Gaussian pyramid
 <p align="center">
-<img src="data/Visualizations/Fitting Procedure/L2_M1.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L2_M2.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L2_M3.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L2_M4.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L2_M5.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L2_M6.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L2_M7.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L2_M1.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L2_M2.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L2_M3.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L2_M4.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L2_M5.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L2_M6.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L2_M7.png" width="106">
 </p>
 <p align="center">
-<img src="data/Visualizations/Fitting Procedure/L2_I1.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L2_I2.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L2_I3.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L2_I4.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L2_I5.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L2_I6.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L2_I7.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L2_I1.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L2_I2.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L2_I3.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L2_I4.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L2_I5.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L2_I6.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L2_I7.png" width="106">
 </p>
 <p align="center">Blue = mean model tooth, Red = solution after (appearance) fitting, Green = solution after (shape) correction</p>
 
 ##### Fitting iterations for level 1 of the Gaussian pyramid
 <p align="center">
-<img src="data/Visualizations/Fitting Procedure/L1_M1.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L1_M2.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L1_M3.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L1_M4.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L1_M1.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L1_M2.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L1_M3.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L1_M4.png" width="106">
 </p>
 <p align="center">
-<img src="data/Visualizations/Fitting Procedure/L1_I1.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L1_I2.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L1_I3.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L1_I4.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L1_I1.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L1_I2.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L1_I3.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L1_I4.png" width="106">
 </p>
 <p align="center">Blue = mean model tooth, Red = solution after (appearance) fitting, Green = solution after (shape) correction</p>
 
 ##### Fitting iterations for level 0 of the Gaussian pyramid
 <p align="center">
-<img src="data/Visualizations/Fitting Procedure/L0_M1.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L0_M2.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L0_M3.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L0_M4.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L0_M5.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L0_M6.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L0_M1.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L0_M2.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L0_M3.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L0_M4.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L0_M5.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L0_M6.png" width="106">
 </p>
 <p align="center">
-<img src="data/Visualizations/Fitting Procedure/L0_I1.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L0_I2.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L0_I3.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L0_I4.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L0_I5.png" width="107">
-<img src="data/Visualizations/Fitting Procedure/L0_I6.png" width="107">
+<img src="data/Visualizations/Fitting Procedure/L0_I1.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L0_I2.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L0_I3.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L0_I4.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L0_I5.png" width="106">
+<img src="data/Visualizations/Fitting Procedure/L0_I6.png" width="106">
 </p>
 <p align="center">Blue = mean model tooth, Red = solution after (appearance) fitting, Green = solution after (shape) correction</p>
 
