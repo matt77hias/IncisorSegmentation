@@ -19,10 +19,10 @@ The goal of the final project for the course Computer Vision is the development 
 ### Input Landmarks
 #### Image coordinate space
 <p align="left">
-<img src="data/Visualizations/Landmarks/landmarks1.png" width="214">
-<img src="data/Visualizations/Landmarks/landmarks2.png" width="214">
-<img src="data/Visualizations/Landmarks/landmarks3.png" width="214">
-<img src="data/Visualizations/Landmarks/landmarks4.png" width="214">
+<img src="data/Visualizations/Landmarks/landmarks1.png" width="205">
+<img src="data/Visualizations/Landmarks/landmarks2.png" width="205">
+<img src="data/Visualizations/Landmarks/landmarks3.png" width="205">
+<img src="data/Visualizations/Landmarks/landmarks4.png" width="205">
 </p>
 
 ### Active Shape Model construction
@@ -45,16 +45,16 @@ This is an iterative process. In each iteration step the mean aligned tooth shap
 The resulting tooth models and tooth model landmarks are visualized below for each of the eight incisors, together with the landmarks of 14 training samples, in the same model coordinate space *(x', y')*. Note that the reference shape for aligning with regard to the scaling and rotation component, can be chosen arbitrarily. We chose to align with each of the eight tooth shapes of training sample 1.
 
 <p align="center">
-<img src="data/Visualizations/PA/mean1-s.png" width="213">
-<img src="data/Visualizations/PA/mean2-s.png" width="213">
-<img src="data/Visualizations/PA/mean3-s.png" width="213">
-<img src="data/Visualizations/PA/mean4-s.png" width="213">
+<img src="data/Visualizations/PA/mean1-s.png" width="205">
+<img src="data/Visualizations/PA/mean2-s.png" width="205">
+<img src="data/Visualizations/PA/mean3-s.png" width="205">
+<img src="data/Visualizations/PA/mean4-s.png" width="205">
 </p>
 <p align="center">
-<img src="data/Visualizations/PA/mean5-s.png" width="213">
-<img src="data/Visualizations/PA/mean6-s.png" width="213">
-<img src="data/Visualizations/PA/mean7-s.png" width="213">
-<img src="data/Visualizations/PA/mean8-s.png" width="213">
+<img src="data/Visualizations/PA/mean5-s.png" width="205">
+<img src="data/Visualizations/PA/mean6-s.png" width="205">
+<img src="data/Visualizations/PA/mean7-s.png" width="205">
+<img src="data/Visualizations/PA/mean8-s.png" width="205">
 </p>
 
 #### Principal Component Analysis
@@ -68,44 +68,44 @@ By varying the form factors, we can vary the shape of the tooth. We need to dete
 
 ##### (reduced) model coordinate space tooth 1
 <p align="left">
-<img src="data/Visualizations/PCA/eig1-1.png" width="285">
-<img src="data/Visualizations/PCA/eig1-2.png" width="285">
-<img src="data/Visualizations/PCA/eig1-3.png" width="285">
+<img src="data/Visualizations/PCA/eig1-1.png" width="273">
+<img src="data/Visualizations/PCA/eig1-2.png" width="273">
+<img src="data/Visualizations/PCA/eig1-3.png" width="273">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig1-4.png" width="285">
-<img src="data/Visualizations/PCA/eig1-5.png" width="285">
-<img src="data/Visualizations/PCA/eig1-6.png" width="285">
+<img src="data/Visualizations/PCA/eig1-4.png" width="273">
+<img src="data/Visualizations/PCA/eig1-5.png" width="273">
+<img src="data/Visualizations/PCA/eig1-6.png" width="273">
 </p>
 
 ##### (reduced) model coordinate space tooth 2
 <p align="left">
-<img src="data/Visualizations/PCA/eig2-1.png" width="285">
-<img src="data/Visualizations/PCA/eig2-2.png" width="285">
-<img src="data/Visualizations/PCA/eig2-3.png" width="285">
+<img src="data/Visualizations/PCA/eig2-1.png" width="273">
+<img src="data/Visualizations/PCA/eig2-2.png" width="273">
+<img src="data/Visualizations/PCA/eig2-3.png" width="273">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig2-4.png" width="285">
-<img src="data/Visualizations/PCA/eig2-5.png" width="285">
-<img src="data/Visualizations/PCA/eig2-6.png" width="285">
+<img src="data/Visualizations/PCA/eig2-4.png" width="273">
+<img src="data/Visualizations/PCA/eig2-5.png" width="273">
+<img src="data/Visualizations/PCA/eig2-6.png" width="273">
 </p>
 
 ##### (reduced) model coordinate space tooth 3
 <p align="left">
-<img src="data/Visualizations/PCA/eig3-1.png" width="285">
-<img src="data/Visualizations/PCA/eig3-2.png" width="285">
-<img src="data/Visualizations/PCA/eig3-3.png" width="285">
+<img src="data/Visualizations/PCA/eig3-1.png" width="273">
+<img src="data/Visualizations/PCA/eig3-2.png" width="273">
+<img src="data/Visualizations/PCA/eig3-3.png" width="273">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig3-4.png" width="285">
-<img src="data/Visualizations/PCA/eig3-5.png" width="285">
+<img src="data/Visualizations/PCA/eig3-4.png" width="273">
+<img src="data/Visualizations/PCA/eig3-5.png" width="273">
 </p>
 
 ##### (reduced) model coordinate space tooth 4
 <p align="left">
-<img src="data/Visualizations/PCA/eig4-1.png" width="285">
-<img src="data/Visualizations/PCA/eig4-2.png" width="285">
-<img src="data/Visualizations/PCA/eig4-3.png" width="285">
+<img src="data/Visualizations/PCA/eig4-1.png" width="273">
+<img src="data/Visualizations/PCA/eig4-2.png" width="273">
+<img src="data/Visualizations/PCA/eig4-3.png" width="273">
 </p>
 <p align="left">
 <img src="data/Visualizations/PCA/eig4-4.png" width="285">
@@ -114,62 +114,62 @@ By varying the form factors, we can vary the shape of the tooth. We need to dete
 
 ##### (reduced) model coordinate space tooth 5
 <p align="left">
-<img src="data/Visualizations/PCA/eig5-1.png" width="285">
-<img src="data/Visualizations/PCA/eig5-2.png" width="285">
-<img src="data/Visualizations/PCA/eig5-3.png" width="285">
+<img src="data/Visualizations/PCA/eig5-1.png" width="273">
+<img src="data/Visualizations/PCA/eig5-2.png" width="273">
+<img src="data/Visualizations/PCA/eig5-3.png" width="273">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig5-4.png" width="285">
-<img src="data/Visualizations/PCA/eig5-5.png" width="285">
-<img src="data/Visualizations/PCA/eig5-6.png" width="285">
+<img src="data/Visualizations/PCA/eig5-4.png" width="273">
+<img src="data/Visualizations/PCA/eig5-5.png" width="273">
+<img src="data/Visualizations/PCA/eig5-6.png" width="273">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig5-7.png" width="285">
+<img src="data/Visualizations/PCA/eig5-7.png" width="273">
 </p>
 
 ##### (reduced) model coordinate space tooth 6
 <p align="left">
-<img src="data/Visualizations/PCA/eig6-1.png" width="285">
-<img src="data/Visualizations/PCA/eig6-2.png" width="285">
-<img src="data/Visualizations/PCA/eig6-3.png" width="285">
+<img src="data/Visualizations/PCA/eig6-1.png" width="273">
+<img src="data/Visualizations/PCA/eig6-2.png" width="273">
+<img src="data/Visualizations/PCA/eig6-3.png" width="273">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig6-4.png" width="285">
-<img src="data/Visualizations/PCA/eig6-5.png" width="285">
-<img src="data/Visualizations/PCA/eig6-6.png" width="285">
+<img src="data/Visualizations/PCA/eig6-4.png" width="273">
+<img src="data/Visualizations/PCA/eig6-5.png" width="273">
+<img src="data/Visualizations/PCA/eig6-6.png" width="273">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig6-7.png" width="285">
+<img src="data/Visualizations/PCA/eig6-7.png" width="273">
 </p>
 
 ##### (reduced) model coordinate space tooth 7
 <p align="left">
-<img src="data/Visualizations/PCA/eig7-1.png" width="285">
-<img src="data/Visualizations/PCA/eig7-2.png" width="285">
-<img src="data/Visualizations/PCA/eig7-3.png" width="285">
+<img src="data/Visualizations/PCA/eig7-1.png" width="273">
+<img src="data/Visualizations/PCA/eig7-2.png" width="273">
+<img src="data/Visualizations/PCA/eig7-3.png" width="273">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig7-4.png" width="285">
-<img src="data/Visualizations/PCA/eig7-5.png" width="285">
-<img src="data/Visualizations/PCA/eig7-6.png" width="285">
+<img src="data/Visualizations/PCA/eig7-4.png" width="273">
+<img src="data/Visualizations/PCA/eig7-5.png" width="273">
+<img src="data/Visualizations/PCA/eig7-6.png" width="273">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig7-7.png" width="285">
+<img src="data/Visualizations/PCA/eig7-7.png" width="273">
 </p>
 
 ##### (reduced) model coordinate space tooth 8
 <p align="left">
-<img src="data/Visualizations/PCA/eig8-1.png" width="285">
-<img src="data/Visualizations/PCA/eig8-2.png" width="285">
-<img src="data/Visualizations/PCA/eig8-3.png" width="285">
+<img src="data/Visualizations/PCA/eig8-1.png" width="273">
+<img src="data/Visualizations/PCA/eig8-2.png" width="273">
+<img src="data/Visualizations/PCA/eig8-3.png" width="273">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig8-4.png" width="285">
-<img src="data/Visualizations/PCA/eig8-5.png" width="285">
-<img src="data/Visualizations/PCA/eig8-6.png" width="285">
+<img src="data/Visualizations/PCA/eig8-4.png" width="273">
+<img src="data/Visualizations/PCA/eig8-5.png" width="273">
+<img src="data/Visualizations/PCA/eig8-6.png" width="273">
 </p>
 <p align="left">
-<img src="data/Visualizations/PCA/eig8-7.png" width="285">
+<img src="data/Visualizations/PCA/eig8-7.png" width="273">
 </p>
 
 ### Pre-process
