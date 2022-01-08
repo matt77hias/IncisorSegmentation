@@ -19,10 +19,10 @@ The goal of the final project for the course Computer Vision is the development 
 ### Input Landmarks
 #### Image coordinate space
 <p align="left">
-<img src="data/Visualizations/Landmarks/landmarks1.png" width="205">
-<img src="data/Visualizations/Landmarks/landmarks2.png" width="205">
-<img src="data/Visualizations/Landmarks/landmarks3.png" width="205">
-<img src="data/Visualizations/Landmarks/landmarks4.png" width="205">
+<img src="data/Visualizations/Landmarks/landmarks1.png" width="203">
+<img src="data/Visualizations/Landmarks/landmarks2.png" width="203">
+<img src="data/Visualizations/Landmarks/landmarks3.png" width="203">
+<img src="data/Visualizations/Landmarks/landmarks4.png" width="203">
 </p>
 
 ### Active Shape Model construction
@@ -45,16 +45,16 @@ This is an iterative process. In each iteration step the mean aligned tooth shap
 The resulting tooth models and tooth model landmarks are visualized below for each of the eight incisors, together with the landmarks of 14 training samples, in the same model coordinate space *(x', y')*. Note that the reference shape for aligning with regard to the scaling and rotation component, can be chosen arbitrarily. We chose to align with each of the eight tooth shapes of training sample 1.
 
 <p align="center">
-<img src="data/Visualizations/PA/mean1-s.png" width="205">
-<img src="data/Visualizations/PA/mean2-s.png" width="205">
-<img src="data/Visualizations/PA/mean3-s.png" width="205">
-<img src="data/Visualizations/PA/mean4-s.png" width="205">
+<img src="data/Visualizations/PA/mean1-s.png" width="203">
+<img src="data/Visualizations/PA/mean2-s.png" width="203">
+<img src="data/Visualizations/PA/mean3-s.png" width="203">
+<img src="data/Visualizations/PA/mean4-s.png" width="203">
 </p>
 <p align="center">
-<img src="data/Visualizations/PA/mean5-s.png" width="205">
-<img src="data/Visualizations/PA/mean6-s.png" width="205">
-<img src="data/Visualizations/PA/mean7-s.png" width="205">
-<img src="data/Visualizations/PA/mean8-s.png" width="205">
+<img src="data/Visualizations/PA/mean5-s.png" width="203">
+<img src="data/Visualizations/PA/mean6-s.png" width="203">
+<img src="data/Visualizations/PA/mean7-s.png" width="203">
+<img src="data/Visualizations/PA/mean8-s.png" width="203">
 </p>
 
 #### Principal Component Analysis
